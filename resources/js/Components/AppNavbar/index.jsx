@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { usePage, useForm, Link } from "@inertiajs/react";
-import { asset, url } from "@/utils/helpers";
+import { asset, url } from "@/Utils/helpers";
 import {
     Dropdown,
     DropdownTrigger,
@@ -27,7 +27,7 @@ import {
     UserIcon,
     UserIdIcon,
 } from "./icons";
-import { appName } from "@/utils/constants";
+import { appName } from "@/Utils/constants";
 
 const Logo = () => {
     return useMemo(

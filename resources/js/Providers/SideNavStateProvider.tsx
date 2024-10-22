@@ -1,18 +1,14 @@
-// SideNavStateProvider.js
-import React, {
-    createContext,
-    useState,
-    useContext,
-    useEffect,
-    useCallback,
-} from "react";
+import React, { useState, useEffect, useCallback, ReactNode } from "react";
+import SideNavStateContext from "@/Contexts/SideNavStateContext";
 
-const SideNavStateContext = createContext();
+interface SideNavStateProviderProps {
+    children: ReactNode;
+}
 
-export const useSideNavState = () => useContext(SideNavStateContext);
-
-export const SideNavStateProvider = ({ children }) => {
-    const [sideNavState, setSideNavState] = useState(() => {
+export const SideNavStateProvider: React.FC<SideNavStateProviderProps> = ({
+    children,
+}) => {
+    const [sideNavState, setSideNavState] = useState<string>(() => {
         return localStorage.getItem("sidebarview") || "expand";
     });
 

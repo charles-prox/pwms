@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardBody, CardHeader, Image } from "@nextui-org/react";
 import { usePage } from "@inertiajs/react";
-import { appName } from "@/utils/constants";
+import { appName } from "@/Utils/constants";
 
 export default function AuthLayout({ children }) {
     const { component } = usePage();

@@ -13,29 +13,33 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         // Create Super Admin role
-        /* 
-        This role usually has unrestricted access to all features and 
-        functionalities of the admin dashboard, including user 
-        management, settings, and content management. 
-        */
-        Role::create(['name' => 'super-admin']);
+        Role::create([
+            'name' => 'super-admin',
+            'description' => 'Has unrestricted access to all features and functionalities.'
+        ]);
 
         // Create Admin role
-        /*         
-        Admins often have similar permissions to super admins but may 
-        have restrictions on certain sensitive operations or settings.
-        */
-        Role::create(['name' => 'admin']);
+        Role::create([
+            'name' => 'admin',
+            'description' => 'Has access to admin functionalities with some restrictions.'
+        ]);
 
         // Create User role
-        /* Regular users or the end users who uses the application regularly */
-        Role::create(['name' => 'user']);
+        Role::create([
+            'name' => 'user',
+            'description' => 'Regular user with basic access to the application.'
+        ]);
 
         // Create Viewer/Guest role
-        /* 
-        This role could represent users who have limited access to the dashboard, 
-        perhaps only being able to view data or reports without the ability to make changes.
-        */
-        Role::create(['name' => 'viewer']);
+        Role::create([
+            'name' => 'viewer',
+            'description' => 'Limited access to view data or reports.'
+        ]);
+
+        // Create Property Accountable Officer(PAO) role
+        Role::create([
+            'name' => 'regional-document-custodian',
+            'description' => 'Officer responsible for warehouse managment.'
+        ]);
     }
 }

@@ -1,16 +1,18 @@
 import React, {
-    useContext,
-    createContext,
     useState,
     useCallback,
     useMemo,
     useEffect,
+    ReactNode,
 } from "react";
+import ThemeContext from "@/Contexts/ThemeContext";
 
-export const ThemeContext = createContext({});
+interface ThemeProviderProps {
+    children: ReactNode;
+}
 
-const ThemeProvider = ({ children }) => {
-    const [theme, setTheme] = useState(() => {
+const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+    const [theme, setTheme] = useState<string>(() => {
         const initialTheme = localStorage.getItem("theme");
         return initialTheme || "light";
     });
@@ -33,21 +35,13 @@ const ThemeProvider = ({ children }) => {
         if (savedTheme && savedTheme !== theme) {
             setTheme(savedTheme);
         }
-    }, []);
+    }, [theme]);
 
     return (
         <ThemeContext.Provider value={contextValue}>
             {children}
         </ThemeContext.Provider>
     );
-};
-
-export const useTheme = () => {
-    const value = useContext(ThemeContext);
-    if (!value) {
-        throw new Error("useTheme must be used within a ThemeProvider");
-    }
-    return value;
 };
 
 export default ThemeProvider;
