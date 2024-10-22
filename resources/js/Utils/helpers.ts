@@ -27,7 +27,6 @@
  * Organize imports logically and group them by type (e.g., third-party libraries, internal modules).
  * -------------------------------------------------------------------------------------------------------------------
  */
-import axios from "axios";
 
 /**
  * Functions and helper methods used across the application.
@@ -44,36 +43,22 @@ import axios from "axios";
  */
 
 /**
- * Creates an axios instance with default configurations for making HTTP requests.
- *
- * This instance is configured to include credentials (e.g., cookies) with requests
- * and has a default base URL for all requests made using this instance.
- *
- * @type {axios.AxiosInstance} - Configured instance of axios.
- */
-// Create an axios instance with default configurations
-export const axiosInstance = axios.create({
-    baseURL: "/", // Update if you have a different base URL
-    withCredentials: true, // Ensure cookies are sent with requests
-});
-
-/**
  * Generates a URL for displaying images stored in the storage folder that is linked to the public directory.
  *
  * @param {string} path - The relative path of the image within the storage folder.
  * @returns {string} - The full URL to access the image.
  */
-export const asset = (path) => {
+export const asset = (path: string): string => {
     return `/storage/images/${path}`;
 };
 
 /**
  * Generates a URL for displaying any assets stored in the storage folder that is linked to the public directory.
  *
- * @param {string} path - The relative path of the image within the storage folder.
- * @returns {string} - The full URL to access the image.
+ * @param {string} path - The relative path of the asset within the storage folder.
+ * @returns {string} - The full URL to access the asset.
  */
-export const url = (path) => {
+export const url = (path: string): string => {
     return `/storage/${path}`;
 };
 
@@ -83,7 +68,7 @@ export const url = (path) => {
  * @param {string} str - The input string to be converted.
  * @returns {string} - The converted string in title case.
  */
-export const toTitleCase = (str) => {
+export const toTitleCase = (str: string): string => {
     // Convert the entire string to lowercase to ensure uniformity
     str = str.toLowerCase();
 
@@ -96,11 +81,11 @@ export const toTitleCase = (str) => {
 };
 
 /**
- * Helper function to get the current date in MM/DD/YYYY format
+ * Helper function to get the current date in MM/DD/YYYY format.
  *
  * @returns {string} - The current date formatted in month/day/year.
  */
-export const getCurrentDate = () => {
+export const getCurrentDate = (): string => {
     // Create a new Date object representing the current date and time
     const now = new Date();
 
@@ -115,4 +100,27 @@ export const getCurrentDate = () => {
 
     // Return the formatted date string in MM/DD/YYYY format
     return `${month}/${day}/${year}`;
+};
+
+/**
+ * Helper function to generate a Tailwind CSS width class based on the provided maxWidth.
+ *
+ * @param maxWidth - The maximum width value which can be either a number or a string.
+ *
+ * If maxWidth is a number, it generates a Tailwind CSS width class in the format `w-[value]`,
+ * where `value` is the provided number. This allows for dynamic width classes in Tailwind CSS.
+ *
+ * If maxWidth is a string, it is returned as-is. This allows for predefined Tailwind CSS width classes
+ * such as 'w-full', 'w-1/2', etc.
+ *
+ * If no maxWidth is provided, the function returns undefined, which can be interpreted as no width class.
+ *
+ * @returns A string representing the Tailwind width class or undefined if no width is specified.
+ */
+export const getTailwindWidthClass = (maxWidth?: string | number) => {
+    if (typeof maxWidth === "number") {
+        // Generate Tailwind class for number input
+        return `w-[${maxWidth}]`;
+    }
+    return maxWidth; // Return string as-is or undefined if not provided
 };

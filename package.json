@@ -3,23 +3,29 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "lint": "eslint . --ext .ts,.tsx"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.7",
         "@tailwindcss/typography": "^0.5.10",
+        "@types/react": "^18.3.11",
+        "@types/react-dom": "^18.3.1",
         "@vitejs/plugin-react": "^4.3.1",
         "autoprefixer": "^10.4.16",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0",
         "postcss": "^8.4.32",
         "tailwindcss": "^3.4.0",
+        "typescript": "^5.6.3",
         "vite": "^5.0"
     },
     "dependencies": {
         "@inertiajs/react": "^1.2.0",
         "@nextui-org/react": "^2.4.6",
         "framer-motion": "^11.3.22",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
         "react-dropzone": "^14.2.3"
     }
 }

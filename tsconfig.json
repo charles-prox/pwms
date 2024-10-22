@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "baseUrl": ".",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "strict": true,
+        "isolatedModules": true,
+        "target": "ESNext",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "paths": {
+            "@/*": ["./resources/js/*"],
+            "@Components/*": [".resources/js/Components/*"],
+            "@Context/*": [".resources/js/Context/*"],
+            "@Providers/*": [".resources/js/Providers/*"],
+            "@Hooks/*": [".resources/js/Hooks/*"],
+            "@Utils/*": [".resources/js/Utils/*"]
+        }
+    },
+    "include": [
+        "resources/js/**/*.ts",
+        "resources/js/**/*.tsx",
+        "resources/js/**/*.d.ts",
+        "*.d.ts"
+    ],
+    "exclude": ["node_modules", "public"]
+}

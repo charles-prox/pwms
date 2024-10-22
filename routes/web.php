@@ -3,6 +3,7 @@
 // use Illuminate\Foundation\Application;
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\UpdateUserProfileController;
 use App\Http\Controllers\RegisterAdminController;
 use App\Http\Controllers\UserProfileController;
@@ -36,3 +37,7 @@ Route::get('/register', [RegisterAdminController::class, 'create'])
 Route::get('/login', [LoginController::class, 'create'])
     ->middleware(['guest'])
     ->name('login');
+
+Route::get('/offices', [OfficeController::class, 'index'])
+    ->middleware(['guest'])
+    ->name('offices');

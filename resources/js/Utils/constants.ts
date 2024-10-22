@@ -15,7 +15,7 @@
  * ---------------------------------------------------------------------------------------
  */
 
-export const appName = import.meta.env.VITE_APP_NAME || "ArgusXCode";
+export const appName = "PWMS";
 
 /**
  * An array of objects representing different employment statuses.
