@@ -43,7 +43,6 @@ class UserSeeder extends Seeder
                 'email' => $faker->unique()->safeEmail,
                 'position' => $faker->jobTitle,
                 'contact_no' => $faker->phoneNumber,
-                'pro_code' => 15, // Default value
                 'employment_status' => $faker->randomElement(['regular', 'casual', 'contractual']),
                 'office_id' => $officeId, // Use the randomly selected office ID
                 'email_verified_at' => now(),

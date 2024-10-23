@@ -1,11 +1,12 @@
 import React from "react";
-import { UserIdIcon } from "./icons";
-import { Button, Checkbox, Input } from "@nextui-org/react";
-import Alert from "../Alert";
-import PasswordInput from "./PasswordInput";
+import { Button, Checkbox } from "@nextui-org/react";
+import Input from "@/Components/Input";
+import Alert from "@/Components/Alert";
+import PasswordInput from "@/Components/PasswordInput";
 import { useForm } from "@inertiajs/react";
+import { UserIdIcon } from "./icons";
 
-export const LoginForm = () => {
+const LoginForm = () => {
     const { data, setData, post, processing, errors, reset } = useForm({
         hris_id: "",
         password: "",
@@ -18,10 +19,9 @@ export const LoginForm = () => {
         };
     }, []);
 
-    const submit = (e) => {
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        errors.message = null;
-        post(route("login"), { replace: true });
+        post(route("login"));
     };
 
     return (
@@ -32,6 +32,7 @@ export const LoginForm = () => {
                     type="error"
                     message={errors.hris_id}
                     variant={"flat"}
+                    isCloseable={false}
                 />
             )}
             <form onSubmit={submit}>
@@ -39,17 +40,10 @@ export const LoginForm = () => {
                     <Input
                         label="HRIS ID "
                         name="hris_id"
-                        id="hris_id"
                         placeholder="Enter your HRIS ID"
-                        variant="bordered"
-                        autoComplete="hris_id"
-                        value={data.id}
-                        onChange={(e) => setData("hris_id", e.target.value)}
-                        // color={!!errors.message ? "danger" : "default"}
-                        // isInvalid={!!errors.message}
-                        classNames={{
-                            label: "text-black dark:text-white/90 font-bold",
-                            inputWrapper: "border-slate-400",
+                        value={data.hris_id}
+                        onChange={(e) => {
+                            setData("hris_id", e.target.value);
                         }}
                         startContent={<UserIdIcon />}
                         isRequired
@@ -60,14 +54,12 @@ export const LoginForm = () => {
                         label="Password"
                         placeholder="Enter your password"
                         value={data.password}
-                        setValue={(val) => setData("password", val)}
-                        error={errors.password}
+                        onChange={(e) => setData("password", e.target.value)}
                     />
 
                     <Checkbox
-                        defaultValue={data.remember}
+                        isSelected={data.remember}
                         name="remember"
-                        checked={data.remember}
                         onChange={(e) => setData("remember", e.target.checked)}
                         size="sm"
                     >
@@ -87,3 +79,5 @@ export const LoginForm = () => {
         </>
     );
 };
+
+export default LoginForm;

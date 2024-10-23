@@ -28,7 +28,7 @@ class CreateNewUser implements CreatesNewUsers
         }
 
         Validator::make($input, [
-            'hris_id' => ['required', 'string', 'max:255'],
+            'hris_id' => ['required', 'digits:8', 'numeric'],
             'user_id' => ['required', 'string', 'max:255'],
             'first_name' => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
