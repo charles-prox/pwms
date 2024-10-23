@@ -16,7 +16,6 @@ import {
     Spacer,
     Divider,
 } from "@nextui-org/react";
-import { useTheme } from "@/ThemeProvider";
 import {
     BellIcon,
     CaretDownIcon,
@@ -28,8 +27,21 @@ import {
     UserIdIcon,
 } from "./icons";
 import { appName } from "@/Utils/constants";
+import { useTheme } from "@/Contexts/ThemeContext";
 
-const Logo = () => {
+// Type definitions for auth props (modify as per your auth structure)
+interface AuthProps {
+    user: {
+        first_name: string;
+        middle_name: string;
+        last_name: string;
+        position: string;
+        profile_photo_path?: string;
+        profile_photo_url?: string;
+    };
+}
+
+const Logo: React.FC = () => {
     return useMemo(
         () => (
             <Image
@@ -44,7 +56,7 @@ const Logo = () => {
     );
 };
 
-const ThemeToggleIcon = () => {
+const ThemeToggleIcon: React.FC = () => {
     const theme = useTheme().theme;
 
     return useMemo(
@@ -53,12 +65,14 @@ const ThemeToggleIcon = () => {
     );
 };
 
-const AppNavbar = () => {
-    const { auth } = usePage().props;
+const AppNavbar: React.FC = () => {
+    const { auth } = usePage<any>().props;
     const { post } = useForm();
     const { theme, toggleTheme } = useTheme();
 
-    const submit = (e) => {
+    const submit = (
+        e: React.MouseEvent<HTMLLIElement, globalThis.MouseEvent>
+    ) => {
         e.preventDefault();
         post(route("logout"), { replace: true });
     };
@@ -74,9 +88,8 @@ const AppNavbar = () => {
                 }}
             >
                 <NavbarBrand>
-                    {/* Change this section into your logo */}
                     <Logo />
-                    <Spacer x="2" />
+                    <Spacer x={2} />
                     <div className="hidden sm:flex text-xl font-bold ">
                         {appName}
                     </div>
@@ -114,22 +127,22 @@ const AppNavbar = () => {
                                     >
                                         <User
                                             name={`${
-                                                auth?.user?.first_name
-                                            } ${auth?.user.middle_name
+                                                auth.user.first_name
+                                            } ${auth.user.middle_name
                                                 .charAt(0)
                                                 .toUpperCase()}. ${
-                                                auth?.user.last_name
+                                                auth.user.last_name
                                             }`}
-                                            description={auth?.user?.position}
+                                            description={auth.user.position}
                                             avatarProps={{
                                                 showFallback: true,
-                                                src: auth?.user
+                                                src: auth.user
                                                     .profile_photo_path
                                                     ? url(
-                                                          auth?.user
+                                                          auth.user
                                                               .profile_photo_path
                                                       )
-                                                    : auth?.user
+                                                    : auth.user
                                                           .profile_photo_url,
                                                 fallback: <UserIcon />,
                                             }}

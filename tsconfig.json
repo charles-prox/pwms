@@ -12,12 +12,7 @@
         "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "paths": {
-            "@/*": ["./resources/js/*"],
-            "@Components/*": [".resources/js/Components/*"],
-            "@Context/*": [".resources/js/Context/*"],
-            "@Providers/*": [".resources/js/Providers/*"],
-            "@Hooks/*": [".resources/js/Hooks/*"],
-            "@Utils/*": [".resources/js/Utils/*"]
+            "@/*": ["./resources/js/*"]
         }
     },
     "include": [

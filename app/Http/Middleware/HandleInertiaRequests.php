@@ -37,9 +37,6 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $additional_data  = array_merge(parent::share($request), []);
-        if (strpos($request->url(), '/register') !== false || strpos($request->url(), '/account/profile') !== false) {
-            $additional_data['offices'] = Office::all();
-        }
 
         return $additional_data;
     }

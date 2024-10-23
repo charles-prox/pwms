@@ -21,8 +21,6 @@ return new class extends Migration
             $table->text('email');
             $table->text('position');
             $table->text('contact_no');
-            $table->integer('pro_code')->nullable();
-            $table->foreign('pro_code')->references('pro_code')->on('regions')->default(15);
             $table->text('employment_status');
             $table->bigInteger('office_id')->nullable();
             $table->foreign('office_id')->references('id')->on('offices');

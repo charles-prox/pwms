@@ -4,11 +4,9 @@ import RegisterForm from "./form";
 
 const RegisterPage = () => {
     return (
-        <div className="min-h-screen flex flex-col sm:justify-center items-center bg-gray-100">
-            <RegisterLayout>
-                <RegisterForm />
-            </RegisterLayout>
-        </div>
+        <RegisterLayout>
+            <RegisterForm />
+        </RegisterLayout>
     );
 };
 

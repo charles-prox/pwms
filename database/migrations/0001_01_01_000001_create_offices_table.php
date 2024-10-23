@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('acronym')->nullable();
             $table->string('type');
+            $table->integer('pro_code')->nullable();
+            $table->foreign('pro_code')->references('pro_code')->on('regions')->default(15);
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('offices')->onDelete('cascade');
             $table->timestamps();

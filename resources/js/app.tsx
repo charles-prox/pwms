@@ -10,6 +10,7 @@ import { NextUIProvider } from "@nextui-org/react";
 import AppLayout from "@/Layouts/AppLayout";
 import ThemeProvider from "./Providers/ThemeProvider";
 import { appName } from "./Utils/constants";
+import AuthLayout from "./Layouts/AuthLayout";
 // import { SideNavStateProvider } from "@/SideNavStateProvider";
 
 createInertiaApp({
@@ -22,7 +23,13 @@ createInertiaApp({
         pages.then((page: any) => {
             page.default.layout =
                 page.default.layout ||
-                ((page: React.ReactNode) => <AppLayout>{page}</AppLayout>);
+                ((page: React.ReactNode) => {
+                    return name.includes("Auth") ? (
+                        <AuthLayout>{page}</AuthLayout>
+                    ) : (
+                        <AppLayout>{page}</AppLayout>
+                    );
+                });
             return page;
         });
         return pages;
