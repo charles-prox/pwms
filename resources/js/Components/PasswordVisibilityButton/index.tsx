@@ -1,15 +1,22 @@
 import { Button } from "@nextui-org/react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "./icons";
 
-export const PasswordVisibilityButton = ({ handleState }) => {
-    const [isVisible, setIsVisible] = React.useState(false);
+interface PasswordVisibilityButtonProps {
+    handleState: (isVisible: boolean) => void;
+}
 
-    React.useEffect(() => {
+export const PasswordVisibilityButton: React.FC<
+    PasswordVisibilityButtonProps
+> = ({ handleState }) => {
+    const [isVisible, setIsVisible] = useState<boolean>(false);
+
+    useEffect(() => {
         handleState(isVisible);
-    }, [isVisible]);
+    }, [isVisible, handleState]);
 
     const toggleVisibility = () => setIsVisible(!isVisible);
+
     return (
         <Button
             isIconOnly

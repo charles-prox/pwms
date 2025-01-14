@@ -1,9 +1,14 @@
 import React from "react";
 
-export const MobileIcon = () => {
+// Define a type for the props, if you plan to extend or modify later
+interface IconProps {
+    className?: string;
+}
+
+export const MobileIcon: React.FC<IconProps> = ({ className }) => {
     return (
         <svg
-            className="w-8 h-8 text-gray-500"
+            className={`w-8 h-8 text-gray-500 ${className}`}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -19,10 +24,10 @@ export const MobileIcon = () => {
     );
 };
 
-export const ComputerIcon = () => {
+export const ComputerIcon: React.FC<IconProps> = ({ className }) => {
     return (
         <svg
-            className="w-8 h-8 text-gray-500"
+            className={`w-8 h-8 text-gray-500 ${className}`}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

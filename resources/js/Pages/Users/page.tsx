@@ -2,14 +2,14 @@ import React from "react";
 import { Card, CardHeader, CardFooter, Image, Button } from "@nextui-org/react";
 import { Head } from "@inertiajs/react";
 
-const DashboardPage = () => {
+const UsersPage = () => {
     return (
         <div>
-            <Head title="Dashboard" />
+            <Head title="Users" />
             <div className="flex flex-col gap-10">
                 <div>
-                    <h1 className="text-2xl font-bold">Dashboard</h1>
-                    <p>Overview of Your Account and Activity</p>
+                    <h1 className="text-2xl font-bold">Users</h1>
+                    <p>Manage user accounts and access permissions.</p>
                 </div>
                 <div className="w-full gap-3 grid grid-cols-12 grid-rows-2">
                     <Card className="col-span-12 sm:col-span-4 h-[300px]">
@@ -142,4 +142,4 @@ const DashboardPage = () => {
     );
 };
 
-export default DashboardPage;
+export default UsersPage;

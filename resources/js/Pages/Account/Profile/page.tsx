@@ -1,14 +1,14 @@
-import DeleteAccount from "@/Components/DeleteAccount";
 import { EditIcon, SaveIcon } from "@/Components/Forms/icons";
-import { ProfileManagementForm } from "@/Components/Forms/ProfileManagementForm";
 import { Head } from "@inertiajs/react";
 import { Button, Spacer } from "@nextui-org/react";
-import React from "react";
+import React, { useState } from "react";
+import { ProfileForms } from "./forms";
+import DeleteAccount from "./forms/DeleteAccount";
 
-const Profile = () => {
-    const [enableEdit, setEnableEdit] = React.useState(false);
-    const [onSubmit, setOnSubmit] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
+const ProfilePage: React.FC = () => {
+    const [enableEdit, setEnableEdit] = useState<boolean>(false);
+    const [onSubmit, setOnSubmit] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     return (
         <React.Fragment>
@@ -52,14 +52,14 @@ const Profile = () => {
                     )}
                 </div>
                 <Spacer y={1} />
-                <ProfileManagementForm
+                <ProfileForms
                     enableEdit={enableEdit}
-                    setEnableEdit={(state) => {
+                    setEnableEdit={(state: boolean) => {
                         setEnableEdit(state);
                         setOnSubmit(false);
                     }}
                     onSubmit={onSubmit}
-                    isProcessing={(state) => setLoading(state)}
+                    isProcessing={(state: boolean) => setLoading(state)}
                 />
                 <DeleteAccount />
             </div>
@@ -67,4 +67,4 @@ const Profile = () => {
     );
 };
 
-export default Profile;
+export default ProfilePage;

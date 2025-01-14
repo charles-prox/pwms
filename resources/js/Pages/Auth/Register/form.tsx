@@ -12,7 +12,7 @@ const RegisterForm = () => {
         data: offices,
         loading: loadingOffices,
         error: officesError,
-    } = useFetch(route("offices"));
+    } = useFetch<any[]>(route("offices"));
     const { data, setData, post, processing, errors, reset } = useForm({
         hris_id: "",
         user_id: "",

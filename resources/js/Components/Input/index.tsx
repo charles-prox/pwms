@@ -8,6 +8,7 @@ const Input = <T,>({
     startContent,
     endContent,
     isRequired,
+    isReadOnly,
     name,
     label,
     labelPlacement = "inside",
@@ -15,6 +16,7 @@ const Input = <T,>({
     color = "default",
     errorMessage,
     maxWidthClass,
+    variant,
     type = "text", // Default type is text, can be changed as needed
 }: InputProps) => {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +31,7 @@ const Input = <T,>({
             id={name}
             placeholder={placeholder}
             labelPlacement={labelPlacement}
-            variant="bordered"
+            variant={variant}
             autoComplete={name}
             value={value}
             onChange={handleChange}
@@ -44,6 +46,7 @@ const Input = <T,>({
             startContent={startContent}
             endContent={endContent}
             isRequired={isRequired}
+            isReadOnly={isReadOnly}
         />
     );
 };

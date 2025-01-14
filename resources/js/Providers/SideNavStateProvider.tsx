@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, ReactNode } from "react";
 import SideNavStateContext from "@/Contexts/SideNavStateContext";
+import { SideNavState } from "@/Utils/types";
 
 interface SideNavStateProviderProps {
     children: ReactNode;
@@ -8,8 +9,11 @@ interface SideNavStateProviderProps {
 export const SideNavStateProvider: React.FC<SideNavStateProviderProps> = ({
     children,
 }) => {
-    const [sideNavState, setSideNavState] = useState<string>(() => {
-        return localStorage.getItem("sidebarview") || "expand";
+    const [sideNavState, setSideNavState] = useState<SideNavState>(() => {
+        const savedState = localStorage.getItem("sidebarview");
+        return savedState === "collapse" || savedState === "expand"
+            ? savedState
+            : "expand"; // Default to "expand" if invalid or not found
     });
 
     const toggleSideNavState = useCallback(() => {
@@ -21,7 +25,10 @@ export const SideNavStateProvider: React.FC<SideNavStateProviderProps> = ({
 
     useEffect(() => {
         const savedSideNavState = localStorage.getItem("sidebarview");
-        if (savedSideNavState) {
+        if (
+            savedSideNavState === "collapse" ||
+            savedSideNavState === "expand"
+        ) {
             setSideNavState(savedSideNavState);
         }
     }, []);

@@ -11,7 +11,7 @@ import AppLayout from "@/Layouts/AppLayout";
 import ThemeProvider from "./Providers/ThemeProvider";
 import { appName } from "./Utils/constants";
 import AuthLayout from "./Layouts/AuthLayout";
-// import { SideNavStateProvider } from "@/SideNavStateProvider";
+import { SideNavStateProvider } from "@/Providers/SideNavStateProvider";
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -41,9 +41,9 @@ createInertiaApp({
             <React.StrictMode>
                 <NextUIProvider>
                     <ThemeProvider>
-                        {/* <SideNavStateProvider> */}
-                        <App {...props} />
-                        {/* </SideNavStateProvider> */}
+                        <SideNavStateProvider>
+                            <App {...props} />
+                        </SideNavStateProvider>
                     </ThemeProvider>
                 </NextUIProvider>
             </React.StrictMode>

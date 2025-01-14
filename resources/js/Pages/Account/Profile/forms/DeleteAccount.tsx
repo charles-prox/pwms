@@ -1,18 +1,23 @@
+import { ConfirmPassword } from "@/Components/ConfirmPassword";
 import { useForm } from "@inertiajs/react";
 import { Button, Card, CardBody, Divider } from "@nextui-org/react";
 import React, { useState, useEffect } from "react";
-import { ConfirmPassword } from "../ConfirmPassword";
 
-const DeleteAccount = () => {
+interface DeleteAccountForm {
+    password: string;
+}
+
+const DeleteAccount: React.FC = () => {
     const [openConfirmPasswordForm, setOpenConfirmPasswordForm] =
-        useState(false);
+        useState<boolean>(false);
+
     const {
         data,
         setData,
         delete: destroy,
         processing,
         errors,
-    } = useForm({
+    } = useForm<DeleteAccountForm>({
         password: "",
     });
 
@@ -69,7 +74,7 @@ const DeleteAccount = () => {
                 content="Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account."
                 isOpen={openConfirmPasswordForm}
                 onClose={() => setOpenConfirmPasswordForm(false)}
-                onSubmit={(pass) => setData("password", pass)}
+                onSubmit={(pass: string) => setData("password", pass)}
                 errors={errors}
                 processing={processing}
             />

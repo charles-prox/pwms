@@ -16,11 +16,13 @@ interface InputProps {
     placeholder?: string;
     maxWidthClass?: string | number; // optional, can be used to style the component
     value: string;
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     startContent?: React.ReactNode | string;
     endContent?: React.ReactNode | string;
     isRequired?: boolean;
+    isReadOnly?: boolean;
     name: string;
+    variant?: "flat" | "bordered" | "faded" | "underlined" | undefined;
     color?: InputColors; // This is optional
     errorMessage?: string;
     isDisabled?: boolean;
@@ -39,21 +41,15 @@ interface SelectProps<T> {
     isRequired?: boolean;
     name: string;
     color?: InputColors; // This is optional
-    errorMessage?: string;
+    errorMessage?: string | undefined | null; // This is optional
     isDisabled?: boolean;
     items: Iterable<T>; //
     keyField: string | number; // Dynamic key field
     labelField: string; // Dynamic label field
     valueField?: string | number; // Dynamic value field
-    selectedKeys?: "all" | Iterable<Key> | React.Key | Key | undefined | null;
+    selectedKeys?: any; //
     menuTrigger: "focus" | "input" | "manual";
-    onSelectionChange: (
-        keys:
-            | "all"
-            | (Set<React.Key> & { anchorKey?: string; currentKey?: string })
-            | React.Key
-            | Key
-    ) => void;
+    onSelectionChange: (keys: any) => void;
     onKeyDown?: (e: KeyboardEvent) => void;
 }
 
