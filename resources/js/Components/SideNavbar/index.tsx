@@ -1,34 +1,62 @@
 // components/Sidebar.tsx
 import React from "react";
+import { useSideNavState } from "@/Contexts/SideNavStateContext";
+import { Button } from "@nextui-org/react";
+import { ArrowRightIcon } from "./icons";
+import NavItems from "./NavItems";
+import { AnimationOptions } from "@/Utils/types";
 
 const Sidebar: React.FC = () => {
+    const minSideNavWidth = 16;
+    const maxSideNavWidth = 60;
+    const animationOptions: AnimationOptions = {
+        delay: 200,
+        duration: 100,
+    };
+
+    const { sideNavState, toggleSideNavState } = useSideNavState();
+
     return (
-        <aside className="w-16 flex-shrink-0">
-            <nav className="mt-10">
-                <a
-                    href="#"
-                    className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
+        <aside
+            className={`
+                ${
+                    sideNavState === "collapse"
+                        ? `w-${minSideNavWidth}`
+                        : `w-${maxSideNavWidth}`
+                } 
+                flex-shrink-0
+                transition-width 
+                delay-${animationOptions.delay} 
+                duration-${animationOptions.duration}
+                overflow-hidden
+                p-2 
+            `}
+        >
+            <div className="text-right">
+                <Button
+                    size="sm"
+                    radius="lg"
+                    color="primary"
+                    variant="light"
+                    isIconOnly
+                    onClick={toggleSideNavState}
                 >
-                    Dashboard
-                </a>
-                <a
-                    href="#"
-                    className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
-                >
-                    Profile
-                </a>
-                <a
-                    href="#"
-                    className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
-                >
-                    Settings
-                </a>
-                <a
-                    href="#"
-                    className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
-                >
-                    Help
-                </a>
+                    <ArrowRightIcon
+                        className={`
+                            ${sideNavState !== "collapse" && "-rotate-180"} 
+                            transition-all 
+                            transform
+                        `}
+                        width={20}
+                        height={20}
+                    />
+                </Button>
+            </div>
+            <nav>
+                <NavItems
+                    sideNavState={sideNavState}
+                    animationOptions={animationOptions}
+                />
             </nav>
         </aside>
     );

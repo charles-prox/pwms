@@ -1,8 +1,9 @@
-import { createContext, useContext, ReactNode } from "react";
+import { SideNavState } from "@/Utils/types";
+import { createContext, useContext } from "react";
 
 // Define the shape of the context value
 interface SideNavStateContextType {
-    sideNavState: string;
+    sideNavState: SideNavState;
     toggleSideNavState: () => void;
 }
 

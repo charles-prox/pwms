@@ -9,11 +9,22 @@ import {
     Input,
     Skeleton,
 } from "@nextui-org/react";
-import { useTheme } from "@/ThemeProvider";
 import { router, useForm } from "@inertiajs/react";
-import { CloseIcon } from "../Alert/icons";
+import { useTheme } from "@/Contexts/ThemeContext";
+import { axiosInstance } from "@/Utils/axios";
+import { CloseIcon } from "@/Components/Alert/icons";
 
-const GeneratedQR = ({ svgString }) => {
+interface ConfirmTwoFactorAuthFormProps {
+    isOpen: boolean;
+    onSuccess: () => void;
+    onClose: () => void;
+}
+
+interface GeneratedQRProps {
+    svgString: string;
+}
+
+const GeneratedQR: React.FC<GeneratedQRProps> = ({ svgString }) => {
     return (
         <div
             className="border-5 border-white"
@@ -22,14 +33,16 @@ const GeneratedQR = ({ svgString }) => {
     );
 };
 
-export const ConfirmTwoFactorAuthForm = ({ isOpen, onSuccess, onClose }) => {
+export const ConfirmTwoFactorAuthForm: React.FC<
+    ConfirmTwoFactorAuthFormProps
+> = ({ isOpen, onSuccess, onClose }) => {
     const { theme } = useTheme();
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm<any>({
         code: "",
     });
 
-    const [qrCode, setQrCode] = React.useState(null);
-    const [setupKey, setSetupKey] = React.useState(null);
+    const [qrCode, setQrCode] = React.useState<string | null>(null);
+    const [setupKey, setSetupKey] = React.useState<string | null>(null);
 
     const enableTwoFactorAuthentication = () => {
         router.post(
@@ -43,22 +56,26 @@ export const ConfirmTwoFactorAuthForm = ({ isOpen, onSuccess, onClose }) => {
     };
 
     const showQrCode = () => {
-        return axios.get(route("two-factor.qr-code")).then((response) => {
-            setQrCode(response.data.svg);
-        });
+        return axiosInstance
+            .get(route("two-factor.qr-code"))
+            .then((response) => {
+                setQrCode(response.data.svg);
+            });
     };
 
     const showSetupKey = () => {
-        return axios.get(route("two-factor.secret-key")).then((response) => {
-            setSetupKey(response.data.secretKey);
-        });
+        return axiosInstance
+            .get(route("two-factor.secret-key"))
+            .then((response) => {
+                setSetupKey(response.data.secretKey);
+            });
     };
 
     React.useEffect(() => {
-        isOpen && enableTwoFactorAuthentication();
+        if (isOpen) enableTwoFactorAuthentication();
     }, [isOpen]);
 
-    const submit = (e) => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route("two-factor.confirm"), {
             preserveScroll: true,
@@ -117,15 +134,13 @@ export const ConfirmTwoFactorAuthForm = ({ isOpen, onSuccess, onClose }) => {
                             </p>
                             <div className="flex flex-col gap-3 items-center">
                                 <Skeleton
-                                    // isLoaded={false}
                                     isLoaded={!!qrCode}
                                     className="rounded-md w-[202px] h-[200px]"
                                 >
-                                    <GeneratedQR svgString={qrCode} />
+                                    <GeneratedQR svgString={qrCode || ""} />
                                 </Skeleton>
 
                                 <Skeleton
-                                    // isLoaded={false}
                                     isLoaded={!!setupKey}
                                     className="rounded-md"
                                 >
@@ -133,27 +148,23 @@ export const ConfirmTwoFactorAuthForm = ({ isOpen, onSuccess, onClose }) => {
                                 </Skeleton>
                             </div>
                             <Input
-                                type="text"
-                                name="code"
-                                id="code"
-                                placeholder="Enter code from authenticator"
-                                label="Code"
+                                name={"code"}
+                                label={"Code"}
                                 labelPlacement="outside"
+                                placeholder="Enter code from authenticator"
                                 value={data.code}
-                                isInvalid={
-                                    !!errors.confirmTwoFactorAuthentication
-                                        ?.code
-                                }
-                                errorMessage={
-                                    errors.confirmTwoFactorAuthentication?.code
-                                }
                                 onChange={(e) =>
                                     setData("code", e.target.value)
                                 }
-                                classNames={{
-                                    label: "text-black dark:text-white/90 font-bold",
-                                    inputWrapper: "border-slate-400",
-                                }}
+                                errorMessage={
+                                    (
+                                        errors.confirmTwoFactorAuthentication as
+                                            | {
+                                                  code: string;
+                                              }
+                                            | undefined
+                                    )?.code
+                                }
                             />
                         </div>
                     </ModalBody>

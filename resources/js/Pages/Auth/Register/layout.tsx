@@ -13,7 +13,7 @@ const RegisterLayout: React.FC<RegisterLayoutProps> = ({ children }) => {
     return (
         <>
             <Head title="Register" />
-            <Card className="w-full px-6 py-4 bg-white overflow-hidden sm:max-w-4xl">
+            <Card className="w-full px-6 py-4 overflow-hidden sm:max-w-4xl">
                 <CardHeader className="block gap-2">
                     <div className="flex items-center justify-center mb-5 sm:mb-2">
                         <Image

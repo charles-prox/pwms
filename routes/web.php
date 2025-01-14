@@ -10,15 +10,13 @@ use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+require base_path('routes/sidenav.php');
 
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Dashboard');
-    })->name('home');
 
     Route::prefix('account')->name('account.')->group(function () {
         Route::get('security', [UserProfileController::class, 'show'])->name('security');
@@ -39,5 +37,4 @@ Route::get('/login', [LoginController::class, 'create'])
     ->name('login');
 
 Route::get('/offices', [OfficeController::class, 'index'])
-    ->middleware(['guest'])
     ->name('offices');

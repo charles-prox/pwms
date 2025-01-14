@@ -1,24 +1,46 @@
 import { axiosInstance } from "@/Utils/axios";
 import { useState, useEffect } from "react";
 
-const useFetch = <T>(url: string) => {
-    const [data, setData] = useState<Iterable<T> | T[]>([]);
-    const [loading, setLoading] = useState(true);
+// Define a generic type for the data that will be returned (it defaults to an empty array).
+type UseFetchResponse<T> = {
+    data: T;
+    loading: boolean;
+    error: string | null;
+    refetch: () => void;
+};
+
+const useFetch = <T>(
+    url: string,
+    defaultValue: T = [] as T, // Default value is an empty array of type T
+    method: "GET" | "POST" = "GET", // Method can either be GET or POST
+    body: Record<string, unknown> | null = null // Body should be an object or null
+): UseFetchResponse<T> => {
+    const [data, setData] = useState<T>(defaultValue);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
+        setLoading(true);
+
         try {
-            const response = await axiosInstance.get<T>(url);
-            if (response.data && Array.isArray(response.data)) {
-                setData(response.data); // If the response is an array, set the data
+            let response;
+            if (method === "POST" && body) {
+                response = await axiosInstance.post(url, body);
             } else {
-                setData([]); // If not, ensure that it's an empty array to maintain an iterable state
+                response = await axiosInstance.get(url);
+            }
+
+            if (response.data) {
+                setData(response.data); // Set the data if the response contains data
+            } else {
+                setData(defaultValue); // Otherwise, use the default value
             }
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "An unknown error occurred"
             );
-            setData([]);
+            console.log("Error: ", err instanceof Error ? err.message : err);
+            setData(defaultValue);
         } finally {
             setLoading(false);
         }
@@ -28,7 +50,7 @@ const useFetch = <T>(url: string) => {
         fetchData();
     }, [url]);
 
-    return { data, loading, error };
+    return { data, loading, error, refetch: fetchData };
 };
 
 export default useFetch;

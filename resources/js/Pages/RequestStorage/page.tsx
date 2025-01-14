@@ -1,13 +1,16 @@
-import { Head } from "@inertiajs/react";
 import React from "react";
 import { Card, CardHeader, CardFooter, Image, Button } from "@nextui-org/react";
+import { Head } from "@inertiajs/react";
 
-const Dashboard = () => {
+const RequestStoragePage = () => {
     return (
         <div>
-            <Head title="Dashboard" />
-            <div>
-                <h1>Dashboard</h1>
+            <Head title="Request Storage" />
+            <div className="flex flex-col gap-10">
+                <div>
+                    <h1 className="text-2xl font-bold">Request Storage</h1>
+                    <p>Easily Request and Track Document Storage</p>
+                </div>
                 <div className="w-full gap-3 grid grid-cols-12 grid-rows-2">
                     <Card className="col-span-12 sm:col-span-4 h-[300px]">
                         <CardHeader className="absolute z-10 top-1 flex-col !items-start">
@@ -139,4 +142,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default RequestStoragePage;

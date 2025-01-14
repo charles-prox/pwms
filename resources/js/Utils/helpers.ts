@@ -49,7 +49,7 @@
  * @returns {string} - The full URL to access the image.
  */
 export const asset = (path: string): string => {
-    return `/storage/images/${path}`;
+    return `/${path}`;
 };
 
 /**

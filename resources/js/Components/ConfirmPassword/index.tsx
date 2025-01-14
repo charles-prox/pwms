@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, FormEvent } from "react";
 import {
     Modal,
     ModalContent,
@@ -6,12 +6,24 @@ import {
     ModalBody,
     ModalFooter,
     Button,
-    Input,
 } from "@nextui-org/react";
-import { PasswordVisibilityButton } from "../PasswordVisibilityButton";
-import { useTheme } from "@/ThemeProvider";
+import { useTheme } from "@/Contexts/ThemeContext";
+import { axiosInstance } from "@/Utils/axios";
+import PasswordInput from "../PasswordInput";
 
-export const ConfirmPassword = ({
+// Define types for the props
+interface ConfirmPasswordProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSubmit?: (password: string) => void;
+    title?: string;
+    content?: string;
+    onSuccess?: (success: boolean) => void;
+    errors?: { password?: string };
+    processing?: boolean;
+}
+
+export const ConfirmPassword: React.FC<ConfirmPasswordProps> = ({
     isOpen,
     onClose,
     onSubmit,
@@ -21,39 +33,42 @@ export const ConfirmPassword = ({
     errors: outsideError,
     processing: outsideProcessing,
 }) => {
-    const [isVisible, setIsVisible] = React.useState(false);
-    const [password, setPassword] = React.useState("");
-    const [error, setError] = React.useState("");
-    const [processing, setProcessing] = React.useState(false);
+    const [password, setPassword] = React.useState<string>("");
+    const [error, setError] = React.useState<string>("");
+    const [processing, setProcessing] = React.useState<boolean>(false);
     const { theme } = useTheme();
 
-    const submit = (e) => {
+    const submit = (e: FormEvent) => {
         e.preventDefault();
         setProcessing(true);
 
         if (typeof onSubmit === "function") {
             onSubmit(password);
         } else {
-            axios
+            axiosInstance
                 .post(route("password.confirm"), {
                     password: password,
                 })
                 .then(() => {
                     setProcessing(false);
                     setPassword("");
-                    onSuccess(true);
+                    if (onSuccess) {
+                        onSuccess(true); // Call onSuccess only if it's defined
+                    }
                     onClose();
                 })
                 .catch((error) => {
                     setProcessing(false);
-                    setError(error.response?.data.message);
+                    setError(
+                        error.response?.data.message || "An error occurred."
+                    );
                 });
         }
     };
 
     useEffect(() => {
-        if (outsideError) setError(outsideError.password);
-        setProcessing(outsideProcessing);
+        if (outsideError) setError(outsideError.password || "");
+        setProcessing(outsideProcessing ?? false);
     }, [outsideError, outsideProcessing]);
 
     return (
@@ -74,24 +89,14 @@ export const ConfirmPassword = ({
                             {content ||
                                 "For your security, please confirm your password to continue."}
                         </p>
-                        <Input
-                            type={isVisible ? "text" : "password"}
+
+                        <PasswordInput
                             name="password"
-                            id="password"
+                            label="Password"
                             placeholder="Enter your password"
-                            value={password}
-                            isInvalid={!!error}
                             errorMessage={error}
+                            value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            classNames={{
-                                label: "text-black dark:text-white/90 font-bold",
-                                inputWrapper: "border-slate-400",
-                            }}
-                            endContent={
-                                <PasswordVisibilityButton
-                                    handleState={(state) => setIsVisible(state)}
-                                />
-                            }
                         />
                     </ModalBody>
                     <ModalFooter>
@@ -115,3 +120,5 @@ export const ConfirmPassword = ({
         </Modal>
     );
 };
+
+export default ConfirmPassword;

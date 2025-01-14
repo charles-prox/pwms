@@ -1,6 +1,6 @@
-import React from "react";
+import React, { SVGProps } from "react";
 
-export const WarningIcon = (props) => {
+export const WarningIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => {
     return (
         <svg
             {...props}
@@ -18,7 +18,7 @@ export const WarningIcon = (props) => {
     );
 };
 
-export const DangerIcon = (props) => {
+export const DangerIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => {
     return (
         <svg
             {...props}
@@ -36,7 +36,7 @@ export const DangerIcon = (props) => {
     );
 };
 
-export const SuccessIcon = (props) => {
+export const SuccessIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => {
     return (
         <svg
             {...props}
@@ -54,7 +54,7 @@ export const SuccessIcon = (props) => {
     );
 };
 
-export const InfoIcon = (props) => {
+export const InfoIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => {
     return (
         <svg
             {...props}

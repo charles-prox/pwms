@@ -8,27 +8,27 @@ import {
 import { getTailwindWidthClass } from "@/Utils/helpers";
 
 const Select = <T,>({
-    selectedKeys,
+    label, //label: string;
+    labelPlacement = "inside", //labelPlacement
+    placeholder, //placeholder?: string;
+    maxWidthClass = "min-w-64",
+    autocomplete = false,
+    isClearable,
     startContent,
     endContent,
     isRequired,
     name,
-    label,
-    labelPlacement = "inside",
-    placeholder,
     color = "default",
     errorMessage,
-    maxWidthClass = "min-w-64",
-    autocomplete = false,
+    isDisabled,
     items,
     keyField,
     labelField,
     valueField,
+    selectedKeys,
     menuTrigger,
-    isClearable,
     onSelectionChange,
-    isDisabled,
-}: SelectProps) => {
+}: SelectProps<T>) => {
     return (
         <>
             {autocomplete ? (
@@ -49,6 +49,7 @@ const Select = <T,>({
                                 : "", // pass maxWidth if provided
                         },
                     }}
+                    defaultSelectedKey={selectedKeys}
                     isClearable={isClearable}
                     menuTrigger={menuTrigger}
                     onSelectionChange={onSelectionChange}
@@ -61,7 +62,7 @@ const Select = <T,>({
                     isDisabled={isDisabled}
                     allowsEmptyCollection
                 >
-                    {(item) => (
+                    {(item: any) => (
                         <AutocompleteItem key={item[keyField]}>
                             {item[labelField]}
                         </AutocompleteItem>
@@ -87,10 +88,10 @@ const Select = <T,>({
                             : "", // pass maxWidth if provided
                     }}
                 >
-                    {Array.from(items ?? []).map((item) => (
+                    {Array.from(items ?? []).map((item: any) => (
                         <SelectItem
                             key={item[keyField]}
-                            value={item[valueField]}
+                            value={item[valueField || keyField]}
                         >
                             {item[labelField]}
                         </SelectItem>

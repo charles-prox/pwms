@@ -1,50 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, CardBody, Divider } from "@nextui-org/react";
-import { ConfirmPassword } from "../ConfirmPassword";
 import { router, usePage } from "@inertiajs/react";
+import { axiosInstance } from "@/Utils/axios";
+import ConfirmPassword from "@/Components/ConfirmPassword";
 import { ConfirmTwoFactorAuthForm } from "./ConfirmTwoFactorAuthForm";
 
-export const TwoFactorAuthForm = () => {
-    const { auth } = usePage().props;
-    const [passwordConfirmed, setPasswordConfirmed] = React.useState(false);
-    const [recoveryCodes, setRecoveryCodes] = React.useState([]);
-    const [showRecoveryCodes, setShowRecoveryCodes] = React.useState(false);
+export const TwoFactorAuthForm: React.FC = () => {
+    const { auth } = usePage<any>().props;
+    const [passwordConfirmed, setPasswordConfirmed] = useState<boolean>(false);
+    const [recoveryCodes, setRecoveryCodes] = useState<any>([]);
+    const [showRecoveryCodes, setShowRecoveryCodes] = useState<boolean>(false);
     const [openConfirmPasswordForm, setOpenConfirmPasswordForm] =
-        React.useState(false);
+        useState<boolean>(false);
     const [openConfirmTwoFactorAuthForm, setOpenConfirmTwoFactorAuthForm] =
-        React.useState(false);
-    const [action, setAction] = React.useState("");
-    const [processing, setProcessing] = React.useState(false);
+        useState<boolean>(false);
+    const [action, setAction] = useState<string>("");
+    const [processing, setProcessing] = useState<boolean>(false);
 
-    const getRecoveryCodes = () => {
-        return Promise.all([
-            axios.get(route("two-factor.recovery-codes")).then((response) => {
+    const getRecoveryCodes = (): Promise<void> => {
+        return axiosInstance
+            .get(route("two-factor.recovery-codes"))
+            .then((response) => {
                 setRecoveryCodes(response.data);
                 setProcessing(false);
-            }),
-        ]);
+            });
     };
 
-    const disableTwoFactorAuthentication = () => {
+    const disableTwoFactorAuthentication = (): void => {
         router.delete(route("two-factor.disable"), {
             onFinish: () => setProcessing(false),
         });
     };
 
-    const regenerateRecoveryCodes = () => {
-        axios.post(route("two-factor.recovery-codes")).then(() => {
+    const regenerateRecoveryCodes = (): void => {
+        axiosInstance.post(route("two-factor.recovery-codes")).then(() => {
             getRecoveryCodes();
             setProcessing(false);
         });
     };
 
-    React.useEffect(() => {
-        auth.user?.two_factor_enabled &&
-            showRecoveryCodes &&
+    useEffect(() => {
+        if (auth.user?.two_factor_enabled && showRecoveryCodes) {
             getRecoveryCodes();
+        }
     }, [auth, showRecoveryCodes]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (passwordConfirmed) {
             switch (action) {
                 case "enable_2fa":
@@ -111,13 +112,11 @@ export const TwoFactorAuthForm = () => {
 
                                         <div className="grid gap-1 max-w-xl mt-4 px-4 py-4 font-mono text-sm bg-slate-100/50 rounded-lg">
                                             {recoveryCodes.map(
-                                                (code, index) => {
-                                                    return (
-                                                        <div key={index}>
-                                                            {code}
-                                                        </div>
-                                                    );
-                                                }
+                                                (code: string, index: any) => (
+                                                    <div key={index}>
+                                                        {code}
+                                                    </div>
+                                                )
                                             )}
                                         </div>
                                     </div>
@@ -157,13 +156,11 @@ export const TwoFactorAuthForm = () => {
                                         <Button
                                             color="danger"
                                             onPress={() => {
-                                                {
-                                                    setProcessing(true);
-                                                    setAction("disable_2fa");
-                                                    setOpenConfirmPasswordForm(
-                                                        true
-                                                    );
-                                                }
+                                                setProcessing(true);
+                                                setAction("disable_2fa");
+                                                setOpenConfirmPasswordForm(
+                                                    true
+                                                );
                                             }}
                                             isLoading={processing}
                                         >
@@ -204,7 +201,7 @@ export const TwoFactorAuthForm = () => {
                     setOpenConfirmPasswordForm(false);
                     setProcessing(false);
                 }}
-                onSuccess={(state) => {
+                onSuccess={(state: boolean) => {
                     setOpenConfirmPasswordForm(false);
                     setPasswordConfirmed(state);
                     setShowRecoveryCodes(true);
