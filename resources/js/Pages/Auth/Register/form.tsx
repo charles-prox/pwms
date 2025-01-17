@@ -50,6 +50,7 @@ const RegisterForm = () => {
                             placeholder="Enter your HRIS ID"
                             value={data.hris_id}
                             onChange={(e) => setData("hris_id", e.target.value)}
+                            variant="bordered"
                             errorMessage={errors.hris_id}
                             isRequired
                         />
@@ -60,6 +61,7 @@ const RegisterForm = () => {
                             value={data.user_id}
                             onChange={(e) => setData("user_id", e.target.value)}
                             errorMessage={errors.user_id}
+                            variant="bordered"
                             isRequired
                         />
                         <Select
@@ -90,6 +92,7 @@ const RegisterForm = () => {
                                 setData("position", e.target.value)
                             }
                             errorMessage={errors.position}
+                            variant="bordered"
                             isRequired
                         />
                         <Select
@@ -124,6 +127,7 @@ const RegisterForm = () => {
                                 setData("first_name", e.target.value)
                             }
                             errorMessage={errors.first_name}
+                            variant="bordered"
                             isRequired
                         />
                         <Input
@@ -134,6 +138,7 @@ const RegisterForm = () => {
                             onChange={(e) =>
                                 setData("middle_name", e.target.value)
                             }
+                            variant="bordered"
                             errorMessage={errors.middle_name}
                         />
                         <Input
@@ -144,6 +149,7 @@ const RegisterForm = () => {
                             onChange={(e) =>
                                 setData("last_name", e.target.value)
                             }
+                            variant="bordered"
                             errorMessage={errors.last_name}
                             isRequired
                         />
@@ -156,6 +162,7 @@ const RegisterForm = () => {
                             placeholder="Enter your email"
                             value={data.email}
                             onChange={(e) => setData("email", e.target.value)}
+                            variant="bordered"
                             errorMessage={errors.email}
                             isRequired
                         />
@@ -167,6 +174,7 @@ const RegisterForm = () => {
                             onChange={(e) =>
                                 setData("contact_no", e.target.value)
                             }
+                            variant="bordered"
                             errorMessage={errors.contact_no}
                             isRequired
                         />
@@ -181,6 +189,7 @@ const RegisterForm = () => {
                             onChange={(e) =>
                                 setData("password", e.target.value)
                             }
+                            variant="bordered"
                             errorMessage={errors.password}
                         />
                         <PasswordInput
@@ -191,6 +200,7 @@ const RegisterForm = () => {
                             onChange={(e) =>
                                 setData("password_confirmation", e.target.value)
                             }
+                            variant="bordered"
                             errorMessage={errors.password_confirmation}
                         />
                     </div>

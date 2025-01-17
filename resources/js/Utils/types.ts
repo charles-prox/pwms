@@ -9,9 +9,20 @@ export type AnimationOptions = {
     duration: number;
 };
 
+type NavItemType = "title" | "link";
+
 export type NavItem = {
+    type: NavItemType;
     key: string;
     label: string;
-    url: string;
-    icon: (width: number, height: number) => JSX.Element;
+    url?: string;
+    icon?: (size: number | string) => JSX.Element;
 };
+
+// ========================
+// CONTEXT TYPES
+// ========================
+export interface SelectedRequestView {
+    pageId: string;
+    view: string;
+}

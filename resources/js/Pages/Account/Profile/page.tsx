@@ -1,9 +1,9 @@
-import { EditIcon, SaveIcon } from "@/Components/Forms/icons";
 import { Head } from "@inertiajs/react";
 import { Button, Spacer } from "@nextui-org/react";
 import React, { useState } from "react";
 import { ProfileForms } from "./forms";
 import DeleteAccount from "./forms/DeleteAccount";
+import { EditIcon, SaveIcon } from "./icons";
 
 const ProfilePage: React.FC = () => {
     const [enableEdit, setEnableEdit] = useState<boolean>(false);

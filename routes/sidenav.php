@@ -32,10 +32,30 @@ Route::middleware([
         return Inertia::render('Users');
     })->name('users');
 
-    // Add any other routes that you need
     Route::get('/profile', function () {
         return Inertia::render('Profile');
     })->name('profile');
+
+    Route::get('/reports', function () {
+        return Inertia::render('Reports');
+    })->name('reports');
+
+    Route::get('/users', function () {
+        return Inertia::render('Users');
+    })->name('users');
+
+    Route::get('/offices', function () {
+        return Inertia::render('Offices');
+    })->name('offices');
+
+    Route::get('/rds', function () {
+        return Inertia::render('Rds');
+    })->name('rds');
+
+    Route::get('/locations', function () {
+        return Inertia::render('Locations');
+    })->name('location');
+
 
     // If you have nested routes or dynamic routes, you can add them as well
     Route::get('/request-storage/{id}', function ($id) {

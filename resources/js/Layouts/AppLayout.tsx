@@ -3,6 +3,7 @@ import React from "react";
 import { useTheme } from "@/Contexts/ThemeContext";
 import Sidebar from "@/Components/SideNavbar";
 import AppNavbar from "@/Components/AppNavbar";
+import Footer from "@/Components/Footer";
 
 const AppLayout = ({
     children,
@@ -11,6 +12,7 @@ const AppLayout = ({
 }>) => {
     const { theme } = useTheme();
     const navHeight = "64px";
+
     return (
         <main className={`${theme} text-foreground bg-background`}>
             <div className="flex flex-col  h-screen ">
@@ -29,6 +31,7 @@ const AppLayout = ({
                         {children}
                     </div>
                 </div>
+                <Footer />
             </div>
         </main>
     );
