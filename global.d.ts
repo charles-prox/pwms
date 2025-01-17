@@ -68,3 +68,9 @@ interface AlertProps {
     message: string | React.ReactNode;
     isCloseable?: boolean;
 }
+
+type Column = {
+    name: string;
+    uid: string;
+    sortable?: boolean;
+};

@@ -27,7 +27,7 @@ export default {
                     colors: {
                         foreground: "#222831",
                         primary: { DEFAULT: "#55B172", foreground: "#FFF" },
-                        secondary: { DEFAULT: "#006FEE", foreground: "#000" },
+                        secondary: { DEFAULT: "#f9c40f", foreground: "#000" },
                         danger: { DEFAULT: "#FF3131", foreground: "#FFF" },
                         info: { DEFAULT: "#005BC4", foreground: "#000" },
                     },
@@ -37,7 +37,7 @@ export default {
                         background: "#1E293B",
                         foreground: "#E6E6E6",
                         primary: { DEFAULT: "#6366F1", foreground: "#FFF" },
-                        secondary: { DEFAULT: "#006FEE", foreground: "#000" },
+                        secondary: { DEFAULT: "#f9c40f", foreground: "#000" },
                         danger: "#FF3131",
                         info: { DEFAULT: "#005BC4", foreground: "#000" },
                     },

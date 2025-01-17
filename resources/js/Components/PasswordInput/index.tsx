@@ -14,6 +14,7 @@ const PasswordInput: React.FC<InputProps> = ({
     isRequired = true,
     color,
     maxWidthClass,
+    variant,
 }) => {
     const [isVisible, setIsVisible] = React.useState(false);
 
@@ -36,6 +37,7 @@ const PasswordInput: React.FC<InputProps> = ({
             }
             isRequired={isRequired}
             maxWidthClass={maxWidthClass}
+            variant={variant}
         />
     );
 };
