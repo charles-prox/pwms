@@ -3,6 +3,8 @@ import { Head } from "@inertiajs/react";
 import NoRequest from "./EmptyState";
 import RequestView from "@/Components/RequestView";
 import ListViewLayout from "@/Layouts/ListViewLayout";
+import { columns } from "./columns";
+import { users } from "./rows";
 
 const RequestStoragePage = () => {
     return (
@@ -23,7 +25,7 @@ const RequestStoragePage = () => {
                     </div>
                 </div>
                 {/* <NoRequest /> */}
-                <ListViewLayout />
+                <ListViewLayout columns={columns} rows={users} />
             </div>
         </div>
     );

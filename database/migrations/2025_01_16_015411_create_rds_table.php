@@ -16,15 +16,12 @@ return new class extends Migration
         Schema::create('rds', function (Blueprint $table) {
             $table->id();
             $table->string('module', 1);
-            $table->integer('item_no');
+            $table->float('item_no');
             $table->text('title_description');
-            $table->integer('active')->nullable();
-            $table->integer('storage')->nullable();
-            $table->text('remarks');
-            $table->string('department', 50);
-            $table->string('rds_group', 5);
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('rds');
+            $table->string('active')->nullable();
+            $table->string('storage')->nullable();
+            $table->text('remarks')->nullable();
+            $table->string('department', 50)->nullable();
         });
 
         Schema::enableForeignKeyConstraints();

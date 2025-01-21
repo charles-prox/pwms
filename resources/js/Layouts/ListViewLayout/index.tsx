@@ -42,17 +42,21 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
     vacation: "warning",
 };
 
-interface LayoutProps<RowType> {
-    itemName: string;
+type RowType = {
+    [key: string]: any; // Allows any key with any value type
+};
+
+interface LayoutProps {
+    itemName?: string;
     columns: Column[];
     rows: RowType[];
 }
 
-export default function ListViewLayout<RowType extends {}>({
-    itemName,
+export default function ListViewLayout({
+    itemName = "items",
     columns,
     rows,
-}: LayoutProps<RowType>) {
+}: LayoutProps) {
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
         new Set([])
@@ -311,7 +315,7 @@ export default function ListViewLayout<RowType extends {}>({
                     </TableColumn>
                 )}
             </TableHeader>
-            <TableBody emptyContent={"No rows found"} items={sortedItems}>
+            <TableBody emptyContent={"No rows found"} items={rows}>
                 {(item) => (
                     <TableRow key={item.id}>
                         {(columnKey) => (

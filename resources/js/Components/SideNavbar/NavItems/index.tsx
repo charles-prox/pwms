@@ -86,7 +86,7 @@ const NavItems: React.FC<NavItemsProps> = ({
                                 </div>
                             )}
                             <div className="flex-grow">
-                                <Divider className="mt-2.5" />
+                                <Divider className="mt-2" />
                             </div>
                         </div>
                     );

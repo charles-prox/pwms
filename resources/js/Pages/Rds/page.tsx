@@ -1,7 +1,8 @@
 import React from "react";
-import { Card, CardHeader, CardFooter, Image, Button } from "@nextui-org/react";
 import { Head } from "@inertiajs/react";
 import ListViewLayout from "@/Layouts/ListViewLayout";
+import { columns } from "./columns";
+import { users } from "./rows";
 
 const RdsPage = () => {
     return (
@@ -16,7 +17,7 @@ const RdsPage = () => {
                     </p>
                 </div>
                 <div className="w-full ">
-                    <ListViewLayout />
+                    <ListViewLayout columns={columns} rows={users} />
                 </div>
             </div>
         </div>
