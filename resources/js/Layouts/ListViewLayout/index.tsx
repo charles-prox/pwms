@@ -25,6 +25,8 @@ import {
     SearchIcon,
     VerticalDotsIcon,
 } from "./icons";
+import FooterContent from "./Table/Footer";
+import HeaderContent from "./Table/Header";
 
 export function capitalize(s: string) {
     return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
@@ -196,102 +198,13 @@ export default function ListViewLayout({
         setPage(1);
     }, []);
 
-    const topContent = React.useMemo(() => {
-        return (
-            <div className="flex flex-col gap-4">
-                <div className="flex justify-between gap-3 items-end">
-                    <Input
-                        isClearable
-                        className="w-full sm:max-w-[44%]"
-                        placeholder="Search by name..."
-                        startContent={<SearchIcon />}
-                        value={filterValue}
-                        onClear={() => onClear()}
-                        onValueChange={onSearchChange}
-                    />
-                    <div className="flex gap-3">
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button
-                                    endContent={
-                                        <ChevronDownIcon className="text-small" />
-                                    }
-                                    variant="flat"
-                                >
-                                    Status
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Table Columns"
-                                closeOnSelect={false}
-                                selectedKeys={statusFilter}
-                                selectionMode="multiple"
-                                onSelectionChange={setStatusFilter}
-                            >
-                                {statusOptions.map((status) => (
-                                    <DropdownItem
-                                        key={status.uid}
-                                        className="capitalize"
-                                    >
-                                        {capitalize(status.name)}
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
-                        <Button color="primary" endContent={<PlusIcon />}>
-                            Add New
-                        </Button>
-                    </div>
-                </div>
-                <div className="flex justify-between items-center">
-                    <span className="text-default-400 text-small">
-                        Total {rows.length} {itemName}
-                    </span>
-                    <label className="flex items-center text-default-400 text-small">
-                        Rows per page:
-                        <select
-                            className="bg-transparent outline-none text-default-400 text-small"
-                            onChange={onRowsPerPageChange}
-                        >
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                        </select>
-                    </label>
-                </div>
-            </div>
-        );
-    }, [
-        filterValue,
-        statusFilter,
-        onSearchChange,
-        onRowsPerPageChange,
-        rows.length,
-        hasSearchFilter,
-    ]);
-
-    const bottomContent = React.useMemo(() => {
-        return (
-            <div className="py-2 px-2 flex justify-center items-center">
-                <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    color="primary"
-                    page={page}
-                    total={pages}
-                    onChange={setPage}
-                />
-            </div>
-        );
-    }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
-
     return (
         <Table
             isHeaderSticky
             aria-label="Example table with custom cells, pagination and sorting"
-            bottomContent={bottomContent}
+            bottomContent={
+                <FooterContent page={page} pages={pages} setPage={setPage} />
+            }
             bottomContentPlacement="outside"
             classNames={{
                 wrapper: "h-[calc(100vh-430px)]",
@@ -299,7 +212,19 @@ export default function ListViewLayout({
             selectedKeys={selectedKeys}
             selectionMode="single"
             sortDescriptor={sortDescriptor}
-            topContent={topContent}
+            topContent={
+                <HeaderContent
+                    filterValue={filterValue}
+                    onClear={onClear}
+                    onSearchChange={onSearchChange}
+                    statusFilter={statusFilter}
+                    setStatusFilter={setStatusFilter}
+                    statusOptions={statusOptions}
+                    rows={rows}
+                    itemName={itemName}
+                    onRowsPerPageChange={onRowsPerPageChange}
+                />
+            }
             topContentPlacement="outside"
             onSelectionChange={setSelectedKeys}
             onSortChange={setSortDescriptor}
