@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, CardBody, Divider } from "@nextui-org/react";
+import { Button, Card, CardBody, Divider } from "@heroui/react";
 import { router, usePage } from "@inertiajs/react";
 import { axiosInstance } from "@/Utils/axios";
 import ConfirmPassword from "@/Components/ConfirmPassword";

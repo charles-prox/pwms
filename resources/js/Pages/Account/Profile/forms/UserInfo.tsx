@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { url } from "@/Utils/helpers";
 import { router } from "@inertiajs/react";
-import { Avatar, Button, Card, CardBody } from "@nextui-org/react";
+import { Avatar, Button, Card, CardBody } from "@heroui/react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import Input from "@/Components/Input";
 

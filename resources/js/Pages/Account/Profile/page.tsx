@@ -1,5 +1,5 @@
 import { Head } from "@inertiajs/react";
-import { Button, Spacer } from "@nextui-org/react";
+import { Button, Spacer } from "@heroui/react";
 import React, { useState } from "react";
 import { ProfileForms } from "./forms";
 import DeleteAccount from "./forms/DeleteAccount";

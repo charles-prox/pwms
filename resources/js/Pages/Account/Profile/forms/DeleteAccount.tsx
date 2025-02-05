@@ -1,6 +1,6 @@
 import { ConfirmPassword } from "@/Components/ConfirmPassword";
 import { useForm } from "@inertiajs/react";
-import { Button, Card, CardBody, Divider } from "@nextui-org/react";
+import { Button, Card, CardBody, Divider } from "@heroui/react";
 import React, { useState, useEffect } from "react";
 
 interface DeleteAccountForm {

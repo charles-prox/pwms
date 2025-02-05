@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Checkbox } from "@nextui-org/react";
+import { Button, Checkbox } from "@heroui/react";
 import Input from "@/Components/Input";
 import Alert from "@/Components/Alert";
 import PasswordInput from "@/Components/PasswordInput";

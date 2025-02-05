@@ -4,7 +4,7 @@ import {
     SelectItem,
     Autocomplete,
     AutocompleteItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { getTailwindWidthClass } from "@/Utils/helpers";
 
 const Select = <T,>({

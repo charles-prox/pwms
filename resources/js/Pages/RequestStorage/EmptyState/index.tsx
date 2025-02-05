@@ -1,5 +1,5 @@
 import { asset } from "@/Utils/helpers";
-import { Button, Image, Spacer } from "@nextui-org/react";
+import { Button, Image, Spacer } from "@heroui/react";
 import React from "react";
 
 const NoRequest: React.FC = () => {

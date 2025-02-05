@@ -1,6 +1,6 @@
 import React from "react";
 import { Head, useForm } from "@inertiajs/react";
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button } from "@heroui/react";
 
 const TwoFactorChallenge = () => {
     const [useRecoveryCode, setUseRecoveryCode] = React.useState(false);

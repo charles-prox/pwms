@@ -1,7 +1,7 @@
 import Alert from "@/Components/Alert";
 import ModalAlert from "@/Components/ModalAlert";
 import { useForm, usePage } from "@inertiajs/react";
-import { Divider, Spacer } from "@nextui-org/react";
+import { Divider, Spacer } from "@heroui/react";
 import React, { FormEvent, RefObject } from "react";
 import { UserInfoForm } from "./UserInfo";
 import { ContactInfoForm } from "./ContactInfo";

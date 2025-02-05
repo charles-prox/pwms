@@ -15,7 +15,7 @@ import {
     Navbar,
     Spacer,
     Divider,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
     BellIcon,
     CaretDownIcon,
@@ -171,7 +171,7 @@ const AppNavbar: React.FC = () => {
                                     </DropdownItem>
                                     <DropdownItem
                                         key="logout"
-                                        onClick={(e) => submit(e)}
+                                        onClick={(e: any) => submit(e)}
                                         startContent={<LogoutIcon />}
                                     >
                                         Log out

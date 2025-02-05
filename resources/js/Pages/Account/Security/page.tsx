@@ -1,5 +1,5 @@
 import { Head } from "@inertiajs/react";
-import { Spacer } from "@nextui-org/react";
+import { Spacer } from "@heroui/react";
 import React from "react";
 import { TwoFactorAuthForm } from "./forms/TwoFactorAuthForm";
 import { UpdatePasswordForm } from "./forms/UpdatePasswordForm";
