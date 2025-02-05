@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Divider, Tooltip } from "@nextui-org/react";
+import { Button, Divider, Tooltip } from "@heroui/react";
 import { usePage, router } from "@inertiajs/react";
 import { items } from "./items";
 import { AnimationOptions, NavItem, SideNavState } from "@/Utils/types";

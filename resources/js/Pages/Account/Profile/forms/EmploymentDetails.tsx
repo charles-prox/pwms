@@ -3,7 +3,7 @@ import Select from "@/Components/Select";
 import useFetch from "@/Hooks/useFetch";
 import { employmentStatus } from "@/Utils/constants";
 import { toTitleCase } from "@/Utils/helpers";
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody } from "@heroui/react";
 import React from "react";
 
 // Define types for the props

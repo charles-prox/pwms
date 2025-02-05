@@ -6,7 +6,6 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    Input,
     Button,
     DropdownTrigger,
     Dropdown,
@@ -14,17 +13,11 @@ import {
     DropdownItem,
     Chip,
     User,
-    Pagination,
     Selection,
     ChipProps,
     SortDescriptor,
-} from "@nextui-org/react";
-import {
-    ChevronDownIcon,
-    PlusIcon,
-    SearchIcon,
-    VerticalDotsIcon,
-} from "./icons";
+} from "@heroui/react";
+import { VerticalDotsIcon } from "./icons";
 import FooterContent from "./Table/Footer";
 import HeaderContent from "./Table/Header";
 
@@ -240,7 +233,7 @@ export default function ListViewLayout({
                     </TableColumn>
                 )}
             </TableHeader>
-            <TableBody emptyContent={"No rows found"} items={rows}>
+            <TableBody emptyContent={"No rows found"} items={items}>
                 {(item) => (
                     <TableRow key={item.id}>
                         {(columnKey) => (

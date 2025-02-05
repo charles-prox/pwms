@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "@inertiajs/react";
-import { Button, Card, CardBody } from "@nextui-org/react";
+import { Button, Card, CardBody } from "@heroui/react";
 import PasswordInput from "@/Components/PasswordInput";
 
 export const UpdatePasswordForm = () => {

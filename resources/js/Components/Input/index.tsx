@@ -1,5 +1,5 @@
 import React from "react";
-import { Input as NextInput } from "@nextui-org/react";
+import { Input as NextInput } from "@heroui/react";
 import { getTailwindWidthClass } from "@/Utils/helpers";
 
 const Input = <T,>({

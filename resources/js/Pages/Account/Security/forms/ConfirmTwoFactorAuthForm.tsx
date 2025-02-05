@@ -8,7 +8,7 @@ import {
     Button,
     Input,
     Skeleton,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { router, useForm } from "@inertiajs/react";
 import { useTheme } from "@/Contexts/ThemeContext";
 import { axiosInstance } from "@/Utils/axios";

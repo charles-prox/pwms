@@ -1,6 +1,6 @@
 import React from "react";
 import { Head } from "@inertiajs/react";
-import { Card, CardBody, CardHeader, Image } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Image } from "@heroui/react";
 import { appName } from "@/Utils/constants";
 
 const LoginLayout = ({

@@ -1,5 +1,5 @@
 import Input from "@/Components/Input";
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody } from "@heroui/react";
 import React from "react";
 
 // Define types for the props

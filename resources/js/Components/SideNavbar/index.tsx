@@ -1,7 +1,7 @@
 // components/Sidebar.tsx
 import React from "react";
 import { useSideNavState } from "@/Contexts/SideNavStateContext";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { ArrowRightIcon } from "./icons";
 import NavItems from "./NavItems";
 import { AnimationOptions } from "@/Utils/types";

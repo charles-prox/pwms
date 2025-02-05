@@ -6,7 +6,7 @@ import {
     DropdownTrigger,
     DropdownMenu,
     DropdownItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { ChevronDownIcon, GridIcon, ListIcon } from "./icons";
 import { useRequestViewContext } from "@/Contexts/RequestViewContext";
 

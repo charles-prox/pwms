@@ -6,7 +6,7 @@ import {
     ModalBody,
     ModalFooter,
     Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useTheme } from "@/Contexts/ThemeContext";
 import { axiosInstance } from "@/Utils/axios";
 import PasswordInput from "../PasswordInput";

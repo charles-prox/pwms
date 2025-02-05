@@ -7,8 +7,9 @@ import {
     DropdownMenu,
     DropdownItem,
     Selection,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { ChevronDownIcon, PlusIcon, SearchIcon } from "../icons";
+import { useTheme } from "@/Contexts/ThemeContext";
 
 interface StatusOption {
     uid: string;
@@ -38,6 +39,18 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
     itemName,
     onRowsPerPageChange,
 }) => {
+    const theme = useTheme().theme;
+
+    const handleAddAction = (key: Key) => {
+        if (key === "upload") {
+            // Handle file upload logic
+            console.log("Opening file upload modal...");
+        } else if (key === "manual") {
+            // Handle manual form entry logic
+            console.log("Opening manual form...");
+        }
+    };
+
     return (
         <div className="flex flex-col gap-4">
             <div className="flex justify-between gap-3 items-end">
@@ -81,9 +94,25 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                             ))}
                         </DropdownMenu>
                     </Dropdown>
-                    <Button color="primary" endContent={<PlusIcon />}>
-                        Add New
-                    </Button>
+                    <Dropdown
+                        showArrow
+                        classNames={{
+                            content: `${theme} text-foreground`,
+                        }}
+                    >
+                        <DropdownTrigger>
+                            <Button color="primary" endContent={<PlusIcon />}>
+                                Add New
+                            </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                            aria-label="Static Actions"
+                            onAction={handleAddAction}
+                        >
+                            <DropdownItem key="upload">From File</DropdownItem>
+                            <DropdownItem key="manual">Use Form</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
                 </div>
             </div>
             <div className="flex justify-between items-center">
