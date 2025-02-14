@@ -7,6 +7,7 @@ use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\UpdateUserProfileController;
 use App\Http\Controllers\RegisterAdminController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\RDSController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,6 +26,8 @@ Route::middleware([
         })->name('profile');
         Route::post('profile/update', [UpdateUserProfileController::class, 'update'])->middleware([config('fortify.auth_middleware', 'auth') . ':' . config('fortify.guard')])->name('profile.update');
     });
+
+    Route::post('rds/import', [RDSController::class, 'import'])->name('rds.import');
 });
 
 

@@ -33,7 +33,7 @@ import { useTheme } from "@/Contexts/ThemeContext";
 interface AuthProps {
     user: {
         first_name: string;
-        middle_name: string;
+        middle_name?: string;
         last_name: string;
         position: string;
         profile_photo_path?: string;
@@ -99,7 +99,7 @@ const AppNavbar: React.FC = () => {
                         isIconOnly
                         variant="light"
                         radius="full"
-                        onClick={() => toggleTheme()}
+                        onPress={() => toggleTheme()}
                     >
                         <ThemeToggleIcon />
                     </Button>
@@ -107,7 +107,7 @@ const AppNavbar: React.FC = () => {
                         isIconOnly
                         variant="light"
                         radius="full"
-                        onClick={() => toggleTheme()}
+                        onPress={() => toggleTheme()}
                     >
                         <BellIcon />
                     </Button>
@@ -126,13 +126,13 @@ const AppNavbar: React.FC = () => {
                                         className="inline-flex items-center rounded-md bg-transparent"
                                     >
                                         <User
-                                            name={`${
-                                                auth.user.first_name
-                                            } ${auth.user.middle_name
-                                                .charAt(0)
-                                                .toUpperCase()}. ${
-                                                auth.user.last_name
-                                            }`}
+                                            name={`${auth.user.first_name} ${
+                                                auth.user.middle_name
+                                                    ? auth.user.middle_name
+                                                          .charAt(0)
+                                                          .toUpperCase() + ". "
+                                                    : ""
+                                            }${auth.user.last_name}`}
                                             description={auth.user.position}
                                             avatarProps={{
                                                 showFallback: true,
@@ -171,7 +171,7 @@ const AppNavbar: React.FC = () => {
                                     </DropdownItem>
                                     <DropdownItem
                                         key="logout"
-                                        onClick={(e: any) => submit(e)}
+                                        onPress={(e: any) => submit(e)}
                                         startContent={<LogoutIcon />}
                                     >
                                         Log out
