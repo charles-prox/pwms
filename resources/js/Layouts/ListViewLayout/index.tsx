@@ -45,12 +45,16 @@ interface LayoutProps {
     itemName?: string;
     columns: Column[];
     rows: RowType[];
+    onOpenUploadForm?: () => void;
+    onOpenAddNewForm?: () => void;
 }
 
 export default function ListViewLayout({
     itemName = "items",
     columns,
     rows,
+    onOpenUploadForm,
+    onOpenAddNewForm,
 }: LayoutProps) {
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
@@ -216,6 +220,12 @@ export default function ListViewLayout({
                     rows={rows}
                     itemName={itemName}
                     onRowsPerPageChange={onRowsPerPageChange}
+                    onOpenUploadForm={
+                        onOpenUploadForm ? onOpenUploadForm : null
+                    }
+                    onOpenAddNewForm={
+                        onOpenAddNewForm ? onOpenAddNewForm : null
+                    }
                 />
             }
             topContentPlacement="outside"

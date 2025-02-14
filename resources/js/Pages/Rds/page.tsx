@@ -3,8 +3,11 @@ import { Head } from "@inertiajs/react";
 import ListViewLayout from "@/Layouts/ListViewLayout";
 import { columns } from "./columns";
 import { users } from "./rows";
+import UploadForm from "./forms/UploadForm";
 
 const RdsPage = () => {
+    const [isFileUploadOpen, setIsFileUploadOpen] =
+        React.useState<boolean>(false);
     return (
         <div>
             <Head title="Dashboard" />
@@ -17,9 +20,20 @@ const RdsPage = () => {
                     </p>
                 </div>
                 <div className="w-full ">
-                    <ListViewLayout columns={columns} rows={users} />
+                    <ListViewLayout
+                        columns={columns}
+                        rows={users}
+                        onOpenUploadForm={() =>
+                            setIsFileUploadOpen(!isFileUploadOpen)
+                        }
+                        onOpenAddNewForm={() => {}}
+                    />
                 </div>
             </div>
+            <UploadForm
+                isOpen={isFileUploadOpen}
+                onClose={() => setIsFileUploadOpen(false)}
+            />
         </div>
     );
 };

@@ -15,13 +15,14 @@ return new class extends Migration
 
         Schema::create('rds', function (Blueprint $table) {
             $table->id();
-            $table->string('module', 1);
+            $table->string('module', 5);
             $table->float('item_no');
             $table->text('title_description');
             $table->string('active')->nullable();
             $table->string('storage')->nullable();
             $table->text('remarks')->nullable();
-            $table->string('department', 50)->nullable();
+            $table->string('department')->nullable();
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

@@ -39,7 +39,7 @@ const Sidebar: React.FC = () => {
                     color="primary"
                     variant="light"
                     isIconOnly
-                    onClick={toggleSideNavState}
+                    onPress={toggleSideNavState}
                 >
                     <ArrowRightIcon
                         className={`
