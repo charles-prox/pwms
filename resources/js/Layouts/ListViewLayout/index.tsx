@@ -20,6 +20,7 @@ import {
 import { VerticalDotsIcon } from "./icons";
 import FooterContent from "./Table/Footer";
 import HeaderContent from "./Table/Header";
+import { debounce } from "lodash";
 
 export function capitalize(s: string) {
     return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
@@ -47,6 +48,12 @@ interface LayoutProps {
     rows: RowType[];
     onOpenUploadForm?: () => void;
     onOpenAddNewForm?: () => void;
+    page: number;
+    pages: number;
+    setPage: (page: number) => void;
+    rowsPerPage: number;
+    setRowsPerPage: (perPage: number) => void;
+    setSearchKey: (key: string) => void;
 }
 
 export default function ListViewLayout({
@@ -55,94 +62,27 @@ export default function ListViewLayout({
     rows,
     onOpenUploadForm,
     onOpenAddNewForm,
+    page,
+    pages,
+    setPage,
+    rowsPerPage,
+    setRowsPerPage,
+    setSearchKey,
 }: LayoutProps) {
-    const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
         new Set([])
     );
 
-    const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
-        column: "created_by",
+        column: "module",
         direction: "ascending",
     });
-
-    const [page, setPage] = React.useState(1);
-
-    const hasSearchFilter = Boolean(filterValue);
-
-    const filteredItems = React.useMemo(() => {
-        let filteredUsers = [...rows];
-
-        if (hasSearchFilter) {
-            filteredUsers = filteredUsers.filter((row) =>
-                row.name.toLowerCase().includes(filterValue.toLowerCase())
-            );
-        }
-        if (
-            statusFilter !== "all" &&
-            Array.from(statusFilter).length !== statusOptions.length
-        ) {
-            filteredUsers = filteredUsers.filter((row) =>
-                Array.from(statusFilter).includes(row.status)
-            );
-        }
-
-        return filteredUsers;
-    }, [rows, filterValue, statusFilter]);
-
-    const pages = Math.ceil(filteredItems.length / rowsPerPage);
-
-    const items = React.useMemo(() => {
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-
-        return filteredItems.slice(start, end);
-    }, [page, filteredItems, rowsPerPage]);
 
     const renderCell = React.useCallback(
         (row: RowType, columnKey: React.Key) => {
             const cellValue = row[columnKey as keyof RowType];
 
             switch (columnKey) {
-                case "name":
-                    return (
-                        <User
-                            avatarProps={{
-                                radius: "lg",
-                                fallback: "S",
-                                className:
-                                    "text-[1.2rem] text-green-200 bg-green-600 opacity-40",
-                            }}
-                            description={row.email}
-                            name={cellValue}
-                        >
-                            {row.email}
-                        </User>
-                    );
-                case "date_created":
-                    return (
-                        <div className="flex flex-col">
-                            <p className="text-bold text-small capitalize">
-                                {cellValue}
-                            </p>
-                            <p className="text-bold text-tiny capitalize text-default-400">
-                                {row.team}
-                            </p>
-                        </div>
-                    );
-                case "status":
-                    return (
-                        <Chip
-                            className="capitalize"
-                            color={statusColorMap[row.status]}
-                            size="sm"
-                            variant="flat"
-                        >
-                            {cellValue}
-                        </Chip>
-                    );
                 case "actions":
                     return (
                         <div className="relative flex justify-end items-center gap-2">
@@ -181,20 +121,6 @@ export default function ListViewLayout({
         []
     );
 
-    const onSearchChange = React.useCallback((value?: string) => {
-        if (value) {
-            setFilterValue(value);
-            setPage(1);
-        } else {
-            setFilterValue("");
-        }
-    }, []);
-
-    const onClear = React.useCallback(() => {
-        setFilterValue("");
-        setPage(1);
-    }, []);
-
     return (
         <Table
             isHeaderSticky
@@ -211,14 +137,14 @@ export default function ListViewLayout({
             sortDescriptor={sortDescriptor}
             topContent={
                 <HeaderContent
-                    filterValue={filterValue}
-                    onClear={onClear}
-                    onSearchChange={onSearchChange}
-                    statusFilter={statusFilter}
-                    setStatusFilter={setStatusFilter}
+                    handleSearch={(key: string) => setSearchKey(key)}
+                    // statusFilter={statusFilter}
+                    // setStatusFilter={setStatusFilter}
                     statusOptions={statusOptions}
                     rows={rows}
+                    columns={columns}
                     itemName={itemName}
+                    rowsPerPage={rowsPerPage}
                     onRowsPerPageChange={onRowsPerPageChange}
                     onOpenUploadForm={
                         onOpenUploadForm ? onOpenUploadForm : null
@@ -243,7 +169,7 @@ export default function ListViewLayout({
                     </TableColumn>
                 )}
             </TableHeader>
-            <TableBody emptyContent={"No rows found"} items={items}>
+            <TableBody emptyContent={"No rows found"} items={rows}>
                 {(item) => (
                     <TableRow key={item.id}>
                         {(columnKey) => (

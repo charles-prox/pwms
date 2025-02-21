@@ -85,11 +85,14 @@ export default function ImportForm({ isOpen, onClose }: ImportFormProps) {
             autoFocus={false}
         >
             <ModalContent>
-                <form onSubmit={submit}>
-                    <ModalHeader className="flex flex-col gap-1">
+                <form onSubmit={submit} autoFocus={false}>
+                    <ModalHeader
+                        autoFocus={false}
+                        className="flex flex-col gap-1"
+                    >
                         Import File
                     </ModalHeader>
-                    <ModalBody>
+                    <ModalBody autoFocus={false}>
                         <p className="text-sm text-gray-600">
                             Please import a <strong>CSV file</strong> containing
                             records that follow the required format.
@@ -169,15 +172,17 @@ export default function ImportForm({ isOpen, onClose }: ImportFormProps) {
                             showValueLabel={true}
                             size="sm"
                             value={progress?.percentage}
+                            autoFocus={false}
                         />
                     </ModalBody>
 
-                    <ModalFooter>
+                    <ModalFooter autoFocus={false}>
                         <Button
                             color="default"
                             variant="light"
                             onPress={onClose}
                             isDisabled={isLoading}
+                            autoFocus={false}
                         >
                             Close
                         </Button>
@@ -186,6 +191,7 @@ export default function ImportForm({ isOpen, onClose }: ImportFormProps) {
                             type="submit"
                             isLoading={isLoading}
                             isDisabled={!data.file}
+                            autoFocus={false}
                         >
                             Import
                         </Button>

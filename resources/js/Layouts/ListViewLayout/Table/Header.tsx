@@ -7,7 +7,13 @@ import {
     DropdownMenu,
     DropdownItem,
     Selection,
+    PopoverTrigger,
+    Popover,
+    PopoverContent,
+    Select,
+    SelectItem,
 } from "@heroui/react";
+
 import { ChevronDownIcon, PlusIcon, SearchIcon } from "../icons";
 import { useTheme } from "@/Contexts/ThemeContext";
 
@@ -17,35 +23,36 @@ interface StatusOption {
 }
 
 interface HeaderContentProps {
-    filterValue: string;
-    onClear: () => void;
-    onSearchChange: (value: string) => void;
-    statusFilter: Selection;
-    setStatusFilter: (keys: any) => void;
+    statusFilter?: Selection;
+    setStatusFilter?: (keys: any) => void;
     statusOptions: StatusOption[];
     rows: any[];
+    columns: any[];
     itemName: string;
+    rowsPerPage?: number;
     onRowsPerPageChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
     onOpenUploadForm: (() => void) | null;
     onOpenAddNewForm: (() => void) | null;
+    handleSearch: (key: string) => void;
 }
 
 const HeaderContent: React.FC<HeaderContentProps> = ({
-    filterValue,
-    onClear,
-    onSearchChange,
     statusFilter,
     setStatusFilter,
     statusOptions,
     rows,
+    columns,
     itemName,
+    rowsPerPage,
     onRowsPerPageChange,
     onOpenUploadForm,
     onOpenAddNewForm,
+    handleSearch,
 }) => {
     const theme = useTheme().theme;
     const hasAddNew = !!onOpenAddNewForm;
     const hasUpload = !!onOpenUploadForm;
+    const [filterValue, setFilterValue] = React.useState("");
 
     const handleAddAction = (key: Key) => {
         if (key === "upload") {
@@ -57,50 +64,63 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
         }
     };
 
+    const onSearchChange = React.useCallback((value?: string) => {
+        if (value) {
+            setFilterValue(value);
+        } else {
+            setFilterValue("");
+        }
+    }, []);
+
+    const onClear = React.useCallback(() => {
+        setFilterValue("");
+    }, []);
+
     return (
         <>
             <div className="flex flex-col gap-4">
                 <div className="flex justify-between gap-3 items-end">
-                    <Input
-                        isClearable
-                        className="w-full sm:max-w-[44%]"
-                        placeholder="Search by name..."
-                        startContent={<SearchIcon />}
-                        value={filterValue}
-                        onClear={onClear}
-                        onValueChange={onSearchChange}
-                    />
                     <div className="flex gap-3">
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button
-                                    endContent={
-                                        <ChevronDownIcon className="text-small" />
-                                    }
-                                    variant="flat"
-                                >
-                                    Status
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Table Columns"
-                                closeOnSelect={false}
-                                selectedKeys={statusFilter}
-                                selectionMode="multiple"
-                                onSelectionChange={setStatusFilter}
+                        <Input
+                            isClearable
+                            className="w-full min-w-[400px] sm:max-w-[44%]"
+                            placeholder="Search by item..."
+                            startContent={<SearchIcon />}
+                            value={filterValue}
+                            onClear={onClear}
+                            onValueChange={onSearchChange}
+                        />
+                        <Button
+                            color="primary"
+                            onPress={() => handleSearch(filterValue)}
+                        >
+                            Search
+                        </Button>
+                    </div>
+                    <div className="flex gap-3">
+                        <Popover showArrow offset={10} placement="bottom">
+                            <PopoverTrigger>
+                                <Button color="primary">Customize</Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                                className={`w-[540px] ${theme} text-foreground`}
                             >
-                                {statusOptions.map((status) => (
-                                    <DropdownItem
-                                        key={status.uid}
-                                        className="capitalize"
+                                <div className="m-2 flex flex-row gap-2 w-full">
+                                    <Select
+                                        className="min-w-md"
+                                        label="Select a column"
+                                        size="sm"
                                     >
-                                        {status.name.charAt(0).toUpperCase() +
-                                            status.name.slice(1)}
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
+                                        {columns.map((column) => (
+                                            <SelectItem key={column.uid}>
+                                                {column.name}
+                                            </SelectItem>
+                                        ))}
+                                    </Select>
+                                    <Input label="Filter by value" size="sm" />
+                                </div>
+                            </PopoverContent>
+                        </Popover>
                         {hasAddNew && !hasUpload ? (
                             // Only "Add New" button if `onOpenAddNewForm` is defined
                             <Button
@@ -167,10 +187,12 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                         <select
                             className="bg-transparent outline-none text-default-400 text-small"
                             onChange={onRowsPerPageChange}
+                            value={rowsPerPage}
                         >
-                            <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
                         </select>
                     </label>
                 </div>

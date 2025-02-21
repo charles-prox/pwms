@@ -433,13 +433,13 @@ Please note that this guide provides a step-by-step process for setting up an au
                             Sign Up
                         </Button>
                     </Navbar.Item>
-                    <Button auto flat onClick={handleLogout}>
+                    <Button auto flat onPress={handleLogout}>
                         <LogoutIcon />
                     </Button>
                     <Button
                         auto
                         flat
-                        onClick={() =>
+                        onPress={() =>
                             setTheme(theme === "dark" ? "light" : "dark")
                         }
                     >
@@ -602,7 +602,7 @@ Please note that this guide provides a step-by-step process for setting up an au
                             radius="lg"
                             color="primary"
                             isIconOnly
-                            onClick={toggleSideNavState}
+                            onPress={toggleSideNavState}
                         >
                             <ArrowRightIcon
                                 className={`
@@ -675,7 +675,7 @@ Please note that this guide provides a step-by-step process for setting up an au
                                 "justify-start w-auto"
                             } text-foreground gap-5 w-full transition-all delay-200 duration-300`}
                             disabled={url.startsWith(item.url)}
-                            onClick={() => router.visit(item.url)}
+                            onPress={() => router.visit(item.url)}
                         >
                             {
                                 <p
@@ -1109,7 +1109,7 @@ _Explanation of the `Login.jsx` code_: - The `Login.jsx` file imports `LoginForm
                             <button
                                 className="focus:outline-none"
                                 type="button"
-                                onClick={toggleVisibility}
+                                onPress={toggleVisibility}
                             >
                                 {isVisible ? (
                                     <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />

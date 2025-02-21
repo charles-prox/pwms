@@ -1,10 +1,10 @@
 export const columns = [
-    { name: "MODULE", uid: "name", sortable: true },
-    { name: "ITEM NO.", uid: "created_by", sortable: true },
-    { name: "TITLE DESCRIPTION", uid: "date_created", sortable: true },
-    { name: "ACTIVE", uid: "last_modified", sortable: true },
-    { name: "STORAGE", uid: "team" },
-    { name: "REMARKS", uid: "email" },
-    { name: "DEPARTMENT", uid: "status", sortable: true },
+    { name: "MODULE", uid: "module", sortable: true },
+    { name: "ITEM NO.", uid: "item_no", sortable: true },
+    { name: "TITLE DESCRIPTION", uid: "title_description", sortable: true },
+    { name: "ACTIVE", uid: "active", sortable: true },
+    { name: "STORAGE", uid: "storage" },
+    { name: "REMARKS", uid: "remarks" },
+    { name: "DEPARTMENT", uid: "department", sortable: true },
     { name: "ACTIONS", uid: "actions" },
 ];
