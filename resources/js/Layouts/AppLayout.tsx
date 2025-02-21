@@ -4,6 +4,7 @@ import { useTheme } from "@/Contexts/ThemeContext";
 import Sidebar from "@/Components/SideNavbar";
 import AppNavbar from "@/Components/AppNavbar";
 import Footer from "@/Components/Footer";
+import { TableOptionsProvider } from "@/Providers/TableOptionsProvider";
 
 const AppLayout = ({
     children,
@@ -28,7 +29,7 @@ const AppLayout = ({
                     <div
                         className={`flex-1 overflow-y-auto p-10 h-[calc(100vh-${navHeight})]`}
                     >
-                        {children}
+                        <TableOptionsProvider>{children}</TableOptionsProvider>
                     </div>
                 </div>
                 <Footer />

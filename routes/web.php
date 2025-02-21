@@ -28,6 +28,7 @@ Route::middleware([
     });
 
     Route::post('rds/import', [RDSController::class, 'import'])->name('rds.import');
+    Route::get('/rds/get', [RDSController::class, 'index']);
 });
 
 

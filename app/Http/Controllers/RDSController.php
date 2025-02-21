@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\RDS;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
-use Inertia\Inertia;
-use Inertia\Response;
 
 class RDSController extends Controller
 {
-    public function import(Request $request): Response
+    public function import(Request $request): JsonResponse
     {
         // Define expected headers
         $expectedHeaders = ['module', 'item_no', 'title_description', 'active', 'storage', 'remarks', 'department'];
@@ -21,9 +20,11 @@ class RDSController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return Inertia::render('Rds', [
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed.',
                 'errors' => $validator->errors(),
-            ]);
+            ], 422);
         }
 
         // Process the uploaded CSV file
@@ -40,9 +41,10 @@ class RDSController extends Controller
                 // Validate headers
                 if ($header !== $expectedHeaders) {
                     fclose($handle);
-                    return Inertia::render('Rds', [
-                        'errors' => ['file' => 'Invalid CSV headers. Please ensure the file follows the correct format.'],
-                    ]);
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid CSV headers. Please ensure the file follows the correct format.',
+                    ], 422);
                 }
 
                 // Process each row
@@ -66,18 +68,38 @@ class RDSController extends Controller
 
                 fclose($handle);
 
-                return Inertia::render('Rds', [
-                    'success' => 'File uploaded successfully!',
-                ]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'File uploaded successfully!',
+                ], 200);
             }
 
-            return Inertia::render('Rds', [
-                'errors' => ['file' => 'Unable to open the file.'],
-            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Unable to open the file.',
+            ], 500);
         }
 
-        return Inertia::render('Rds', [
-            'errors' => 'No file uploaded.',
-        ]);
+        return response()->json([
+            'success' => false,
+            'message' => 'No file uploaded.',
+        ], 400);
+    }
+
+    /**
+     * Get all RDS items.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $perPage = $request->input('per_page', 10); // Default to 10 if not provided
+        $page = $request->input('page', 1);
+
+        // Fetch paginated results
+        $rdsItems = RDS::paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'success' => true,
+            'data' => $rdsItems,
+        ], 200);
     }
 }

@@ -24,7 +24,7 @@ export const PasswordVisibilityButton: React.FC<
             radius="full"
             className="focus:outline-none"
             type="button"
-            onClick={toggleVisibility}
+            onPress={toggleVisibility}
         >
             {isVisible ? (
                 <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
