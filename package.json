@@ -21,7 +21,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
-        "@heroui/react": "^2.6.14",
+        "@heroui/react": "^2.7.2",
         "@inertiajs/react": "^2.0.3",
         "framer-motion": "^11.3.22",
         "react": "^18.3.1",

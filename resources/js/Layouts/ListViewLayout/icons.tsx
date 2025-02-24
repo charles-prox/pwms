@@ -92,7 +92,10 @@ export const SearchIcon = (props: IconSvgProps) => {
 
 export const ChevronDownIcon = ({
     strokeWidth = 1.5,
-    ...otherProps
+    size = 24,
+    width,
+    height,
+    ...props
 }: IconSvgProps) => {
     return (
         <svg
@@ -103,7 +106,7 @@ export const ChevronDownIcon = ({
             role="presentation"
             viewBox="0 0 24 24"
             width="1em"
-            {...otherProps}
+            {...props}
         >
             <path
                 d="m19.92 8.95-6.52 6.52c-.77.77-2.03.77-2.8 0L4.08 8.95"
@@ -113,6 +116,118 @@ export const ChevronDownIcon = ({
                 strokeMiterlimit={10}
                 strokeWidth={strokeWidth}
             />
+        </svg>
+    );
+};
+
+export const TrashIcon = ({
+    strokeWidth = 1.5,
+    size = 24,
+    width,
+    height,
+    ...props
+}: IconSvgProps) => {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+            height={size || height}
+            width={size || width}
+        >
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+                {" "}
+                <path
+                    d="M8 1.5V2.5H3C2.44772 2.5 2 2.94772 2 3.5V4.5C2 5.05228 2.44772 5.5 3 5.5H21C21.5523 5.5 22 5.05228 22 4.5V3.5C22 2.94772 21.5523 2.5 21 2.5H16V1.5C16 0.947715 15.5523 0.5 15 0.5H9C8.44772 0.5 8 0.947715 8 1.5Z"
+                    fill="currentColor"
+                ></path>{" "}
+                <path
+                    d="M3.9231 7.5H20.0767L19.1344 20.2216C19.0183 21.7882 17.7135 23 16.1426 23H7.85724C6.28636 23 4.98148 21.7882 4.86544 20.2216L3.9231 7.5Z"
+                    fill="currentColor"
+                ></path>{" "}
+            </g>
+        </svg>
+    );
+};
+
+export const EraserIcon = ({
+    strokeWidth = 1.5,
+    size = 24,
+    width,
+    height,
+    strokeMiterlimit = 10,
+    ...props
+}: IconSvgProps) => {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+            height={size || height}
+            width={size || width}
+        >
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+                {" "}
+                <path
+                    d="M11.4096 5.50506C13.0796 3.83502 13.9146 3 14.9522 3C15.9899 3 16.8249 3.83502 18.4949 5.50506C20.165 7.1751 21 8.01013 21 9.04776C21 10.0854 20.165 10.9204 18.4949 12.5904L14.3017 16.7837L7.21634 9.69828L11.4096 5.50506Z"
+                    fill="currentColor"
+                ></path>{" "}
+                <path
+                    d="M6.1557 10.759L13.2411 17.8443L12.5904 18.4949C12.2127 18.8727 11.8777 19.2077 11.5734 19.5H21C21.4142 19.5 21.75 19.8358 21.75 20.25C21.75 20.6642 21.4142 21 21 21H9C7.98423 20.9747 7.1494 20.1393 5.50506 18.4949C3.83502 16.8249 3 15.9899 3 14.9522C3 13.9146 3.83502 13.0796 5.50506 11.4096L6.1557 10.759Z"
+                    fill="currentColor"
+                ></path>{" "}
+            </g>
+        </svg>
+    );
+};
+
+export const FilterIcon = ({
+    strokeWidth = 1.5,
+    size = 24,
+    width,
+    height,
+    strokeMiterlimit = 10,
+    ...props
+}: IconSvgProps) => {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+            height={size || height}
+            width={size || width}
+        >
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+                {" "}
+                <rect width="24" height="24" fill="none"></rect>{" "}
+                <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M2 5C2 3.34315 3.34315 2 5 2H19C20.6569 2 22 3.34315 22 5V6.17157C22 6.96722 21.6839 7.73028 21.1213 8.29289L15.2929 14.1213C15.1054 14.3089 15 14.5632 15 14.8284V17.1716C15 17.9672 14.6839 18.7303 14.1213 19.2929L11.9193 21.4949C10.842 22.5722 9 21.8092 9 20.2857V14.8284C9 14.5632 8.89464 14.3089 8.70711 14.1213L2.87868 8.29289C2.31607 7.73028 2 6.96722 2 6.17157V5Z"
+                    fill="currentColor"
+                ></path>{" "}
+            </g>
         </svg>
     );
 };

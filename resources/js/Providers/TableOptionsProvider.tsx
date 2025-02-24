@@ -1,12 +1,13 @@
 import React, { useState, useCallback, useEffect, ReactNode } from "react";
 import TableOptionsContext from "@/Contexts/TableOptionsContext";
+import { Filter } from "@/Utils/types";
 
 interface TableOptions {
     current_page: string;
     per_page: string;
     sort_by: string;
     search_key: string;
-    filters: any; // Adjust `filters` type based on actual structure
+    filters: Filter[] | null; // Adjust `filters` type based on actual structure
 }
 
 interface TableOptionsProviderProps {

@@ -11,16 +11,16 @@ import {
     Dropdown,
     DropdownMenu,
     DropdownItem,
-    Chip,
-    User,
     Selection,
     ChipProps,
     SortDescriptor,
+    Spinner,
 } from "@heroui/react";
 import { VerticalDotsIcon } from "./icons";
 import FooterContent from "./Table/Footer";
 import HeaderContent from "./Table/Header";
-import { debounce } from "lodash";
+import { filter } from "framer-motion/client";
+import { Filter } from "@/Utils/types";
 
 export function capitalize(s: string) {
     return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
@@ -31,12 +31,6 @@ export const statusOptions = [
     { name: "Paused", uid: "paused" },
     { name: "Vacation", uid: "vacation" },
 ];
-
-const statusColorMap: Record<string, ChipProps["color"]> = {
-    active: "success",
-    paused: "danger",
-    vacation: "warning",
-};
 
 type RowType = {
     [key: string]: any; // Allows any key with any value type
@@ -54,6 +48,8 @@ interface LayoutProps {
     rowsPerPage: number;
     setRowsPerPage: (perPage: number) => void;
     setSearchKey: (key: string) => void;
+    setFilter: (filters: Filter[]) => void; // Update type here
+    isDataLoading: boolean;
 }
 
 export default function ListViewLayout({
@@ -68,6 +64,8 @@ export default function ListViewLayout({
     rowsPerPage,
     setRowsPerPage,
     setSearchKey,
+    setFilter,
+    isDataLoading,
 }: LayoutProps) {
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
         new Set([])
@@ -137,10 +135,8 @@ export default function ListViewLayout({
             sortDescriptor={sortDescriptor}
             topContent={
                 <HeaderContent
-                    handleSearch={(key: string) => setSearchKey(key)}
-                    // statusFilter={statusFilter}
-                    // setStatusFilter={setStatusFilter}
-                    statusOptions={statusOptions}
+                    setSearch={(key: string) => setSearchKey(key)}
+                    setFilter={(filters: Filter[]) => setFilter(filters)}
                     rows={rows}
                     columns={columns}
                     itemName={itemName}
@@ -169,7 +165,20 @@ export default function ListViewLayout({
                     </TableColumn>
                 )}
             </TableHeader>
-            <TableBody emptyContent={"No rows found"} items={rows}>
+            <TableBody
+                emptyContent={"No rows found"}
+                items={rows}
+                isLoading={isDataLoading}
+                loadingContent={
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md">
+                        <Spinner
+                            classNames={{ label: "text-white text-sm" }}
+                            label="Loading..."
+                            variant="simple"
+                        />
+                    </div>
+                }
+            >
                 {(item) => (
                     <TableRow key={item.id}>
                         {(columnKey) => (

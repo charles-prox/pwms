@@ -26,3 +26,11 @@ export interface SelectedRequestView {
     pageId: string;
     view: string;
 }
+
+// ========================
+// COMPONENT TYPES
+// ========================
+export interface Filter {
+    column: string;
+    value: string;
+}
