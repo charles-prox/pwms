@@ -12,20 +12,22 @@ import {
     PopoverContent,
     Select,
     SelectItem,
+    Badge,
 } from "@heroui/react";
 
-import { ChevronDownIcon, PlusIcon, SearchIcon } from "../icons";
+import {
+    EraserIcon,
+    FilterIcon,
+    PlusIcon,
+    SearchIcon,
+    TrashIcon,
+} from "../icons";
 import { useTheme } from "@/Contexts/ThemeContext";
-
-interface StatusOption {
-    uid: string;
-    name: string;
-}
+import { Filter } from "@/Utils/types";
 
 interface HeaderContentProps {
     statusFilter?: Selection;
     setStatusFilter?: (keys: any) => void;
-    statusOptions: StatusOption[];
     rows: any[];
     columns: any[];
     itemName: string;
@@ -33,13 +35,11 @@ interface HeaderContentProps {
     onRowsPerPageChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
     onOpenUploadForm: (() => void) | null;
     onOpenAddNewForm: (() => void) | null;
-    handleSearch: (key: string) => void;
+    setSearch: (key: string) => void;
+    setFilter: (filters: Filter[]) => void; // Update type here
 }
 
 const HeaderContent: React.FC<HeaderContentProps> = ({
-    statusFilter,
-    setStatusFilter,
-    statusOptions,
     rows,
     columns,
     itemName,
@@ -47,12 +47,39 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
     onRowsPerPageChange,
     onOpenUploadForm,
     onOpenAddNewForm,
-    handleSearch,
+    setSearch,
+    setFilter,
 }) => {
     const theme = useTheme().theme;
     const hasAddNew = !!onOpenAddNewForm;
     const hasUpload = !!onOpenUploadForm;
-    const [filterValue, setFilterValue] = React.useState("");
+    const [searchValue, setSearchValue] = React.useState("");
+    const [filters, setFilters] = React.useState<
+        { column: string; value: string }[]
+    >([]);
+
+    // Function to add a new filter
+    const addFilter = () => {
+        setFilters([...filters, { column: "", value: "" }]);
+    };
+
+    // Function to update a specific filter
+    const updateFilter = (
+        index: number,
+        key: "column" | "value",
+        newValue: string
+    ) => {
+        setFilters((prevFilters) =>
+            prevFilters.map((filter, i) =>
+                i === index ? { ...filter, [key]: newValue } : filter
+            )
+        );
+    };
+
+    // Function to remove a filter
+    const removeFilter = (index: number) => {
+        setFilters((prevFilters) => prevFilters.filter((_, i) => i !== index));
+    };
 
     const handleAddAction = (key: Key) => {
         if (key === "upload") {
@@ -66,14 +93,15 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
 
     const onSearchChange = React.useCallback((value?: string) => {
         if (value) {
-            setFilterValue(value);
+            setSearchValue(value);
         } else {
-            setFilterValue("");
+            setSearchValue("");
         }
     }, []);
 
     const onClear = React.useCallback(() => {
-        setFilterValue("");
+        setSearchValue("");
+        setSearch("");
     }, []);
 
     return (
@@ -86,38 +114,120 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                             className="w-full min-w-[400px] sm:max-w-[44%]"
                             placeholder="Search by item..."
                             startContent={<SearchIcon />}
-                            value={filterValue}
+                            value={searchValue}
                             onClear={onClear}
                             onValueChange={onSearchChange}
                         />
                         <Button
                             color="primary"
-                            onPress={() => handleSearch(filterValue)}
+                            onPress={() => setSearch(searchValue)}
                         >
                             Search
                         </Button>
                     </div>
                     <div className="flex gap-3">
-                        <Popover showArrow offset={10} placement="bottom">
-                            <PopoverTrigger>
-                                <Button color="primary">Customize</Button>
-                            </PopoverTrigger>
+                        <Popover offset={10} placement="bottom">
+                            <Badge
+                                color="secondary"
+                                content={filters.length}
+                                isInvisible={filters.length === 0}
+                            >
+                                <PopoverTrigger>
+                                    <Button color="primary">Filters</Button>
+                                </PopoverTrigger>
+                            </Badge>
                             <PopoverContent
                                 className={`w-[540px] ${theme} text-foreground`}
                             >
-                                <div className="m-2 flex flex-row gap-2 w-full">
-                                    <Select
-                                        className="min-w-md"
-                                        label="Select a column"
-                                        size="sm"
-                                    >
-                                        {columns.map((column) => (
-                                            <SelectItem key={column.uid}>
-                                                {column.name}
-                                            </SelectItem>
-                                        ))}
-                                    </Select>
-                                    <Input label="Filter by value" size="sm" />
+                                <div className="m-2 flex flex-col gap-2 w-full">
+                                    {filters.map((filter, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex flex-row gap-2 items-center"
+                                        >
+                                            <Select
+                                                className="min-w-md"
+                                                label="Select a column"
+                                                size="sm"
+                                                selectedKeys={[filter.column]}
+                                                disabledKeys={filters
+                                                    .filter(
+                                                        (_, i) => i !== index
+                                                    )
+                                                    .map((f) => f.column)}
+                                                onChange={(e) =>
+                                                    updateFilter(
+                                                        index,
+                                                        "column",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            >
+                                                {columns.map((column) => (
+                                                    <SelectItem
+                                                        key={column.uid}
+                                                    >
+                                                        {column.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </Select>
+                                            <Input
+                                                label="Filter by value"
+                                                size="sm"
+                                                value={filter.value}
+                                                onChange={(e) =>
+                                                    updateFilter(
+                                                        index,
+                                                        "value",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <Button
+                                                isIconOnly
+                                                size="sm"
+                                                color="danger"
+                                                onPress={() =>
+                                                    removeFilter(index)
+                                                }
+                                            >
+                                                <TrashIcon size={14} />
+                                            </Button>
+                                        </div>
+                                    ))}
+                                    <div className="flex self-center gap-2">
+                                        {filters.length > 0 && (
+                                            <Button
+                                                color="danger"
+                                                onPress={() => setFilters([])}
+                                                className="gap-2"
+                                                startContent={<EraserIcon />}
+                                            >
+                                                Clear Filters
+                                            </Button>
+                                        )}
+
+                                        {filters.length > 0 && (
+                                            <Button
+                                                color="primary"
+                                                onPress={() =>
+                                                    setFilter(filters)
+                                                }
+                                                className="gap-2"
+                                                startContent={<FilterIcon />}
+                                            >
+                                                Apply Filters
+                                            </Button>
+                                        )}
+                                        <Button
+                                            color="secondary"
+                                            onPress={addFilter}
+                                            className="gap-2"
+                                            startContent={<PlusIcon />}
+                                        >
+                                            Add Filter
+                                        </Button>
+                                    </div>
                                 </div>
                             </PopoverContent>
                         </Popover>

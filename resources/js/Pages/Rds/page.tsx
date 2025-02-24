@@ -5,6 +5,7 @@ import { columns } from "./columns";
 import UploadForm from "./forms/UploadForm";
 import { axiosInstance } from "@/Utils/axios";
 import { useTableOptions } from "@/Contexts/TableOptionsContext";
+import { Filter } from "@/Utils/types";
 
 interface RdsItem {
     id: number;
@@ -21,16 +22,18 @@ const TABLE_ID = "rds_management"; // Unique table identifier
 
 const RdsPage: React.FC = () => {
     const [isFileUploadOpen, setIsFileUploadOpen] = useState<boolean>(false);
+    const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
     const { getTableOptions, updateTableOptions } = useTableOptions();
 
     // Get the table options for this specific table
     const tableOptions = getTableOptions(TABLE_ID);
-    const { current_page, per_page, search_key } = tableOptions;
+    const { current_page, per_page, search_key, filters } = tableOptions;
 
     const [rdsItems, setRdsItems] = useState<RdsItem[]>([]);
     const [totalPages, setTotalPages] = useState<number>(1);
 
     const fetchRdsItems = async (): Promise<void> => {
+        setIsDataLoading(true);
         try {
             const response = await axiosInstance.get<{
                 success: boolean;
@@ -44,6 +47,7 @@ const RdsPage: React.FC = () => {
                     page: current_page,
                     per_page: per_page,
                     search_key: search_key,
+                    filters: filters,
                 },
             });
 
@@ -53,12 +57,17 @@ const RdsPage: React.FC = () => {
             );
         } catch (error: unknown) {
             console.error("Error fetching RDS items", error);
+            setIsDataLoading(false);
         }
     };
 
     useEffect(() => {
         fetchRdsItems();
-    }, [current_page, per_page, search_key]);
+    }, [current_page, per_page, search_key, filters]);
+
+    useEffect(() => {
+        setIsDataLoading(false);
+    }, [rdsItems]);
 
     return (
         <div>
@@ -94,10 +103,16 @@ const RdsPage: React.FC = () => {
                                 current_page: "1",
                             })
                         }
+                        setFilter={(filters: Filter[]) =>
+                            updateTableOptions(TABLE_ID, {
+                                filters: filters,
+                            })
+                        }
                         onOpenUploadForm={() =>
                             setIsFileUploadOpen(!isFileUploadOpen)
                         }
                         onOpenAddNewForm={() => {}}
+                        isDataLoading={isDataLoading}
                     />
                 </div>
             </div>

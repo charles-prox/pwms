@@ -93,9 +93,29 @@ class RDSController extends Controller
     {
         $perPage = $request->input('per_page', 10); // Default to 10 if not provided
         $page = $request->input('page', 1);
+        $searchKey = $request->input('search_key', ''); // Default to empty string if not provided
+        $filters = $request->input('filters', []); // Expecting an array of filters
 
-        // Fetch paginated results
-        $rdsItems = RDS::paginate($perPage, ['*'], 'page', $page);
+        // Fetch paginated results with optional search and filters
+        $query = RDS::query();
+
+        // Apply search if provided
+        if (!empty($searchKey)) {
+            $query->where(function ($q) use ($searchKey) {
+                $q->where('title_description', 'ILIKE', "%{$searchKey}%");
+            });
+        }
+
+        // Apply filters if provided
+        if (!empty($filters) && is_array($filters)) {
+            foreach ($filters as $filter) {
+                if (!empty($filter['column']) && isset($filter['value'])) {
+                    $query->where($filter['column'], 'ILIKE', "%{$filter['value']}%");
+                }
+            }
+        }
+
+        $rdsItems = $query->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
             'success' => true,
