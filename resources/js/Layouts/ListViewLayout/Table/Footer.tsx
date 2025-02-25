@@ -1,23 +1,19 @@
 import React from "react";
 import { Pagination } from "@heroui/react";
+import { useTableOptions } from "@/Contexts/TableOptionsContext";
 
 interface FooterContentProps {
-    page: number;
+    tableid: string; // Adjust type based on your data structure
     pages: number;
-    setPage: (page: number) => void;
-    selectedKeys?: any[]; // Adjust type based on your data structure
-    itemsLength?: number;
-    hasSearchFilter?: boolean;
 }
 
-const FooterContent: React.FC<FooterContentProps> = ({
-    page,
-    pages,
-    setPage,
-    selectedKeys,
-    itemsLength,
-    hasSearchFilter,
-}) => {
+const FooterContent: React.FC<FooterContentProps> = ({ tableid, pages }) => {
+    const { getTableOptions, updateTableOptions } = useTableOptions();
+
+    // Get the table options for this specific table
+    const tableOptions = getTableOptions(tableid);
+    const { current_page } = tableOptions;
+
     return (
         <div className="py-2 px-2 flex justify-center items-center">
             <Pagination
@@ -25,9 +21,13 @@ const FooterContent: React.FC<FooterContentProps> = ({
                 showControls
                 showShadow
                 color="primary"
-                page={page}
+                page={parseInt(current_page)}
                 total={pages}
-                onChange={setPage}
+                onChange={(page) =>
+                    updateTableOptions(tableid, {
+                        current_page: page.toString(),
+                    })
+                }
             />
         </div>
     );

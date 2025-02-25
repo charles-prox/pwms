@@ -5,7 +5,6 @@ import { columns } from "./columns";
 import UploadForm from "./forms/UploadForm";
 import { axiosInstance } from "@/Utils/axios";
 import { useTableOptions } from "@/Contexts/TableOptionsContext";
-import { Filter } from "@/Utils/types";
 
 interface RdsItem {
     id: number;
@@ -31,6 +30,7 @@ const RdsPage: React.FC = () => {
 
     const [rdsItems, setRdsItems] = useState<RdsItem[]>([]);
     const [totalPages, setTotalPages] = useState<number>(1);
+    const [totalRdsItems, setTotalRdsItems] = useState<number>(0);
 
     const fetchRdsItems = async (): Promise<void> => {
         setIsDataLoading(true);
@@ -50,11 +50,13 @@ const RdsPage: React.FC = () => {
                     filters: filters,
                 },
             });
+            // console.log("response: ", response.data.data);
 
             setRdsItems(response.data.data.data);
             setTotalPages(
                 Math.ceil(response.data.data.total / parseInt(per_page))
             );
+            setTotalRdsItems(response.data.data.total);
         } catch (error: unknown) {
             console.error("Error fetching RDS items", error);
             setIsDataLoading(false);
@@ -82,32 +84,11 @@ const RdsPage: React.FC = () => {
                 </div>
                 <div className="w-full">
                     <ListViewLayout
+                        tableid={TABLE_ID}
                         columns={columns}
                         rows={rdsItems}
-                        page={parseInt(current_page)}
                         pages={totalPages}
-                        setPage={(newPage) =>
-                            updateTableOptions(TABLE_ID, {
-                                current_page: newPage.toString(),
-                            })
-                        }
-                        rowsPerPage={parseInt(per_page)}
-                        setRowsPerPage={(newRowsPerPage) =>
-                            updateTableOptions(TABLE_ID, {
-                                per_page: newRowsPerPage.toString(),
-                            })
-                        }
-                        setSearchKey={(key) =>
-                            updateTableOptions(TABLE_ID, {
-                                search_key: key,
-                                current_page: "1",
-                            })
-                        }
-                        setFilter={(filters: Filter[]) =>
-                            updateTableOptions(TABLE_ID, {
-                                filters: filters,
-                            })
-                        }
+                        totalRows={totalRdsItems}
                         onOpenUploadForm={() =>
                             setIsFileUploadOpen(!isFileUploadOpen)
                         }

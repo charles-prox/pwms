@@ -23,40 +23,38 @@ import {
     TrashIcon,
 } from "../icons";
 import { useTheme } from "@/Contexts/ThemeContext";
-import { Filter } from "@/Utils/types";
+import { useTableOptions } from "@/Contexts/TableOptionsContext";
 
 interface HeaderContentProps {
-    statusFilter?: Selection;
-    setStatusFilter?: (keys: any) => void;
-    rows: any[];
+    totalRows: number;
     columns: any[];
     itemName: string;
-    rowsPerPage?: number;
-    onRowsPerPageChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
     onOpenUploadForm: (() => void) | null;
     onOpenAddNewForm: (() => void) | null;
-    setSearch: (key: string) => void;
-    setFilter: (filters: Filter[]) => void; // Update type here
+    tableid: string; // Unique table identifier
 }
 
 const HeaderContent: React.FC<HeaderContentProps> = ({
-    rows,
+    totalRows,
     columns,
     itemName,
-    rowsPerPage,
-    onRowsPerPageChange,
     onOpenUploadForm,
     onOpenAddNewForm,
-    setSearch,
-    setFilter,
+    tableid,
 }) => {
+    const { getTableOptions, updateTableOptions } = useTableOptions();
+
+    // Get the table options for this specific table
+    const tableOptions = getTableOptions(tableid);
+    const { per_page, search_key, filters: appliedFilters } = tableOptions;
+
     const theme = useTheme().theme;
     const hasAddNew = !!onOpenAddNewForm;
     const hasUpload = !!onOpenUploadForm;
-    const [searchValue, setSearchValue] = React.useState("");
+    const [searchValue, setSearchValue] = React.useState(search_key || "");
     const [filters, setFilters] = React.useState<
         { column: string; value: string }[]
-    >([]);
+    >(appliedFilters || []);
 
     // Function to add a new filter
     const addFilter = () => {
@@ -101,7 +99,10 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
 
     const onClear = React.useCallback(() => {
         setSearchValue("");
-        setSearch("");
+        updateTableOptions(tableid, {
+            search_key: "",
+            current_page: "1",
+        });
     }, []);
 
     return (
@@ -120,7 +121,12 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                         />
                         <Button
                             color="primary"
-                            onPress={() => setSearch(searchValue)}
+                            onPress={() =>
+                                updateTableOptions(tableid, {
+                                    search_key: searchValue,
+                                    current_page: "1",
+                                })
+                            }
                         >
                             Search
                         </Button>
@@ -199,7 +205,15 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                                         {filters.length > 0 && (
                                             <Button
                                                 color="danger"
-                                                onPress={() => setFilters([])}
+                                                onPress={() => {
+                                                    setFilters([]);
+                                                    updateTableOptions(
+                                                        tableid,
+                                                        {
+                                                            filters: null,
+                                                        }
+                                                    );
+                                                }}
                                                 className="gap-2"
                                                 startContent={<EraserIcon />}
                                             >
@@ -211,7 +225,12 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                                             <Button
                                                 color="primary"
                                                 onPress={() =>
-                                                    setFilter(filters)
+                                                    updateTableOptions(
+                                                        tableid,
+                                                        {
+                                                            filters: filters,
+                                                        }
+                                                    )
                                                 }
                                                 className="gap-2"
                                                 startContent={<FilterIcon />}
@@ -290,14 +309,21 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                 </div>
                 <div className="flex justify-between items-center">
                     <span className="text-default-400 text-small">
-                        Total {rows.length} {itemName}
+                        Total {totalRows} {itemName}
                     </span>
                     <label className="flex items-center text-default-400 text-small">
                         Rows per page:
                         <select
                             className="bg-transparent outline-none text-default-400 text-small"
-                            onChange={onRowsPerPageChange}
-                            value={rowsPerPage}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLSelectElement>
+                            ) => {
+                                updateTableOptions(tableid, {
+                                    per_page: Number(e.target.value),
+                                    current_page: "1",
+                                });
+                            }}
+                            value={per_page || 10}
                         >
                             <option value="10">10</option>
                             <option value="15">15</option>
