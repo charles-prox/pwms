@@ -12,25 +12,16 @@ import {
     DropdownMenu,
     DropdownItem,
     Selection,
-    ChipProps,
     SortDescriptor,
     Spinner,
 } from "@heroui/react";
 import { VerticalDotsIcon } from "./icons";
 import FooterContent from "./Table/Footer";
 import HeaderContent from "./Table/Header";
-import { filter } from "framer-motion/client";
-import { Filter } from "@/Utils/types";
 
 export function capitalize(s: string) {
     return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
 }
-
-export const statusOptions = [
-    { name: "Active", uid: "active" },
-    { name: "Paused", uid: "paused" },
-    { name: "Vacation", uid: "vacation" },
-];
 
 type RowType = {
     [key: string]: any; // Allows any key with any value type
@@ -42,14 +33,10 @@ interface LayoutProps {
     rows: RowType[];
     onOpenUploadForm?: () => void;
     onOpenAddNewForm?: () => void;
-    page: number;
     pages: number;
-    setPage: (page: number) => void;
-    rowsPerPage: number;
-    setRowsPerPage: (perPage: number) => void;
-    setSearchKey: (key: string) => void;
-    setFilter: (filters: Filter[]) => void; // Update type here
     isDataLoading: boolean;
+    tableid: string;
+    totalRows: number;
 }
 
 export default function ListViewLayout({
@@ -58,19 +45,14 @@ export default function ListViewLayout({
     rows,
     onOpenUploadForm,
     onOpenAddNewForm,
-    page,
     pages,
-    setPage,
-    rowsPerPage,
-    setRowsPerPage,
-    setSearchKey,
-    setFilter,
     isDataLoading,
+    tableid,
+    totalRows,
 }: LayoutProps) {
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
         new Set([])
     );
-
     const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
         column: "module",
         direction: "ascending",
@@ -111,43 +93,32 @@ export default function ListViewLayout({
         []
     );
 
-    const onRowsPerPageChange = React.useCallback(
-        (e: React.ChangeEvent<HTMLSelectElement>) => {
-            setRowsPerPage(Number(e.target.value));
-            setPage(1);
-        },
-        []
-    );
-
     return (
         <Table
             isHeaderSticky
             aria-label="Example table with custom cells, pagination and sorting"
-            bottomContent={
-                <FooterContent page={page} pages={pages} setPage={setPage} />
-            }
+            bottomContent={<FooterContent tableid={tableid} pages={pages} />}
             bottomContentPlacement="outside"
             classNames={{
                 wrapper: "h-[calc(100vh-430px)]",
+                tbody: "relative",
+                loadingWrapper: "bg-black/50 backdrop-blur-md",
             }}
             selectedKeys={selectedKeys}
             selectionMode="single"
             sortDescriptor={sortDescriptor}
             topContent={
                 <HeaderContent
-                    setSearch={(key: string) => setSearchKey(key)}
-                    setFilter={(filters: Filter[]) => setFilter(filters)}
-                    rows={rows}
+                    totalRows={totalRows}
                     columns={columns}
                     itemName={itemName}
-                    rowsPerPage={rowsPerPage}
-                    onRowsPerPageChange={onRowsPerPageChange}
                     onOpenUploadForm={
                         onOpenUploadForm ? onOpenUploadForm : null
                     }
                     onOpenAddNewForm={
                         onOpenAddNewForm ? onOpenAddNewForm : null
                     }
+                    tableid={tableid}
                 />
             }
             topContentPlacement="outside"
@@ -168,15 +139,16 @@ export default function ListViewLayout({
             <TableBody
                 emptyContent={"No rows found"}
                 items={rows}
-                isLoading={isDataLoading}
+                isLoading={true}
                 loadingContent={
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md">
-                        <Spinner
-                            classNames={{ label: "text-white text-sm" }}
-                            label="Loading..."
-                            variant="simple"
-                        />
-                    </div>
+                    <Spinner
+                        classNames={{
+                            label: "text-white text-sm",
+                            base: "fixed top-10",
+                        }}
+                        label="Loading..."
+                        variant="simple"
+                    />
                 }
             >
                 {(item) => (
