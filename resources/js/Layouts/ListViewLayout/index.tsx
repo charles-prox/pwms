@@ -102,7 +102,8 @@ export default function ListViewLayout({
             classNames={{
                 wrapper: "h-[calc(100vh-430px)]",
                 tbody: "relative",
-                loadingWrapper: "bg-black/50 backdrop-blur-md",
+                loadingWrapper:
+                    "absolute inset-0 bg-black/50 backdrop-blur-md z-10",
             }}
             selectedKeys={selectedKeys}
             selectionMode="single"
@@ -141,14 +142,16 @@ export default function ListViewLayout({
                 items={rows}
                 isLoading={true}
                 loadingContent={
-                    <Spinner
-                        classNames={{
-                            label: "text-white text-sm",
-                            base: "fixed top-10",
-                        }}
-                        label="Loading..."
-                        variant="simple"
-                    />
+                    <div className="absolute inset-0 flex items-start justify-center">
+                        <Spinner
+                            classNames={{
+                                label: "text-white text-sm",
+                                base: "sticky top-20",
+                            }}
+                            label="Loading..."
+                            variant="simple"
+                        />
+                    </div>
                 }
             >
                 {(item) => (
