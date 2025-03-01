@@ -13,16 +13,20 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('location', function (Blueprint $table) {
+        Schema::create('locations', function (Blueprint $table) {
             $table->id();
-            $table->integer('floor');
+            $table->enum('floor', ['ground', 'mezzanine']);
             $table->integer('rack');
             $table->integer('bay');
             $table->integer('level');
-            $table->bigInteger('position');
-            $table->integer('capacity');
-            $table->integer('current_boxes');
+            $table->integer('total_positions')->default(9); // Fixed per level
+            $table->integer('capacity_per_position')->default(2); // Each position can hold 2 boxes
+            $table->integer('current_boxes')->default(0); // Track occupied boxes
+            $table->bigInteger('office_id')->nullable(); // Office assignment
+            $table->foreign('office_id')->references('id')->on('offices')->onDelete('cascade');
+            $table->timestamps();
         });
+
 
         Schema::enableForeignKeyConstraints();
     }

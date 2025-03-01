@@ -11,9 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('boxes', function (Blueprint $table) {
+        Schema::create('old_boxes', function (Blueprint $table) {
             $table->id();
             $table->string('box_code', 50)->unique();
             $table->text('description');
@@ -23,8 +21,6 @@ return new class extends Migration
             $table->string('priority_level');
             $table->date('disposal_date');
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('boxes');
+        Schema::dropIfExists('old_boxes');
     }
 };

@@ -31,6 +31,7 @@ interface InputProps {
 type Key = string | number;
 interface SelectProps<T> {
     label: string;
+    variant?: "flat" | "bordered" | "faded" | "underlined" | undefined;
     labelPlacement?: "inside" | "outside" | "outside-left"; // adjust according to your needs
     placeholder?: string;
     maxWidthClass?: string | number; // optional, can be used to style the component

@@ -17,10 +17,15 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('acronym')->nullable();
             $table->string('type');
+
+            // Nullable pro_code to reference regions
             $table->integer('pro_code')->nullable();
-            $table->foreign('pro_code')->references('pro_code')->on('regions')->default(15);
+            $table->foreign('pro_code')->references('pro_code')->on('regions');
+
+            // Parent office (Self-referencing offices)
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('offices');
+            $table->foreign('parent_id')->references('id')->on('offices')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

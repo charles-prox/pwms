@@ -103,7 +103,7 @@ export default function ListViewLayout({
                 wrapper: "h-[calc(100vh-430px)]",
                 tbody: "relative",
                 loadingWrapper:
-                    "absolute inset-0 bg-black/50 backdrop-blur-md z-10",
+                    "absolute inset-0 bg-black/50 backdrop-blur-md z-50",
             }}
             selectedKeys={selectedKeys}
             selectionMode="single"
@@ -140,7 +140,7 @@ export default function ListViewLayout({
             <TableBody
                 emptyContent={"No rows found"}
                 items={rows}
-                isLoading={true}
+                isLoading={isDataLoading}
                 loadingContent={
                     <div className="absolute inset-0 flex items-start justify-center">
                         <Spinner
