@@ -28,6 +28,7 @@ const Select = <T,>({
     selectedKeys,
     menuTrigger,
     onSelectionChange,
+    variant = undefined,
 }: SelectProps<T>) => {
     return (
         <>
@@ -39,7 +40,7 @@ const Select = <T,>({
                     label={label}
                     labelPlacement={labelPlacement}
                     placeholder={placeholder}
-                    variant="bordered"
+                    variant={variant}
                     inputProps={{
                         classNames: {
                             label: "text-black dark:text-white/90 font-bold",
@@ -71,7 +72,7 @@ const Select = <T,>({
             ) : (
                 <NextuiSelect
                     label={label}
-                    variant="bordered"
+                    variant={variant}
                     placeholder={placeholder}
                     selectedKeys={selectedKeys}
                     onSelectionChange={onSelectionChange} // Use onChange here
@@ -89,10 +90,7 @@ const Select = <T,>({
                     }}
                 >
                     {Array.from(items ?? []).map((item: any) => (
-                        <SelectItem
-                            key={item[keyField]}
-                            value={item[valueField || keyField]}
-                        >
+                        <SelectItem key={item[valueField || keyField]}>
                             {item[labelField]}
                         </SelectItem>
                     ))}

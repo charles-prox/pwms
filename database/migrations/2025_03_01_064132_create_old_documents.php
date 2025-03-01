@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('documents', function (Blueprint $table) {
+        Schema::create('old_documents', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('box_id');
-            $table->foreign('box_id')->references('id')->on('boxes');
+            $table->foreign('box_id')->references('id')->on('old_boxes');
             $table->bigInteger('rds_id');
             $table->foreign('rds_id')->references('id')->on('rds');
             $table->string('document_code', 50)->nullable();
@@ -28,8 +26,6 @@ return new class extends Migration
             $table->string('added_by');
             $table->foreign('added_by')->references('hris_id')->on('users');
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -37,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('documents');
+        Schema::dropIfExists('old_documents');
     }
 };

@@ -21,18 +21,20 @@ const AppLayout = ({
                 <AppNavbar />
 
                 {/* Main Content */}
-                <div className="flex">
+                <div className="flex ">
                     {/* Sidebar */}
                     <Sidebar />
 
                     {/* Main Content Area */}
-                    <div
-                        className={`flex-1 overflow-y-auto p-10 h-[calc(100vh-${navHeight})]`}
-                    >
-                        <TableOptionsProvider>{children}</TableOptionsProvider>
+                    <div className="flex flex-1 flex-col h-[calc(100vh - ${navHeight})] overflow-y-auto">
+                        <div className="p-10">
+                            <TableOptionsProvider>
+                                {children}
+                            </TableOptionsProvider>
+                        </div>
+                        <Footer />
                     </div>
                 </div>
-                <Footer />
             </div>
         </main>
     );

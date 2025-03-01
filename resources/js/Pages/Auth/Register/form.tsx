@@ -50,7 +50,7 @@ const RegisterForm = () => {
                             placeholder="Enter your HRIS ID"
                             value={data.hris_id}
                             onChange={(e) => setData("hris_id", e.target.value)}
-                            variant="bordered"
+                            variant="flat"
                             errorMessage={errors.hris_id}
                             isRequired
                         />
@@ -61,11 +61,12 @@ const RegisterForm = () => {
                             value={data.user_id}
                             onChange={(e) => setData("user_id", e.target.value)}
                             errorMessage={errors.user_id}
-                            variant="bordered"
+                            variant="flat"
                             isRequired
                         />
                         <Select
                             autocomplete={true}
+                            variant="flat"
                             name="employment_status"
                             label="Employment Status"
                             placeholder="Current employment status"
@@ -92,11 +93,12 @@ const RegisterForm = () => {
                                 setData("position", e.target.value)
                             }
                             errorMessage={errors.position}
-                            variant="bordered"
+                            variant="flat"
                             isRequired
                         />
                         <Select
                             autocomplete={true}
+                            variant="flat"
                             name="office_id"
                             label="Office"
                             placeholder={
@@ -127,7 +129,7 @@ const RegisterForm = () => {
                                 setData("first_name", e.target.value)
                             }
                             errorMessage={errors.first_name}
-                            variant="bordered"
+                            variant="flat"
                             isRequired
                         />
                         <Input
@@ -138,7 +140,7 @@ const RegisterForm = () => {
                             onChange={(e) =>
                                 setData("middle_name", e.target.value)
                             }
-                            variant="bordered"
+                            variant="flat"
                             errorMessage={errors.middle_name}
                         />
                         <Input
@@ -149,7 +151,7 @@ const RegisterForm = () => {
                             onChange={(e) =>
                                 setData("last_name", e.target.value)
                             }
-                            variant="bordered"
+                            variant="flat"
                             errorMessage={errors.last_name}
                             isRequired
                         />
@@ -162,7 +164,7 @@ const RegisterForm = () => {
                             placeholder="Enter your email"
                             value={data.email}
                             onChange={(e) => setData("email", e.target.value)}
-                            variant="bordered"
+                            variant="flat"
                             errorMessage={errors.email}
                             isRequired
                         />
@@ -174,7 +176,7 @@ const RegisterForm = () => {
                             onChange={(e) =>
                                 setData("contact_no", e.target.value)
                             }
-                            variant="bordered"
+                            variant="flat"
                             errorMessage={errors.contact_no}
                             isRequired
                         />
@@ -189,7 +191,7 @@ const RegisterForm = () => {
                             onChange={(e) =>
                                 setData("password", e.target.value)
                             }
-                            variant="bordered"
+                            variant="flat"
                             errorMessage={errors.password}
                         />
                         <PasswordInput
@@ -200,7 +202,7 @@ const RegisterForm = () => {
                             onChange={(e) =>
                                 setData("password_confirmation", e.target.value)
                             }
-                            variant="bordered"
+                            variant="flat"
                             errorMessage={errors.password_confirmation}
                         />
                     </div>
