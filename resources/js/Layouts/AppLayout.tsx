@@ -21,13 +21,15 @@ const AppLayout = ({
                 <AppNavbar />
 
                 {/* Main Content */}
-                <div className="flex ">
+                <div className=" relative flex flex-grow h-[calc(100vh - 64px)] overflow-auto">
                     {/* Sidebar */}
                     <Sidebar />
 
                     {/* Main Content Area */}
-                    <div className="flex flex-1 flex-col h-[calc(100vh - ${navHeight})] overflow-y-auto">
-                        <div className="p-10">
+                    <div className={`flex flex-grow flex-col overflow-auto `}>
+                        <div
+                            className={`p-10 mx-5 flex-grow bg-gray-900/10 dark:bg-gray-100/10 rounded-lg overflow-auto`}
+                        >
                             <TableOptionsProvider>
                                 {children}
                             </TableOptionsProvider>

@@ -1,3 +1,5 @@
+import { DateValue, RangeValue } from "@heroui/react";
+
 // ========================
 // NAVIGATION TYPES
 // ========================
@@ -33,4 +35,24 @@ export interface SelectedRequestView {
 export interface Filter {
     column: string;
     value: string;
+}
+
+// ========================
+// FORM TYPES
+// ========================
+export interface BoxFormState {
+    box_code: string;
+    priority_level: string;
+    remarks: string;
+    disposal_date: string;
+    office: string;
+    box_details: BoxDetails[];
+}
+
+export interface BoxDetails {
+    id: number;
+    document_title: string | null;
+    rds_number: string;
+    retention_period: string;
+    document_date: RangeValue<DateValue> | null | undefined;
 }

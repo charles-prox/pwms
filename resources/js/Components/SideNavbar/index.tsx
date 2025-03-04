@@ -7,8 +7,8 @@ import NavItems from "./NavItems";
 import { AnimationOptions } from "@/Utils/types";
 
 const Sidebar: React.FC = () => {
-    const minSideNavWidth = 16;
-    const maxSideNavWidth = 60;
+    const minSideNavWidth = 3.8;
+    const maxSideNavWidth = 15;
     const animationOptions: AnimationOptions = {
         delay: 200,
         duration: 100,
@@ -19,18 +19,19 @@ const Sidebar: React.FC = () => {
     return (
         <aside
             className={`
-                ${
-                    sideNavState === "collapse"
-                        ? `w-${minSideNavWidth}`
-                        : `w-${maxSideNavWidth}`
-                } 
                 flex-shrink-0
-                transition-width 
-                delay-${animationOptions.delay} 
-                duration-${animationOptions.duration}
+                transition-all
+                delay-[${animationOptions.delay}ms]
+                duration-[${animationOptions.duration}ms]
                 overflow-hidden
                 p-2 
             `}
+            style={{
+                width:
+                    sideNavState === "collapse"
+                        ? `${minSideNavWidth}rem`
+                        : `${maxSideNavWidth}rem`,
+            }}
         >
             <div className="text-right">
                 <Button

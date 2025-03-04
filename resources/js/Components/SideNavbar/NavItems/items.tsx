@@ -9,6 +9,7 @@ import {
     OfficesIcon,
     RdsIcon,
     ReportsIcon,
+    StorageEntryIcon,
     UsersIcon,
 } from "../icons";
 import { NavItem } from "@/Utils/types";
@@ -94,5 +95,12 @@ export const items: NavItem[] = [
         label: "Locations",
         icon: (size) => <LocationIcon width={size} height={size} />,
         url: "/location",
+    },
+    {
+        type: "link",
+        key: "storage-record-entry",
+        label: "Storage Record Entry",
+        icon: (size) => <StorageEntryIcon width={size} height={size} />,
+        url: "/storage-record-entry",
     },
 ];

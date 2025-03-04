@@ -87,6 +87,8 @@ const Select = <T,>({
                         base: maxWidthClass
                             ? getTailwindWidthClass(maxWidthClass)
                             : "", // pass maxWidth if provided
+                        innerWrapper: "text-foreground/60",
+                        selectorIcon: "text-foreground",
                     }}
                 >
                     {Array.from(items ?? []).map((item: any) => (

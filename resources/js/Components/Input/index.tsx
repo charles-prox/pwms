@@ -18,6 +18,7 @@ const Input = <T,>({
     maxWidthClass,
     variant,
     type = "text", // Default type is text, can be changed as needed
+    description,
 }: InputProps) => {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (onChange) onChange(event); // Call onChange with the dynamic type
@@ -42,11 +43,13 @@ const Input = <T,>({
                 label: "text-black dark:text-white/90 font-bold",
                 inputWrapper: "border-slate-400",
                 base: maxWidthClass ? getTailwindWidthClass(maxWidthClass) : "", // pass maxWidth if provided
+                description: "text-default-500/50",
             }}
             startContent={startContent}
             endContent={endContent}
             isRequired={isRequired}
             isReadOnly={isReadOnly}
+            description={description}
         />
     );
 };
