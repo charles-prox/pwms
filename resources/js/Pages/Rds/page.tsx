@@ -74,7 +74,7 @@ const RdsPage: React.FC = () => {
     return (
         <div>
             <Head title="RDS Management" />
-            <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-10 ">
                 <div>
                     <h1 className="text-2xl font-bold">RDS Management</h1>
                     <p>

@@ -87,39 +87,60 @@ class RDSController extends Controller
     }
 
     /**
-     * Get all RDS items.
+     * Get RDS items with optional pagination, search, and filters.
      */
     public function index(Request $request): JsonResponse
     {
-        $perPage = $request->input('per_page', 10); // Default to 10 if not provided
+        $perPage = $request->input('per_page', 10); // Default to 10
         $page = $request->input('page', 1);
-        $searchKey = $request->input('search_key', ''); // Default to empty string if not provided
-        $filters = $request->input('filters', []); // Expecting an array of filters
+        $searchKey = $request->input('search_key', ''); // Search term
+        $filters = $request->input('filters', []); // Filters
+        $fetchAll = $request->input('all', false); // If true, fetch all data
 
-        // Fetch paginated results with optional search and filters
         $query = RDS::query();
 
-        // Apply search if provided
+        // Define filterable columns
+        $filterable_columns = ['title_description', 'department', 'module', 'item_no'];
+
+        // Apply search
         if (!empty($searchKey)) {
-            $query->where(function ($q) use ($searchKey) {
-                $q->where('title_description', 'ILIKE', "%{$searchKey}%");
-            });
+            $query->where('title_description', 'ILIKE', "%{$searchKey}%");
         }
 
-        // Apply filters if provided
+        // Apply filters with validation
         if (!empty($filters) && is_array($filters)) {
             foreach ($filters as $filter) {
-                if (!empty($filter['column']) && isset($filter['value'])) {
+                if (
+                    !empty($filter['column']) &&
+                    in_array($filter['column'], $filterable_columns, true) &&
+                    isset($filter['value'])
+                ) {
                     $query->where($filter['column'], 'ILIKE', "%{$filter['value']}%");
                 }
             }
         }
 
-        $rdsItems = $query->paginate($perPage, ['*'], 'page', $page);
+        // Fetch all records or paginate
+        $rdsItems = $fetchAll
+            ? $query->get()
+            : $query->paginate($perPage, ['*'], 'page', $page);
+
+        // Format response data
+        $formattedData = $rdsItems->map(function ($rds) {
+            return [
+                'id' => $rds->id,
+                'rds_number' => "RDS-" . $rds->module . " #" . $rds->item_no,
+                'title_description' => $rds->title_description,
+                'retention_period' => ((int) $rds->active + (int) $rds->storage + 1),
+                'department' => $rds->department,
+            ];
+        });
+        // dd($formattedData);
 
         return response()->json([
             'success' => true,
-            'data' => $rdsItems,
+            'data' => $fetchAll ? $formattedData : $rdsItems->setCollection($formattedData),
+            'filterable_columns' => $filterable_columns,
         ], 200);
     }
 }

@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/Utils/axios";
 import { useState, useEffect } from "react";
+import qs from "query-string"; // Helps with query parameter serialization
 
-// Define a generic type for the data that will be returned (it defaults to an empty array).
 type UseFetchResponse<T> = {
     data: T;
     loading: boolean;
@@ -9,12 +9,18 @@ type UseFetchResponse<T> = {
     refetch: () => void;
 };
 
+type FetchOptions = {
+    method?: "GET" | "POST";
+    body?: Record<string, unknown> | null;
+    params?: Record<string, unknown>; // Allows dynamic query params
+};
+
 const useFetch = <T>(
     url: string,
-    defaultValue: T = [] as T, // Default value is an empty array of type T
-    method: "GET" | "POST" = "GET", // Method can either be GET or POST
-    body: Record<string, unknown> | null = null // Body should be an object or null
+    defaultValue: T = [] as T,
+    options: FetchOptions = {}
 ): UseFetchResponse<T> => {
+    const { method = "GET", body = null, params = {} } = options;
     const [data, setData] = useState<T>(defaultValue);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -23,23 +29,21 @@ const useFetch = <T>(
         setLoading(true);
 
         try {
+            const queryString = qs.stringify(params, { skipNull: true });
+            const requestUrl = queryString ? `${url}?${queryString}` : url;
+
             let response;
             if (method === "POST" && body) {
-                response = await axiosInstance.post(url, body);
+                response = await axiosInstance.post(requestUrl, body);
             } else {
-                response = await axiosInstance.get(url);
+                response = await axiosInstance.get(requestUrl);
             }
 
-            if (response.data) {
-                setData(response.data); // Set the data if the response contains data
-            } else {
-                setData(defaultValue); // Otherwise, use the default value
-            }
+            setData(response.data ?? defaultValue);
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "An unknown error occurred"
             );
-            console.log("Error: ", err instanceof Error ? err.message : err);
             setData(defaultValue);
         } finally {
             setLoading(false);
@@ -48,7 +52,7 @@ const useFetch = <T>(
 
     useEffect(() => {
         fetchData();
-    }, [url]);
+    }, [url, JSON.stringify(params)]); // Re-fetch when params change
 
     return { data, loading, error, refetch: fetchData };
 };

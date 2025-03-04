@@ -33,10 +33,12 @@ interface LayoutProps {
     rows: RowType[];
     onOpenUploadForm?: () => void;
     onOpenAddNewForm?: () => void;
-    pages: number;
-    isDataLoading: boolean;
+    pages?: number;
+    isDataLoading?: boolean;
     tableid: string;
-    totalRows: number;
+    totalRows?: number;
+    enableFilters?: boolean;
+    enableSearch?: boolean;
 }
 
 export default function ListViewLayout({
@@ -45,10 +47,12 @@ export default function ListViewLayout({
     rows,
     onOpenUploadForm,
     onOpenAddNewForm,
-    pages,
+    pages = 0,
     isDataLoading,
     tableid,
-    totalRows,
+    totalRows = 0,
+    enableFilters,
+    enableSearch,
 }: LayoutProps) {
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
         new Set([])
@@ -97,11 +101,13 @@ export default function ListViewLayout({
         <Table
             isHeaderSticky
             aria-label="Example table with custom cells, pagination and sorting"
-            bottomContent={<FooterContent tableid={tableid} pages={pages} />}
+            bottomContent={
+                pages ? <FooterContent tableid={tableid} pages={pages} /> : null
+            }
             bottomContentPlacement="outside"
             classNames={{
-                wrapper: "h-[calc(100vh-430px)]",
-                tbody: "relative",
+                table: "relative min-h-[calc(100vh-512px)]",
+                wrapper: "w-full overflow-auto",
                 loadingWrapper:
                     "absolute inset-0 bg-black/50 backdrop-blur-md z-50",
             }}
@@ -120,6 +126,8 @@ export default function ListViewLayout({
                         onOpenAddNewForm ? onOpenAddNewForm : null
                     }
                     tableid={tableid}
+                    enableFilters={enableFilters}
+                    enableSearch={enableSearch}
                 />
             }
             topContentPlacement="outside"
@@ -146,7 +154,7 @@ export default function ListViewLayout({
                         <Spinner
                             classNames={{
                                 label: "text-white text-sm",
-                                base: "sticky top-20",
+                                base: "sticky top-1/2",
                             }}
                             label="Loading..."
                             variant="simple"

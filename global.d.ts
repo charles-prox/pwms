@@ -26,6 +26,7 @@ interface InputProps {
     color?: InputColors; // This is optional
     errorMessage?: string;
     isDisabled?: boolean;
+    description?: string;
 }
 
 type Key = string | number;

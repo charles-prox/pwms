@@ -7,7 +7,11 @@ import { useForm } from "@inertiajs/react";
 import { UserIdIcon } from "./icons";
 
 const LoginForm = () => {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm<{
+        hris_id: string;
+        password: string;
+        remember: boolean;
+    }>({
         hris_id: "",
         password: "",
         remember: false,
@@ -60,7 +64,9 @@ const LoginForm = () => {
                     <Checkbox
                         isSelected={data.remember}
                         name="remember"
-                        onChange={(e) => setData("remember", e.target.checked)}
+                        onValueChange={(isSelected) =>
+                            setData("remember", isSelected)
+                        }
                         size="sm"
                     >
                         Remember me

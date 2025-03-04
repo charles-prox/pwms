@@ -32,6 +32,8 @@ interface HeaderContentProps {
     onOpenUploadForm: (() => void) | null;
     onOpenAddNewForm: (() => void) | null;
     tableid: string; // Unique table identifier
+    enableSearch?: boolean;
+    enableFilters?: boolean;
 }
 
 const HeaderContent: React.FC<HeaderContentProps> = ({
@@ -41,6 +43,8 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
     onOpenUploadForm,
     onOpenAddNewForm,
     tableid,
+    enableSearch = true,
+    enableFilters = true,
 }) => {
     const { getTableOptions, updateTableOptions } = useTableOptions();
 
@@ -108,148 +112,164 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
     return (
         <>
             <div className="flex flex-col gap-4">
-                <div className="flex justify-between gap-3 items-end">
-                    <div className="flex gap-3">
-                        <Input
-                            isClearable
-                            className="w-full min-w-[400px] sm:max-w-[44%]"
-                            placeholder="Search by item..."
-                            startContent={<SearchIcon />}
-                            value={searchValue}
-                            onClear={onClear}
-                            onValueChange={onSearchChange}
-                        />
-                        <Button
-                            color="primary"
-                            onPress={() =>
-                                updateTableOptions(tableid, {
-                                    search_key: searchValue,
-                                    current_page: "1",
-                                })
-                            }
-                        >
-                            Search
-                        </Button>
-                    </div>
-                    <div className="flex gap-3">
-                        <Popover offset={10} placement="bottom">
-                            <Badge
-                                color="secondary"
-                                content={filters.length}
-                                isInvisible={filters.length === 0}
+                <div
+                    className={`flex ${
+                        enableSearch ? "justify-between" : "justify-end"
+                    } gap-3 items-end`}
+                >
+                    {enableSearch && (
+                        <div className="flex gap-3">
+                            <Input
+                                isClearable
+                                className="w-full min-w-[400px] sm:max-w-[44%]"
+                                placeholder="Search by item..."
+                                startContent={<SearchIcon />}
+                                value={searchValue}
+                                onClear={onClear}
+                                onValueChange={onSearchChange}
+                            />
+                            <Button
+                                color="primary"
+                                onPress={() =>
+                                    updateTableOptions(tableid, {
+                                        search_key: searchValue,
+                                        current_page: "1",
+                                    })
+                                }
                             >
-                                <PopoverTrigger>
-                                    <Button color="primary">Filters</Button>
-                                </PopoverTrigger>
-                            </Badge>
-                            <PopoverContent
-                                className={`w-[540px] ${theme} text-foreground`}
-                            >
-                                <div className="m-2 flex flex-col gap-2 w-full">
-                                    {filters.map((filter, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex flex-row gap-2 items-center"
-                                        >
-                                            <Select
-                                                className="min-w-md"
-                                                label="Select a column"
-                                                size="sm"
-                                                selectedKeys={[filter.column]}
-                                                disabledKeys={filters
-                                                    .filter(
-                                                        (_, i) => i !== index
-                                                    )
-                                                    .map((f) => f.column)}
-                                                onChange={(e) =>
-                                                    updateFilter(
-                                                        index,
-                                                        "column",
-                                                        e.target.value
-                                                    )
-                                                }
+                                Search
+                            </Button>
+                        </div>
+                    )}
+                    <div className="flex gap-3">
+                        {enableFilters && (
+                            <Popover offset={10} placement="bottom">
+                                <Badge
+                                    color="secondary"
+                                    content={filters.length}
+                                    isInvisible={filters.length === 0}
+                                >
+                                    <PopoverTrigger>
+                                        <Button color="primary">Filters</Button>
+                                    </PopoverTrigger>
+                                </Badge>
+                                <PopoverContent
+                                    className={`w-[540px] ${theme} text-foreground`}
+                                >
+                                    <div className="m-2 flex flex-col gap-2 w-full">
+                                        {filters.map((filter, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex flex-row gap-2 items-center"
                                             >
-                                                {columns.map((column) => (
-                                                    <SelectItem
-                                                        key={column.uid}
-                                                    >
-                                                        {column.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </Select>
-                                            <Input
-                                                label="Filter by value"
-                                                size="sm"
-                                                value={filter.value}
-                                                onChange={(e) =>
-                                                    updateFilter(
-                                                        index,
-                                                        "value",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                                <Select
+                                                    className="min-w-md"
+                                                    label="Select a column"
+                                                    size="sm"
+                                                    selectedKeys={[
+                                                        filter.column,
+                                                    ]}
+                                                    disabledKeys={filters
+                                                        .filter(
+                                                            (_, i) =>
+                                                                i !== index
+                                                        )
+                                                        .map((f) => f.column)}
+                                                    onChange={(e) =>
+                                                        updateFilter(
+                                                            index,
+                                                            "column",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                >
+                                                    {columns.map((column) => (
+                                                        <SelectItem
+                                                            key={column.uid}
+                                                        >
+                                                            {column.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                                <Input
+                                                    label="Filter by value"
+                                                    size="sm"
+                                                    value={filter.value}
+                                                    onChange={(e) =>
+                                                        updateFilter(
+                                                            index,
+                                                            "value",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
+                                                <Button
+                                                    isIconOnly
+                                                    size="sm"
+                                                    color="danger"
+                                                    onPress={() =>
+                                                        removeFilter(index)
+                                                    }
+                                                >
+                                                    <TrashIcon size={14} />
+                                                </Button>
+                                            </div>
+                                        ))}
+                                        <div className="flex self-center gap-2">
+                                            {filters.length > 0 && (
+                                                <Button
+                                                    color="danger"
+                                                    onPress={() => {
+                                                        setFilters([]);
+                                                        updateTableOptions(
+                                                            tableid,
+                                                            {
+                                                                filters: null,
+                                                            }
+                                                        );
+                                                    }}
+                                                    className="gap-2"
+                                                    startContent={
+                                                        <EraserIcon />
+                                                    }
+                                                >
+                                                    Clear Filters
+                                                </Button>
+                                            )}
+
+                                            {filters.length > 0 && (
+                                                <Button
+                                                    color="primary"
+                                                    onPress={() =>
+                                                        updateTableOptions(
+                                                            tableid,
+                                                            {
+                                                                filters:
+                                                                    filters,
+                                                            }
+                                                        )
+                                                    }
+                                                    className="gap-2"
+                                                    startContent={
+                                                        <FilterIcon />
+                                                    }
+                                                >
+                                                    Apply Filters
+                                                </Button>
+                                            )}
                                             <Button
-                                                isIconOnly
-                                                size="sm"
-                                                color="danger"
-                                                onPress={() =>
-                                                    removeFilter(index)
-                                                }
+                                                color="secondary"
+                                                onPress={addFilter}
+                                                className="gap-2"
+                                                startContent={<PlusIcon />}
                                             >
-                                                <TrashIcon size={14} />
+                                                Add Filter
                                             </Button>
                                         </div>
-                                    ))}
-                                    <div className="flex self-center gap-2">
-                                        {filters.length > 0 && (
-                                            <Button
-                                                color="danger"
-                                                onPress={() => {
-                                                    setFilters([]);
-                                                    updateTableOptions(
-                                                        tableid,
-                                                        {
-                                                            filters: null,
-                                                        }
-                                                    );
-                                                }}
-                                                className="gap-2"
-                                                startContent={<EraserIcon />}
-                                            >
-                                                Clear Filters
-                                            </Button>
-                                        )}
-
-                                        {filters.length > 0 && (
-                                            <Button
-                                                color="primary"
-                                                onPress={() =>
-                                                    updateTableOptions(
-                                                        tableid,
-                                                        {
-                                                            filters: filters,
-                                                        }
-                                                    )
-                                                }
-                                                className="gap-2"
-                                                startContent={<FilterIcon />}
-                                            >
-                                                Apply Filters
-                                            </Button>
-                                        )}
-                                        <Button
-                                            color="secondary"
-                                            onPress={addFilter}
-                                            className="gap-2"
-                                            startContent={<PlusIcon />}
-                                        >
-                                            Add Filter
-                                        </Button>
                                     </div>
-                                </div>
-                            </PopoverContent>
-                        </Popover>
+                                </PopoverContent>
+                            </Popover>
+                        )}
                         {hasAddNew && !hasUpload ? (
                             // Only "Add New" button if `onOpenAddNewForm` is defined
                             <Button

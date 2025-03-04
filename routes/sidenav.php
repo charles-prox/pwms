@@ -56,6 +56,10 @@ Route::middleware([
         return Inertia::render('Locations');
     })->name('location');
 
+    Route::get('/storage-record-entry', function () {
+        return Inertia::render('StorageRecordEntry');
+    })->name('storage.record.entry');
+
 
     // If you have nested routes or dynamic routes, you can add them as well
     Route::get('/request-storage/{id}', function ($id) {
