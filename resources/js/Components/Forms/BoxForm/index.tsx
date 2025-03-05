@@ -37,16 +37,17 @@ const priorityLevels = [
 const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
     const {
         boxData,
-        setBoxData,
         onBoxCodeChange,
         onPriorityLevelChange,
-        onDisposalDateChange,
-        onAddDocument,
-        onDeleteDocument,
+        addDocument,
+        deleteDocument,
         onDocumentChange,
         onOfficeChange,
+        parseDateRange,
+        rdsData,
+        rdsLoading,
+        rdsError,
     } = useBoxForm();
-    const { rdsData, loading, error, setFetchAll, refetch } = useRdsData();
     const {
         data: offices,
         loading: loadingOffices,
@@ -56,14 +57,13 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
     const { theme } = useTheme();
 
     React.useEffect(() => {
-        setFetchAll(true); // Enable fetching all records
-        refetch(); // Trigger API call
-    }, []);
+        console.log("Box data changed", boxData);
+    }, [boxData]);
 
     return (
         <Modal
             isOpen={isOpen}
-            placement="top-center"
+            placement="top"
             backdrop="blur"
             className={`${theme}`}
             size="4xl"
@@ -95,7 +95,10 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                 labelField="label"
                                 menuTrigger="input"
                                 selectedKeys={boxData.priority_level}
-                                onSelectionChange={onPriorityLevelChange}
+                                onSelectionChange={(value) => {
+                                    console.log(value);
+                                    onPriorityLevelChange(value);
+                                }}
                                 isClearable={false}
                                 errorMessage={errors.priority_level}
                                 isRequired
@@ -111,7 +114,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                     color="primary"
                                     // variant="flat"
                                     size="sm"
-                                    onPress={onAddDocument}
+                                    onPress={addDocument}
                                     endContent={<PlusIcon />}
                                 >
                                     Add Document
@@ -131,7 +134,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 name="document_title"
                                                 label="Document Title"
                                                 placeholder={
-                                                    loading
+                                                    rdsLoading
                                                         ? "Loading..."
                                                         : "Select document title"
                                                 }
@@ -154,17 +157,19 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 }
                                                 isClearable={false}
                                                 errorMessage={
-                                                    error
+                                                    rdsError
                                                         ? "Failed to load RDS data"
                                                         : errors.priority_level
                                                 }
                                                 isRequired
-                                                isDisabled={loading}
+                                                isDisabled={rdsLoading}
                                             />
 
                                             <DateRangePicker
                                                 label="Document Date"
-                                                value={details.document_date}
+                                                value={parseDateRange(
+                                                    details.document_date
+                                                )}
                                                 aria-label="Select document date"
                                                 onChange={(value) =>
                                                     onDocumentChange(
@@ -182,7 +187,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 label="RDS number"
                                                 name="rds_number"
                                                 placeholder="This is automatically filled"
-                                                value={boxData.box_code}
+                                                value={details.rds_number}
                                                 maxWidthClass={"w-2/4"}
                                                 isReadOnly
                                             />
@@ -190,7 +195,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 label="Retention Period"
                                                 name="retention_period"
                                                 placeholder="This is automatically filled"
-                                                value={boxData.box_code}
+                                                value={details.retention_period}
                                                 maxWidthClass={"w-2/4"}
                                                 isReadOnly
                                             />
@@ -200,10 +205,14 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 variant="flat"
                                                 size="lg"
                                                 onPress={() =>
-                                                    onDeleteDocument(index)
+                                                    deleteDocument(index)
                                                 }
                                                 endContent={<TrashIcon />}
                                                 className="w-1/4"
+                                                isDisabled={
+                                                    boxData.box_details
+                                                        .length <= 1
+                                                }
                                             >
                                                 Remove
                                             </Button>
@@ -227,7 +236,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                 name="disposal_date"
                                 placeholder="This field is automatically filled."
                                 description="This is automatically calculated based on the largest retention period"
-                                value={boxData.box_code}
+                                value={boxData.disposal_date}
                                 maxWidthClass={"w-full"}
                                 isReadOnly
                             />

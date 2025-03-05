@@ -54,5 +54,6 @@ export interface BoxDetails {
     document_title: string | null;
     rds_number: string;
     retention_period: string;
-    document_date: RangeValue<DateValue> | null | undefined;
+    document_date: string | null;
+    disposal_date: string | null;
 }

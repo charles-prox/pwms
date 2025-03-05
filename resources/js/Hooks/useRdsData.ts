@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import useFetch from "./useFetch";
 
 interface RdsData {
@@ -14,13 +14,31 @@ interface Filter {
     value: string;
 }
 
-const useRdsData = () => {
+interface UseRdsDataOptions {
+    fetchAll?: boolean;
+}
+
+const useRdsData = ({
+    fetchAll: initialFetchAll = false,
+}: UseRdsDataOptions = {}) => {
     const [pagination, setPagination] = useState({ perPage: 10, page: 1 });
     const [searchKey, setSearchKey] = useState<string>("");
     const [filters, setFilters] = useState<Filter[]>([]);
-    const [fetchAll, setFetchAll] = useState<boolean>(false);
+    const [fetchAll, setFetchAll] = useState<boolean>(initialFetchAll); // ✅ Set initial value from options
 
-    // Use the fetch hook with dynamic params
+    // Memoize params to prevent unnecessary re-fetches
+    const params = useMemo(
+        () => ({
+            per_page: pagination.perPage,
+            page: pagination.page,
+            search_key: searchKey,
+            filters,
+            all: fetchAll,
+        }),
+        [pagination, searchKey, filters, fetchAll]
+    );
+
+    // Fetch data from API
     const { data, loading, error, refetch } = useFetch<{
         success: boolean;
         data: any;
@@ -28,26 +46,30 @@ const useRdsData = () => {
     }>(
         "/rds/get",
         { success: false, data: [], filterable_columns: [] },
-        {
-            params: {
-                per_page: pagination.perPage,
-                page: pagination.page,
-                search_key: searchKey,
-                filters,
-                all: fetchAll,
-            },
-        }
+        { params }
     );
 
-    const rdsData = data.success
+    const rdsData: RdsData[] = data.success
         ? data.data.map((rds: any) => ({
               id: rds.id,
-              rds_number: `RDS-${rds.module} #${rds.item_no}`,
+              rds_number: rds.rds_number,
               title_description: rds.title_description,
-              retention_period: Number(rds.active) + Number(rds.storage) + 1,
+              retention_period: rds.retention_period,
               department: rds.department,
           }))
         : [];
+
+    // Function to get RDS details by ID
+    const getRdsDetailsById = (id: number) => {
+        const rds = rdsData.find((r) => r.id === id);
+
+        return rds
+            ? {
+                  retention_period: rds.retention_period,
+                  rds_number: rds.rds_number,
+              }
+            : { retention_period: null, rds_number: null };
+    };
 
     return {
         rdsData,
@@ -59,6 +81,7 @@ const useRdsData = () => {
         setSearchKey,
         setFilters,
         setFetchAll,
+        getRdsDetailsById, // ✅ Kept this function intact
     };
 };
 
