@@ -38,15 +38,15 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <React.StrictMode>
-                <HeroUIProvider>
-                    <ThemeProvider>
-                        <SideNavStateProvider>
-                            <App {...props} />
-                        </SideNavStateProvider>
-                    </ThemeProvider>
-                </HeroUIProvider>
-            </React.StrictMode>
+            // <React.StrictMode>
+            <HeroUIProvider>
+                <ThemeProvider>
+                    <SideNavStateProvider>
+                        <App {...props} />
+                    </SideNavStateProvider>
+                </ThemeProvider>
+            </HeroUIProvider>
+            // </React.StrictMode>
         );
     },
     progress: {

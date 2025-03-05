@@ -131,7 +131,7 @@ class RDSController extends Controller
                 'id' => $rds->id,
                 'rds_number' => "RDS-" . $rds->module . " #" . $rds->item_no,
                 'title_description' => $rds->title_description,
-                'retention_period' => ((int) $rds->active + (int) $rds->storage + 1),
+                'retention_period' => ((int) $rds->active + (int) $rds->storage),
                 'department' => $rds->department,
             ];
         });
