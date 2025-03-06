@@ -127,11 +127,19 @@ class RDSController extends Controller
 
         // Format response data
         $formattedData = $rdsItems->map(function ($rds) {
+            // Check if active or storage is "Permanent"
+            $active = trim($rds->active);
+            $storage = trim($rds->storage);
+
+            $retention_period = (strcasecmp($active, "Permanent") === 0 || strcasecmp($storage, "Permanent") === 0)
+                ? "Permanent"
+                : ((int) $active + (int) $storage);
+
             return [
                 'id' => $rds->id,
                 'rds_number' => "RDS-" . $rds->module . " #" . $rds->item_no,
                 'title_description' => $rds->title_description,
-                'retention_period' => ((int) $rds->active + (int) $rds->storage),
+                'retention_period' => $retention_period,
                 'department' => $rds->department,
             ];
         });
