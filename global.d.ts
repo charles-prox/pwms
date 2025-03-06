@@ -30,7 +30,7 @@ interface InputProps {
 }
 
 type Key = string | number;
-interface SelectProps<T> {
+interface SelectProps<T extends object> {
     label: string;
     variant?: "flat" | "bordered" | "faded" | "underlined" | undefined;
     labelPlacement?: "inside" | "outside" | "outside-left"; // adjust according to your needs
@@ -46,11 +46,12 @@ interface SelectProps<T> {
     errorMessage?: string | undefined | null; // This is optional
     isDisabled?: boolean;
     items: Iterable<T>; //
-    keyField: string | number; // Dynamic key field
-    labelField: string; // Dynamic label field
-    valueField?: string | number; // Dynamic value field
+    keyField: keyof T; // Ensure 'keyField' is a key of 'T'
+    labelField: keyof T; // Ensure 'labelField' is a key of 'T'
+    valueField?: keyof T; // Ensure 'valueField' is a key of 'T'
     selectedKeys?: any; //
     menuTrigger: "focus" | "input" | "manual";
+    section?: keyof T | null; // Section
     onSelectionChange: (keys: any) => void;
     onKeyDown?: (e: KeyboardEvent) => void;
 }

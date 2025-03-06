@@ -64,14 +64,27 @@ const useBoxForm = () => {
 
     const calculateDocumentDisposalDate = (
         documentDate: string,
-        retentionPeriod: number
+        retentionPeriod: string
     ) => {
+        if (retentionPeriod.toLowerCase() === "permanent") return "Permanent";
+
         const endDate = extractLatestDate(documentDate);
-        if (!endDate?.isValid() || isNaN(retentionPeriod)) return "";
-        return endDate.add(retentionPeriod, "year").format("YYYY-MM-DD");
+        const retentionYears = parseInt(retentionPeriod, 10);
+
+        if (!endDate?.isValid() || isNaN(retentionYears)) return "";
+        return endDate.add(retentionYears, "year").format("YYYY-MM-DD");
     };
 
     const updateBoxDisposalDate = (updatedBoxDetails: BoxDetails[]) => {
+        // Check if any document has a disposal date of "Permanent"
+        const hasPermanentDisposal = updatedBoxDetails.some(
+            (doc) => doc.disposal_date?.toLowerCase() === "permanent"
+        );
+
+        if (hasPermanentDisposal) {
+            return "Permanent";
+        }
+
         const validDisposalDates = updatedBoxDetails
             .map((doc) => dayjs(doc.disposal_date, "YYYY-MM-DD", true))
             .filter((date) => date.isValid());
@@ -118,7 +131,7 @@ const useBoxForm = () => {
                     document_date: formattedDate,
                     disposal_date: calculateDocumentDisposalDate(
                         formattedDate,
-                        Number(updatedDocuments[index].retention_period)
+                        updatedDocuments[index].retention_period
                     ),
                 };
             } else {

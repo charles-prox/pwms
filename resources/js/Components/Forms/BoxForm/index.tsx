@@ -13,11 +13,11 @@ import {
     Divider,
 } from "@heroui/react";
 import React, { useState } from "react";
-import { TrashIcon } from "./icons";
+import { HelpIcon, TrashIcon } from "./icons";
 import { PlusIcon } from "@/Layouts/ListViewLayout/icons";
 import useBoxForm from "@/Hooks/useBoxForm";
-import useRdsData from "@/Hooks/useRdsData";
 import useFetch from "@/Hooks/useFetch";
+import { getLocalTimeZone, today } from "@internationalized/date";
 
 interface ManageBoxDialogProps {
     isOpen: boolean;
@@ -108,7 +108,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                         <div className="p-3 border border-dashed border-default-500/50 rounded-md">
                             <div className="flex justify-between items-center">
                                 <p className="text-sm text-foreground">
-                                    Documents:{" "}
+                                    Documents:
                                 </p>
                                 <Button
                                     color="primary"
@@ -163,6 +163,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 }
                                                 isRequired
                                                 isDisabled={rdsLoading}
+                                                section={"department"}
                                             />
 
                                             <DateRangePicker
@@ -179,7 +180,11 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                     )
                                                 }
                                                 classNames={{ base: "w-1/3" }}
+                                                maxValue={today(
+                                                    getLocalTimeZone()
+                                                )}
                                                 isRequired
+                                                showMonthAndYearPickers
                                             />
                                         </div>
                                         <div className="flex gap-2 items-center">
@@ -197,6 +202,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 placeholder="This is automatically filled"
                                                 value={details.retention_period}
                                                 maxWidthClass={"w-2/4"}
+                                                endContent={<HelpIcon />}
                                                 isReadOnly
                                             />
                                             <Button

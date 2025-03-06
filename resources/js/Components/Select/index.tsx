@@ -4,10 +4,11 @@ import {
     SelectItem,
     Autocomplete,
     AutocompleteItem,
+    AutocompleteSection,
 } from "@heroui/react";
 import { getTailwindWidthClass } from "@/Utils/helpers";
 
-const Select = <T,>({
+const Select = <T extends object>({
     label, //label: string;
     labelPlacement = "inside", //labelPlacement
     placeholder, //placeholder?: string;
@@ -21,7 +22,7 @@ const Select = <T,>({
     color = "default",
     errorMessage,
     isDisabled,
-    items,
+    items = [],
     keyField,
     labelField,
     valueField,
@@ -29,7 +30,19 @@ const Select = <T,>({
     menuTrigger,
     onSelectionChange,
     variant = undefined,
+    section = null,
 }: SelectProps<T>) => {
+    const groupedItems = section
+        ? Array.from(items).reduce((acc, item) => {
+              const key = (item as any)[section] ?? "Unknown"; // Default to "Unknown" if null
+              if (!acc[key]) {
+                  acc[key] = [];
+              }
+              acc[key].push(item);
+              return acc;
+          }, {} as Record<string, T[]>)
+        : {};
+
     return (
         <>
             {autocomplete ? (
@@ -63,11 +76,33 @@ const Select = <T,>({
                     isDisabled={isDisabled}
                     allowsEmptyCollection
                 >
-                    {(item: any) => (
-                        <AutocompleteItem key={item[keyField]}>
-                            {item[labelField]}
-                        </AutocompleteItem>
-                    )}
+                    {!!section && Object.keys(groupedItems).length > 0
+                        ? Object.entries(groupedItems).map(
+                              ([section, items]) => (
+                                  <AutocompleteSection
+                                      key={section}
+                                      title={section}
+                                      showDivider
+                                      classNames={{
+                                          heading: "text-sm font-bold",
+                                      }}
+                                  >
+                                      {items.map((item: any) => (
+                                          <AutocompleteItem
+                                              key={item[keyField]}
+                                          >
+                                              {item[labelField]}
+                                          </AutocompleteItem>
+                                      ))}
+                                  </AutocompleteSection>
+                              )
+                          )
+                        : items &&
+                          Array.from(items).map((item: any) => (
+                              <AutocompleteItem key={item[keyField]}>
+                                  {item[labelField]}
+                              </AutocompleteItem>
+                          ))}
                 </Autocomplete>
             ) : (
                 <NextuiSelect
