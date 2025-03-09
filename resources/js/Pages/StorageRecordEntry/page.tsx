@@ -4,12 +4,16 @@ import { Head } from "@inertiajs/react";
 import React from "react";
 import { columns } from "./column";
 import BoxForm from "@/Components/Forms/BoxForm";
+import useBoxForm from "@/Hooks/useBoxForm";
 
 const StorageRecordEntry = () => {
     const TABLE_ID = "storage_record_entry";
-    const [boxes, setBoxes] = React.useState([]);
-    const [totalPages, setTotalPages] = React.useState<number>(1);
+    const { boxes } = useBoxForm();
     const [isBoxFormOpen, setIsBoxFormOpen] = React.useState<boolean>(false);
+
+    React.useEffect(() => {
+        console.log("boxes:", boxes);
+    }, [boxes]);
 
     return (
         <div className="flex-1 flex flex-col gap-10">
@@ -38,13 +42,13 @@ const StorageRecordEntry = () => {
                             <div className="flex flex-col flex-1">
                                 <div>
                                     <ListViewLayout
+                                        key={boxes.length}
                                         tableid={TABLE_ID}
                                         itemName="Box"
                                         enableFilters={false}
                                         enableSearch={false}
                                         columns={columns}
                                         rows={boxes}
-                                        pages={totalPages}
                                         totalRows={boxes.length}
                                         onOpenAddNewForm={() =>
                                             setIsBoxFormOpen(true)

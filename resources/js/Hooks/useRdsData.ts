@@ -65,10 +65,15 @@ const useRdsData = ({
 
         return rds
             ? {
+                  document_title: rds.title_description,
                   retention_period: rds.retention_period,
                   rds_number: rds.rds_number,
               }
-            : { retention_period: null, rds_number: null };
+            : {
+                  document_title: null,
+                  retention_period: null,
+                  rds_number: null,
+              };
     };
 
     return {
@@ -81,7 +86,7 @@ const useRdsData = ({
         setSearchKey,
         setFilters,
         setFetchAll,
-        getRdsDetailsById, // ✅ Kept this function intact
+        getRdsDetailsById,
     };
 };
 

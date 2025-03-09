@@ -1,10 +1,11 @@
 import dayjs from "dayjs";
 import { BoxDetails, BoxFormState } from "@/Utils/types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { RangeValue } from "@react-types/shared";
 import { DateValue } from "@heroui/react";
 import { CalendarDate } from "@internationalized/date";
 import useRdsData from "./useRdsData";
+import React from "react";
 
 const useBoxForm = () => {
     const {
@@ -13,6 +14,7 @@ const useBoxForm = () => {
         error: rdsError,
         getRdsDetailsById,
     } = useRdsData({ fetchAll: true });
+    const [boxes, setBoxes] = useState<BoxFormState[]>([]);
     const [boxData, setBoxData] = useState<BoxFormState>({
         box_code: "",
         priority_level: "",
@@ -21,7 +23,7 @@ const useBoxForm = () => {
         office: "",
         box_details: [
             {
-                id: 1,
+                id: null,
                 document_title: null,
                 rds_number: "",
                 retention_period: "",
@@ -30,6 +32,46 @@ const useBoxForm = () => {
             },
         ] as BoxDetails[],
     });
+
+    const [errors, setErrors] = useState<BoxFormState>({
+        box_code: "",
+        priority_level: "",
+        office: "",
+        box_details: [
+            {
+                id: null,
+                document_title: null,
+                rds_number: "",
+                retention_period: "",
+                document_date: "",
+                disposal_date: "",
+            },
+        ] as BoxDetails[],
+        remarks: "",
+        disposal_date: "",
+    });
+
+    const resetBoxData = () => {
+        const initialData = {
+            box_code: "",
+            priority_level: "",
+            remarks: "",
+            disposal_date: "",
+            office: "",
+            box_details: [
+                {
+                    id: null,
+                    document_title: null,
+                    rds_number: "",
+                    retention_period: "",
+                    document_date: "",
+                    disposal_date: "",
+                },
+            ],
+        };
+        setBoxData(initialData);
+        setErrors(initialData);
+    };
 
     const formatDateRange = (dateRange: RangeValue<DateValue> | null) => {
         if (!dateRange || !dateRange.start) return "";
@@ -118,6 +160,7 @@ const useBoxForm = () => {
                 if (rdsData) {
                     updatedDocuments[index] = {
                         ...updatedDocuments[index],
+                        document_title: rdsData.document_title,
                         rds_number: rdsData.rds_number || "",
                         retention_period: String(rdsData.retention_period),
                     };
@@ -126,6 +169,49 @@ const useBoxForm = () => {
                 const formattedDate = formatDateRange(
                     value as RangeValue<DateValue>
                 );
+                const selectedYear = dayjs(value?.start.toDate("UTC")).year();
+
+                if (value?.start && value?.end) {
+                    const startYear = value.start.toDate("UTC").getFullYear();
+                    const endYear = value.end.toDate("UTC").getFullYear();
+
+                    if (startYear !== endYear) {
+                        console.error(
+                            "Document date must be within the same year."
+                        );
+                        return prev; // Prevents state update
+                    }
+                }
+
+                if (index > 0) {
+                    // If it's the first document, store its year
+                    const firstDocYear = prev.box_details[0]?.document_date
+                        ? dayjs(
+                              prev.box_details[0].document_date.split(" to ")[0]
+                          ).year()
+                        : null;
+
+                    // Prevent adding a different year
+                    if (
+                        firstDocYear !== null &&
+                        selectedYear !== firstDocYear
+                    ) {
+                        setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            box_details: prevErrors.box_details.map(
+                                (error, idx) =>
+                                    idx === index
+                                        ? {
+                                              ...error,
+                                              document_date: `All documents must have the same year: ${firstDocYear}`,
+                                          }
+                                        : error
+                            ),
+                        }));
+                        return prev; // Keep the state unchanged
+                    }
+                }
+
                 updatedDocuments[index] = {
                     ...updatedDocuments[index],
                     document_date: formattedDate,
@@ -170,15 +256,19 @@ const useBoxForm = () => {
 
     /** ✅ Add a new document */
     const addDocument = () => {
+        const newDocument: BoxDetails = {
+            id: null, // Generate unique ID
+            document_title: null,
+            rds_number: "",
+            retention_period: "",
+            document_date: "",
+            disposal_date: "",
+        };
         setBoxData((prev) => {
-            const newDocument: BoxDetails = {
-                id: prev.box_details.length + 1, // Generate unique ID
-                document_title: null,
-                rds_number: "",
-                retention_period: "",
-                document_date: "",
-                disposal_date: "",
-            };
+            const updatedDocuments = [...prev.box_details, newDocument];
+            return { ...prev, box_details: updatedDocuments };
+        });
+        setErrors((prev) => {
             const updatedDocuments = [...prev.box_details, newDocument];
             return { ...prev, box_details: updatedDocuments };
         });
@@ -201,8 +291,82 @@ const useBoxForm = () => {
         });
     };
 
+    const saveBoxDataToBoxes = () => {
+        console.log("i am getting executed");
+        let hasError = false;
+
+        const newErrors: BoxFormState = {
+            box_code: "",
+            priority_level: "",
+            office: "",
+            box_details: [],
+            remarks: "",
+            disposal_date: "",
+        };
+
+        if (!boxData.box_code?.trim()) {
+            newErrors.box_code = "Box code is required.";
+            hasError = true;
+        }
+        if (!boxData.priority_level?.trim()) {
+            newErrors.priority_level = "Priority level is required.";
+            hasError = true;
+        }
+        if (!boxData.office?.trim()) {
+            newErrors.office = "Office is required.";
+            hasError = true;
+        }
+
+        if (boxData.box_details.length === 0) {
+            hasError = true;
+        }
+
+        newErrors.box_details = boxData.box_details.map((doc) => {
+            const docErrors: BoxDetails = {
+                id: doc.id,
+                document_title: "",
+                rds_number: doc.rds_number, // Not required
+                retention_period: doc.retention_period, // Not required
+                document_date: "",
+                disposal_date: "",
+            };
+
+            if (!doc.document_title?.trim()) {
+                docErrors.document_title = "Document title is required.";
+                hasError = true;
+            }
+            if (!doc.document_date?.trim()) {
+                docErrors.document_date = "Document date is required.";
+                hasError = true;
+            }
+            if (!doc.disposal_date?.trim()) {
+                docErrors.disposal_date = "Disposal date is required.";
+                hasError = true;
+            }
+
+            return docErrors;
+        });
+
+        setErrors(newErrors);
+
+        if (hasError) {
+            console.error("Validation errors:", newErrors);
+
+            return { hasError };
+        }
+
+        setBoxes((prev: any) => [...prev, boxData]);
+        resetBoxData();
+    };
+
     return {
+        boxes,
         boxData,
+        errors,
+        rdsData,
+        rdsLoading,
+        rdsError,
+        saveBoxDataToBoxes,
         setBoxData,
         onBoxCodeChange,
         onPriorityLevelChange,
@@ -211,9 +375,6 @@ const useBoxForm = () => {
         addDocument,
         deleteDocument,
         parseDateRange,
-        rdsData,
-        rdsLoading,
-        rdsError,
     };
 };
 
