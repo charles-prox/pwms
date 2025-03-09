@@ -1,82 +1,48 @@
-import ListViewLayout from "@/Layouts/ListViewLayout";
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
 import { Head } from "@inertiajs/react";
-import React from "react";
-import { columns } from "./column";
-import BoxForm from "@/Components/Forms/BoxForm";
-import useBoxForm from "@/Hooks/useBoxForm";
+import { BoxFormProvider } from "@/Providers/BoxFormProvider";
+import AddStorageRecordTab from "./AddStorageRecordTab";
 
 const StorageRecordEntry = () => {
-    const TABLE_ID = "storage_record_entry";
-    const { boxes } = useBoxForm();
-    const [isBoxFormOpen, setIsBoxFormOpen] = React.useState<boolean>(false);
-
-    React.useEffect(() => {
-        console.log("boxes:", boxes);
-    }, [boxes]);
-
     return (
-        <div className="flex-1 flex flex-col gap-10">
-            <Head title="Storage Record Entry" />
-            <div>
-                <h1 className="text-2xl font-bold">Storage Record Entry</h1>
-                <p>
-                    This module can focus on logging these existing boxes into
-                    the system while ensuring they are correctly assigned to
-                    their respective locations.
-                </p>
+        <BoxFormProvider>
+            <div className="flex-1 flex flex-col gap-10">
+                <Head title="Storage Record Entry" />
+                <div>
+                    <h1 className="text-2xl font-bold">Storage Record Entry</h1>
+                    <p>
+                        This module can focus on logging these existing boxes
+                        into the system while ensuring they are correctly
+                        assigned to their respective locations.
+                    </p>
+                </div>
+                <Tabs
+                    aria-label="Options"
+                    isVertical={true}
+                    variant="light"
+                    classNames={{
+                        tab: "justify-start",
+                        panel: "flex-1 ",
+                        tabWrapper: "flex-1",
+                    }}
+                >
+                    <Tab key="add-storage-record" title="Add Storage Record">
+                        <AddStorageRecordTab />
+                    </Tab>
+                    <Tab key="view-all-entries" title="View All Entries">
+                        <Card>
+                            <CardBody>
+                                Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris nisi ut aliquip ex
+                                ea commodo consequat. Duis aute irure dolor in
+                                reprehenderit in voluptate velit esse cillum
+                                dolore eu fugiat nulla pariatur.
+                            </CardBody>
+                        </Card>
+                    </Tab>
+                </Tabs>
             </div>
-            <Tabs
-                aria-label="Options"
-                isVertical={true}
-                variant="light"
-                classNames={{
-                    tab: "justify-start",
-                    panel: "flex-1 ",
-                    tabWrapper: "flex-1",
-                }}
-            >
-                <Tab key="add-storage-record" title="Add Storage Record">
-                    <Card>
-                        <CardBody>
-                            <div className="flex flex-col flex-1">
-                                <div>
-                                    <ListViewLayout
-                                        key={boxes.length}
-                                        tableid={TABLE_ID}
-                                        itemName="Box"
-                                        enableFilters={false}
-                                        enableSearch={false}
-                                        columns={columns}
-                                        rows={boxes}
-                                        totalRows={boxes.length}
-                                        onOpenAddNewForm={() =>
-                                            setIsBoxFormOpen(true)
-                                        }
-                                    />
-                                </div>
-                            </div>
-                        </CardBody>
-                    </Card>
-                    <BoxForm
-                        isOpen={isBoxFormOpen}
-                        onClose={() => setIsBoxFormOpen(false)}
-                        editBoxData={false}
-                    />
-                </Tab>
-                <Tab key="view-all-entries" title="View All Entries">
-                    <Card>
-                        <CardBody>
-                            Ut enim ad minim veniam, quis nostrud exercitation
-                            ullamco laboris nisi ut aliquip ex ea commodo
-                            consequat. Duis aute irure dolor in reprehenderit in
-                            voluptate velit esse cillum dolore eu fugiat nulla
-                            pariatur.
-                        </CardBody>
-                    </Card>
-                </Tab>
-            </Tabs>
-        </div>
+        </BoxFormProvider>
     );
 };
 

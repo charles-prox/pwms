@@ -41,6 +41,7 @@ export interface Filter {
 // FORM TYPES
 // ========================
 export interface BoxFormState {
+    id: number;
     box_code: string;
     priority_level: string;
     remarks: string;

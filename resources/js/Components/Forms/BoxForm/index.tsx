@@ -13,12 +13,11 @@ import {
     Divider,
     Tooltip,
 } from "@heroui/react";
-import React, { useState } from "react";
 import { HelpIcon, TrashIcon } from "./icons";
 import { PlusIcon } from "@/Layouts/ListViewLayout/icons";
-import useBoxForm from "@/Hooks/useBoxForm";
 import useFetch from "@/Hooks/useFetch";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { useBoxForm } from "@/Contexts/BoxFormContext";
 
 interface ManageBoxDialogProps {
     isOpen: boolean;
@@ -59,11 +58,9 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
     const { theme } = useTheme();
 
     const handleAddBox = () => {
-        console.log("ashdgajshdghjasd");
+        const hasErrors = saveBoxDataToBoxes();
 
-        saveBoxDataToBoxes();
-
-        // onClose();
+        !hasErrors && onClose();
     };
 
     return (

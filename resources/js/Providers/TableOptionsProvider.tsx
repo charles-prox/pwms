@@ -14,13 +14,13 @@ interface TableOptionsProviderProps {
     children: ReactNode;
 }
 
-interface TableOptionsContextType {
-    getTableOptions: (tableId: string) => TableOptions;
-    updateTableOptions: (
-        tableId: string,
-        newOptions: Partial<TableOptions>
-    ) => void;
-}
+// interface TableOptionsContextType {
+//     getTableOptions: (tableId: string) => TableOptions;
+//     updateTableOptions: (
+//         tableId: string,
+//         newOptions: Partial<TableOptions>
+//     ) => void;
+// }
 
 const defaultOptions: TableOptions = {
     current_page: "1",
