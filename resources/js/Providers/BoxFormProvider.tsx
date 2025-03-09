@@ -1,21 +1,29 @@
+import { BoxFormContext } from "@/Contexts/BoxFormContext";
+import React from "react";
 import dayjs from "dayjs";
 import { BoxDetails, BoxFormState } from "@/Utils/types";
 import { useState } from "react";
 import { RangeValue } from "@react-types/shared";
 import { DateValue } from "@heroui/react";
 import { CalendarDate } from "@internationalized/date";
-import useRdsData from "./useRdsData";
-import React from "react";
+import useRdsData from "@/Hooks/useRdsData";
 
-const useBoxForm = () => {
+export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
+    children,
+}) => {
     const {
         rdsData,
         loading: rdsLoading,
         error: rdsError,
         getRdsDetailsById,
     } = useRdsData({ fetchAll: true });
-    const [boxes, setBoxes] = useState<BoxFormState[]>([]);
+    const [boxes, setBoxes] = useState<BoxFormState[]>(() => {
+        const storedBoxes = sessionStorage.getItem("boxes");
+        return storedBoxes ? JSON.parse(storedBoxes) : [];
+    });
+
     const [boxData, setBoxData] = useState<BoxFormState>({
+        id: 1,
         box_code: "",
         priority_level: "",
         remarks: "",
@@ -34,6 +42,7 @@ const useBoxForm = () => {
     });
 
     const [errors, setErrors] = useState<BoxFormState>({
+        id: 1,
         box_code: "",
         priority_level: "",
         office: "",
@@ -53,6 +62,7 @@ const useBoxForm = () => {
 
     const resetBoxData = () => {
         const initialData = {
+            id: 1,
             box_code: "",
             priority_level: "",
             remarks: "",
@@ -292,10 +302,10 @@ const useBoxForm = () => {
     };
 
     const saveBoxDataToBoxes = () => {
-        console.log("i am getting executed");
         let hasError = false;
 
         const newErrors: BoxFormState = {
+            id: 1,
             box_code: "",
             priority_level: "",
             office: "",
@@ -347,35 +357,49 @@ const useBoxForm = () => {
             return docErrors;
         });
 
-        setErrors(newErrors);
-
         if (hasError) {
+            setErrors(newErrors);
             console.error("Validation errors:", newErrors);
-
-            return { hasError };
+            return hasError;
         }
 
-        setBoxes((prev: any) => [...prev, boxData]);
+        const updatedBoxData = {
+            ...boxData,
+            id: boxes.length + 1,
+        };
+
+        const updatedBoxes = [...boxes, updatedBoxData];
+
+        // Save to state
+        setBoxes(updatedBoxes);
+
+        // Save to session storage
+        sessionStorage.setItem("boxes", JSON.stringify(updatedBoxes));
+
         resetBoxData();
     };
 
-    return {
-        boxes,
-        boxData,
-        errors,
-        rdsData,
-        rdsLoading,
-        rdsError,
-        saveBoxDataToBoxes,
-        setBoxData,
-        onBoxCodeChange,
-        onPriorityLevelChange,
-        onOfficeChange,
-        onDocumentChange,
-        addDocument,
-        deleteDocument,
-        parseDateRange,
-    };
+    return (
+        <BoxFormContext.Provider
+            value={{
+                boxes,
+                boxData,
+                errors,
+                rdsData,
+                rdsLoading,
+                rdsError,
+                saveBoxDataToBoxes,
+                setBoxData,
+                onBoxCodeChange,
+                onPriorityLevelChange,
+                onOfficeChange,
+                onDocumentChange,
+                addDocument,
+                deleteDocument,
+                parseDateRange,
+            }}
+        >
+            {children}
+        </BoxFormContext.Provider>
+    );
 };
-
-export default useBoxForm;

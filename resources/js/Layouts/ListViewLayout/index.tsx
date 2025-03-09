@@ -27,6 +27,12 @@ type RowType = {
     [key: string]: any; // Allows any key with any value type
 };
 
+interface Column {
+    uid: string;
+    name: string;
+    sortable?: boolean;
+}
+
 interface LayoutProps {
     itemName?: string;
     columns: Column[];
@@ -39,6 +45,7 @@ interface LayoutProps {
     totalRows?: number;
     enableFilters?: boolean;
     enableSearch?: boolean;
+    renderCell?: (row: RowType, columnKey: React.Key) => React.ReactNode;
 }
 
 export default function ListViewLayout({
@@ -53,6 +60,7 @@ export default function ListViewLayout({
     totalRows = 0,
     enableFilters,
     enableSearch,
+    renderCell: customRenderCell,
 }: LayoutProps) {
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
         new Set([])
@@ -62,45 +70,51 @@ export default function ListViewLayout({
         direction: "ascending",
     });
 
-    React.useEffect(() => {
-        console.log("rows:", rows);
-    }, [rows]);
+    const defaultRenderCell = React.useCallback(
+        (
+            row: RowType,
+            columnKey: React.Key,
+            customRenderCell?: (
+                row: RowType,
+                columnKey: React.Key
+            ) => React.ReactNode
+        ) => {
+            if (customRenderCell) {
+                const customRenderResult = customRenderCell(row, columnKey);
+                if (customRenderResult !== undefined) {
+                    return customRenderResult;
+                }
+            }
 
-    const renderCell = React.useCallback(
-        (row: RowType, columnKey: React.Key) => {
             const cellValue = row[columnKey as keyof RowType];
-            console.log("row", row);
 
-            switch (columnKey) {
-                case "actions":
-                    return (
-                        <div className="relative flex justify-end items-center gap-2">
-                            <Dropdown>
-                                <DropdownTrigger>
-                                    <Button
-                                        isIconOnly
-                                        size="sm"
-                                        variant="light"
-                                    >
-                                        <VerticalDotsIcon className="text-default-300" />
-                                    </Button>
-                                </DropdownTrigger>
-                                <DropdownMenu>
-                                    <DropdownItem key="view">View</DropdownItem>
-                                    <DropdownItem key="edit">Edit</DropdownItem>
-                                    <DropdownItem key="delete">
-                                        Delete
-                                    </DropdownItem>
-                                </DropdownMenu>
-                            </Dropdown>
-                        </div>
-                    );
-                default:
-                    return cellValue;
+            if (columnKey === "actions") {
+                return (
+                    <div className="relative flex justify-end items-center gap-2">
+                        <Dropdown>
+                            <DropdownTrigger>
+                                <Button isIconOnly size="sm" variant="light">
+                                    <VerticalDotsIcon className="text-default-300" />
+                                </Button>
+                            </DropdownTrigger>
+                            <DropdownMenu>
+                                <DropdownItem key="view">View</DropdownItem>
+                                <DropdownItem key="edit">Edit</DropdownItem>
+                                <DropdownItem key="delete">Delete</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
+                );
+            } else {
+                return cellValue;
             }
         },
         []
     );
+
+    const renderCell = (row: RowType, columnKey: React.Key) => {
+        return defaultRenderCell(row, columnKey, customRenderCell);
+    };
 
     return (
         <Table
@@ -168,9 +182,11 @@ export default function ListViewLayout({
                 }
             >
                 {(item) => (
-                    <TableRow key={item.id}>
+                    <TableRow key={item.id} aria-rowspan={2}>
                         {(columnKey) => (
-                            <TableCell>{renderCell(item, columnKey)}</TableCell>
+                            <TableCell className="self-start">
+                                {renderCell(item, columnKey)}
+                            </TableCell>
                         )}
                     </TableRow>
                 )}
