@@ -11,6 +11,7 @@ import {
     DateRangePicker,
     Spacer,
     Divider,
+    Tooltip,
 } from "@heroui/react";
 import React, { useState } from "react";
 import { HelpIcon, TrashIcon } from "./icons";
@@ -37,6 +38,11 @@ const priorityLevels = [
 const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
     const {
         boxData,
+        errors,
+        rdsData,
+        rdsLoading,
+        rdsError,
+        saveBoxDataToBoxes,
         onBoxCodeChange,
         onPriorityLevelChange,
         addDocument,
@@ -44,21 +50,21 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
         onDocumentChange,
         onOfficeChange,
         parseDateRange,
-        rdsData,
-        rdsLoading,
-        rdsError,
     } = useBoxForm();
     const {
         data: offices,
         loading: loadingOffices,
         error: officesError,
     } = useFetch<any[]>(route("offices"));
-    const [errors, setErrors] = useState<any>({});
     const { theme } = useTheme();
 
-    React.useEffect(() => {
-        console.log("Box data changed", boxData);
-    }, [boxData]);
+    const handleAddBox = () => {
+        console.log("ashdgajshdghjasd");
+
+        saveBoxDataToBoxes();
+
+        // onClose();
+    };
 
     return (
         <Modal
@@ -94,10 +100,9 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                 keyField={"value"}
                                 labelField="label"
                                 menuTrigger="input"
-                                selectedKeys={boxData.priority_level}
+                                selectedKeys={new Set([boxData.priority_level])}
                                 onSelectionChange={(value) => {
-                                    console.log(value);
-                                    onPriorityLevelChange(value);
+                                    onPriorityLevelChange(value.currentKey);
                                 }}
                                 isClearable={false}
                                 errorMessage={errors.priority_level}
@@ -157,9 +162,9 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 }
                                                 isClearable={false}
                                                 errorMessage={
+                                                    errors.box_details[index]
+                                                        .document_title ||
                                                     rdsError
-                                                        ? "Failed to load RDS data"
-                                                        : errors.priority_level
                                                 }
                                                 isRequired
                                                 isDisabled={rdsLoading}
@@ -183,6 +188,10 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 maxValue={today(
                                                     getLocalTimeZone()
                                                 )}
+                                                errorMessage={
+                                                    errors.box_details[index]
+                                                        .document_date
+                                                }
                                                 isRequired
                                                 showMonthAndYearPickers
                                             />
@@ -194,6 +203,19 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 placeholder="This is automatically filled"
                                                 value={details.rds_number}
                                                 maxWidthClass={"w-2/4"}
+                                                endContent={
+                                                    <Tooltip
+                                                        className="text-tiny w-60"
+                                                        placement="bottom-end"
+                                                        content={
+                                                            "RDS number is a based on the document. A corresponding RDS number is assigned to each document."
+                                                        }
+                                                    >
+                                                        <div className="z-50">
+                                                            <HelpIcon />
+                                                        </div>
+                                                    </Tooltip>
+                                                }
                                                 isReadOnly
                                             />
                                             <Input
@@ -202,7 +224,19 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 placeholder="This is automatically filled"
                                                 value={details.retention_period}
                                                 maxWidthClass={"w-2/4"}
-                                                endContent={<HelpIcon />}
+                                                endContent={
+                                                    <Tooltip
+                                                        className="text-tiny w-60"
+                                                        placement="bottom-end"
+                                                        content={
+                                                            "Retention period is a based on the RDS number or document."
+                                                        }
+                                                    >
+                                                        <div className="z-50">
+                                                            <HelpIcon />
+                                                        </div>
+                                                    </Tooltip>
+                                                }
                                                 isReadOnly
                                             />
                                             <Button
@@ -241,9 +275,21 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                 label="Disposal Date"
                                 name="disposal_date"
                                 placeholder="This field is automatically filled."
-                                description="This is automatically calculated based on the largest retention period"
                                 value={boxData.disposal_date}
                                 maxWidthClass={"w-full"}
+                                endContent={
+                                    <Tooltip
+                                        className="text-tiny w-60"
+                                        placement="bottom-end"
+                                        content={
+                                            "Disposal date is automatically calculated based on the largest retention period of each document."
+                                        }
+                                    >
+                                        <div className="z-50">
+                                            <HelpIcon />
+                                        </div>
+                                    </Tooltip>
+                                }
                                 isReadOnly
                             />
                             <Select
@@ -263,7 +309,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                 selectedKeys={boxData.office}
                                 onSelectionChange={onOfficeChange}
                                 isClearable={false}
-                                errorMessage={errors.office_id || officesError}
+                                errorMessage={errors.office || officesError}
                                 isRequired
                                 isDisabled={loadingOffices || !!officesError}
                             />
@@ -277,7 +323,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                         >
                             Cancel
                         </Button>
-                        <Button color="primary" onPress={onClose}>
+                        <Button color="primary" onPress={handleAddBox}>
                             Add
                         </Button>
                     </ModalFooter>

@@ -62,9 +62,14 @@ export default function ListViewLayout({
         direction: "ascending",
     });
 
+    React.useEffect(() => {
+        console.log("rows:", rows);
+    }, [rows]);
+
     const renderCell = React.useCallback(
         (row: RowType, columnKey: React.Key) => {
             const cellValue = row[columnKey as keyof RowType];
+            console.log("row", row);
 
             switch (columnKey) {
                 case "actions":

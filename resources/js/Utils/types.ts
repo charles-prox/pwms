@@ -50,7 +50,7 @@ export interface BoxFormState {
 }
 
 export interface BoxDetails {
-    id: number;
+    id: number | null;
     document_title: string | null;
     rds_number: string;
     retention_period: string;

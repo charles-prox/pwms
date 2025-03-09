@@ -25,6 +25,7 @@ const Sidebar: React.FC = () => {
                 duration-[${animationOptions.duration}ms]
                 overflow-hidden
                 p-2 
+                overflow-y-auto
             `}
             style={{
                 width:
