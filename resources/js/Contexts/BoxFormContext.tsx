@@ -4,7 +4,7 @@ import { BoxFormState, BoxDetails } from "@/Utils/types";
 interface BoxFormContextType {
     boxes: BoxFormState[];
     boxData: BoxFormState;
-    errors: BoxFormState;
+    errors: any;
     rdsData: any;
     rdsLoading: boolean;
     rdsError: any;
@@ -12,7 +12,7 @@ interface BoxFormContextType {
     setBoxData: React.Dispatch<React.SetStateAction<BoxFormState>>;
     onBoxCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onPriorityLevelChange: (level: string) => void;
-    onOfficeChange: (office: string) => void;
+    onOfficeChange: (office: { id: number; name: string }) => void;
     onDocumentChange: (
         index: number,
         field: keyof BoxDetails,

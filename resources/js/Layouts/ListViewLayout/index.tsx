@@ -126,6 +126,7 @@ export default function ListViewLayout({
             bottomContentPlacement="outside"
             classNames={{
                 table: "relative min-h-[calc(100vh-512px)]",
+                td: "align-top",
                 wrapper: "w-full overflow-auto",
                 loadingWrapper:
                     "absolute inset-0 bg-black/50 backdrop-blur-md z-50",
@@ -184,9 +185,7 @@ export default function ListViewLayout({
                 {(item) => (
                     <TableRow key={item.id} aria-rowspan={2}>
                         {(columnKey) => (
-                            <TableCell className="self-start">
-                                {renderCell(item, columnKey)}
-                            </TableCell>
+                            <TableCell>{renderCell(item, columnKey)}</TableCell>
                         )}
                     </TableRow>
                 )}

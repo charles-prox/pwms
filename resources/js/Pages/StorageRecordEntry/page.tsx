@@ -1,7 +1,7 @@
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
 import { Head } from "@inertiajs/react";
 import { BoxFormProvider } from "@/Providers/BoxFormProvider";
-import AddStorageRecordTab from "./AddStorageRecordTab";
+import AddStorageRecordTab from "./Tabs/AddStorageRecordTab";
 
 const StorageRecordEntry = () => {
     return (

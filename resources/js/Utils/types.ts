@@ -46,7 +46,7 @@ export interface BoxFormState {
     priority_level: string;
     remarks: string;
     disposal_date: string;
-    office: string;
+    office: { id: number; name: string } | null;
     box_details: BoxDetails[];
 }
 
