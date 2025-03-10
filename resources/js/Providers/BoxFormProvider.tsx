@@ -28,7 +28,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         priority_level: "",
         remarks: "",
         disposal_date: "",
-        office: "",
+        office: null,
         box_details: [
             {
                 id: null,
@@ -41,11 +41,11 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         ] as BoxDetails[],
     });
 
-    const [errors, setErrors] = useState<BoxFormState>({
+    const [errors, setErrors] = useState<any>({
         id: 1,
         box_code: "",
         priority_level: "",
-        office: "",
+        office: null,
         box_details: [
             {
                 id: null,
@@ -67,7 +67,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             priority_level: "",
             remarks: "",
             disposal_date: "",
-            office: "",
+            office: null,
             box_details: [
                 {
                     id: null,
@@ -206,10 +206,10 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                         firstDocYear !== null &&
                         selectedYear !== firstDocYear
                     ) {
-                        setErrors((prevErrors) => ({
+                        setErrors((prevErrors: any) => ({
                             ...prevErrors,
                             box_details: prevErrors.box_details.map(
-                                (error, idx) =>
+                                (error: any, idx: number) =>
                                     idx === index
                                         ? {
                                               ...error,
@@ -260,7 +260,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         setBoxData((prev) => ({ ...prev, priority_level: level }));
     };
 
-    const onOfficeChange = (office: string) => {
+    const onOfficeChange = (office: { id: number; name: string }) => {
         setBoxData((prev) => ({ ...prev, office }));
     };
 
@@ -278,7 +278,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             const updatedDocuments = [...prev.box_details, newDocument];
             return { ...prev, box_details: updatedDocuments };
         });
-        setErrors((prev) => {
+        setErrors((prev: any) => {
             const updatedDocuments = [...prev.box_details, newDocument];
             return { ...prev, box_details: updatedDocuments };
         });
@@ -304,11 +304,11 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     const saveBoxDataToBoxes = () => {
         let hasError = false;
 
-        const newErrors: BoxFormState = {
+        const newErrors: any = {
             id: 1,
             box_code: "",
             priority_level: "",
-            office: "",
+            office: null,
             box_details: [],
             remarks: "",
             disposal_date: "",
@@ -322,7 +322,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             newErrors.priority_level = "Priority level is required.";
             hasError = true;
         }
-        if (!boxData.office?.trim()) {
+        if (!boxData.office) {
             newErrors.office = "Office is required.";
             hasError = true;
         }

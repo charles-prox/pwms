@@ -303,8 +303,14 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                 keyField={"id"}
                                 labelField="name"
                                 menuTrigger="input"
-                                selectedKeys={boxData.office}
-                                onSelectionChange={onOfficeChange}
+                                selectedKeys={boxData.office?.id}
+                                onSelectionChange={(keys) => {
+                                    let value = {
+                                        id: keys,
+                                        name: offices[keys].name,
+                                    };
+                                    onOfficeChange(value);
+                                }}
                                 isClearable={false}
                                 errorMessage={errors.office || officesError}
                                 isRequired
