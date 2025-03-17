@@ -64,10 +64,16 @@ const AddStorageRecordTab = () => {
                                                 {document.rds_number}
                                             </TableCell>
                                             <TableCell>
-                                                {document.document_date}
+                                                {
+                                                    document.document_date
+                                                        .formatted
+                                                }
                                             </TableCell>
                                             <TableCell>
-                                                {document.disposal_date}
+                                                {
+                                                    document.disposal_date
+                                                        .formatted
+                                                }
                                             </TableCell>
                                         </TableRow>
                                     );
