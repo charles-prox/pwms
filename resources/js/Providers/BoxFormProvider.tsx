@@ -35,8 +35,14 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 document_title: null,
                 rds_number: "",
                 retention_period: "",
-                document_date: "", // Store as a string: "YYYY-MM-DD to YYYY-MM-DD"
-                disposal_date: "",
+                document_date: {
+                    raw: null,
+                    formatted: null,
+                },
+                disposal_date: {
+                    raw: null,
+                    formatted: null,
+                },
             },
         ] as BoxDetails[],
     });
@@ -52,8 +58,14 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 document_title: null,
                 rds_number: "",
                 retention_period: "",
-                document_date: "",
-                disposal_date: "",
+                document_date: {
+                    raw: null,
+                    formatted: null,
+                },
+                disposal_date: {
+                    raw: null,
+                    formatted: null,
+                },
             },
         ] as BoxDetails[],
         remarks: "",
@@ -74,8 +86,14 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                     document_title: null,
                     rds_number: "",
                     retention_period: "",
-                    document_date: "",
-                    disposal_date: "",
+                    document_date: {
+                        raw: null,
+                        formatted: null,
+                    },
+                    disposal_date: {
+                        raw: null,
+                        formatted: null,
+                    },
                 },
             ],
         };
@@ -84,12 +102,39 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const formatDateRange = (dateRange: RangeValue<DateValue> | null) => {
-        if (!dateRange || !dateRange.start) return "";
+        if (!dateRange || !dateRange.start)
+            return { raw: null, formatted: null };
         const start = dayjs(dateRange.start.toDate("UTC")).format("YYYY-MM-DD");
         const end = dateRange.end
             ? dayjs(dateRange.end.toDate("UTC")).format("YYYY-MM-DD")
             : start;
-        return start === end ? start : `${start} to ${end}`;
+        const raw = start === end ? start : `${start} to ${end}`;
+
+        const startDate = dayjs(start);
+        const endDate = dayjs(end);
+
+        let formatted;
+        if (startDate.isSame(endDate, "year")) {
+            if (startDate.isSame(endDate, "month")) {
+                if (startDate.isSame(endDate, "day")) {
+                    formatted = `${startDate.format("MMMM D, YYYY")}`;
+                } else {
+                    formatted = `${startDate.format("MMMM D")}-${endDate.format(
+                        "D, YYYY"
+                    )}`;
+                }
+            } else {
+                formatted = `${startDate.format("MMMM D")} - ${endDate.format(
+                    "MMMM D, YYYY"
+                )}`;
+            }
+        } else {
+            formatted = `${startDate.format("MMMM D, YYYY")} - ${endDate.format(
+                "MMMM D, YYYY"
+            )}`;
+        }
+
+        return { raw, formatted };
     };
 
     const parseDateRange = (
@@ -115,22 +160,30 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const calculateDocumentDisposalDate = (
-        documentDate: string,
+        documentDate: string | null,
         retentionPeriod: string
     ) => {
-        if (retentionPeriod.toLowerCase() === "permanent") return "Permanent";
+        if (retentionPeriod.toLowerCase() === "permanent")
+            return { raw: "Permanent", formatted: "Permanent" };
+
+        if (!documentDate) return { raw: null, formatted: null };
 
         const endDate = extractLatestDate(documentDate);
         const retentionYears = parseInt(retentionPeriod, 10);
 
-        if (!endDate?.isValid() || isNaN(retentionYears)) return "";
-        return endDate.add(retentionYears, "year").format("YYYY-MM-DD");
+        if (!endDate?.isValid() || isNaN(retentionYears))
+            return { raw: null, formatted: null };
+        const raw = endDate.add(retentionYears, "year").format("YYYY-MM-DD");
+        const formatted = endDate
+            .add(retentionYears, "year")
+            .format("MMMM D, YYYY");
+        return { raw, formatted };
     };
 
     const updateBoxDisposalDate = (updatedBoxDetails: BoxDetails[]) => {
         // Check if any document has a disposal date of "Permanent"
         const hasPermanentDisposal = updatedBoxDetails.some(
-            (doc) => doc.disposal_date?.toLowerCase() === "permanent"
+            (doc) => doc.disposal_date?.raw?.toLowerCase() === "permanent"
         );
 
         if (hasPermanentDisposal) {
@@ -138,7 +191,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         const validDisposalDates = updatedBoxDetails
-            .map((doc) => dayjs(doc.disposal_date, "YYYY-MM-DD", true))
+            .map((doc) => dayjs(doc.disposal_date.raw, "YYYY-MM-DD", true))
             .filter((date) => date.isValid());
 
         if (validDisposalDates.length === 0) {
@@ -195,9 +248,11 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
 
                 if (index > 0) {
                     // If it's the first document, store its year
-                    const firstDocYear = prev.box_details[0]?.document_date
+                    const firstDocYear = prev.box_details[0]?.document_date.raw
                         ? dayjs(
-                              prev.box_details[0].document_date.split(" to ")[0]
+                              prev.box_details[0].document_date.raw.split(
+                                  " to "
+                              )[0]
                           ).year()
                         : null;
 
@@ -226,7 +281,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                     ...updatedDocuments[index],
                     document_date: formattedDate,
                     disposal_date: calculateDocumentDisposalDate(
-                        formattedDate,
+                        formattedDate.raw,
                         updatedDocuments[index].retention_period
                     ),
                 };
@@ -271,8 +326,14 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             document_title: null,
             rds_number: "",
             retention_period: "",
-            document_date: "",
-            disposal_date: "",
+            document_date: {
+                raw: null,
+                formatted: null,
+            },
+            disposal_date: {
+                raw: null,
+                formatted: null,
+            },
         };
         setBoxData((prev) => {
             const updatedDocuments = [...prev.box_details, newDocument];
@@ -337,20 +398,26 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 document_title: "",
                 rds_number: doc.rds_number, // Not required
                 retention_period: doc.retention_period, // Not required
-                document_date: "",
-                disposal_date: "",
+                document_date: {
+                    raw: null,
+                    formatted: null,
+                },
+                disposal_date: {
+                    raw: null,
+                    formatted: null,
+                },
             };
 
             if (!doc.document_title?.trim()) {
                 docErrors.document_title = "Document title is required.";
                 hasError = true;
             }
-            if (!doc.document_date?.trim()) {
-                docErrors.document_date = "Document date is required.";
+            if (!doc.document_date.raw?.trim()) {
+                docErrors.document_date.raw = "Document date is required.";
                 hasError = true;
             }
-            if (!doc.disposal_date?.trim()) {
-                docErrors.disposal_date = "Disposal date is required.";
+            if (!doc.disposal_date.raw?.trim()) {
+                docErrors.disposal_date.raw = "Disposal date is required.";
                 hasError = true;
             }
 

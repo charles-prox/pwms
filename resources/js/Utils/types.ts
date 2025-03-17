@@ -55,6 +55,12 @@ export interface BoxDetails {
     document_title: string | null;
     rds_number: string;
     retention_period: string;
-    document_date: string | null;
-    disposal_date: string | null;
+    document_date: {
+        raw: string | null; // e.g., '2025-03-17T10:00:00Z'
+        formatted: string | null; // e.g., 'March 17, 2025'
+    };
+    disposal_date: {
+        raw: string | null; // e.g., '2025-06-01T00:00:00Z'
+        formatted: string | null; // e.g., 'June 1, 2025'
+    };
 }

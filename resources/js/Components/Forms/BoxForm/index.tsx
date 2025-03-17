@@ -171,7 +171,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                             <DateRangePicker
                                                 label="Document Date"
                                                 value={parseDateRange(
-                                                    details.document_date
+                                                    details.document_date.raw
                                                 )}
                                                 aria-label="Select document date"
                                                 onChange={(value) =>
