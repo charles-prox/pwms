@@ -11,7 +11,6 @@ interface BoxFormContextType {
     saveBoxDataToBoxes: () => void | boolean;
     setBoxData: React.Dispatch<React.SetStateAction<BoxFormState>>;
     onBoxCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onPriorityLevelChange: (level: string) => void;
     onOfficeChange: (office: { id: number; name: string }) => void;
     onDocumentChange: (
         index: number,

@@ -125,11 +125,11 @@ export default function ListViewLayout({
             }
             bottomContentPlacement="outside"
             classNames={{
-                table: "relative min-h-[calc(100vh-512px)]",
+                table: "relative ",
                 td: "align-top",
-                wrapper: "w-full overflow-auto",
+                wrapper: "w-full overflow-auto h-[calc(100vh-20rem)]",
                 loadingWrapper:
-                    "absolute inset-0 bg-black/50 backdrop-blur-md z-50",
+                    "absolute inset-0 bg-black/50 backdrop-blur-md z-50 rounded-lg",
             }}
             selectedKeys={selectedKeys}
             selectionMode="single"
@@ -183,7 +183,7 @@ export default function ListViewLayout({
                 }
             >
                 {(item) => (
-                    <TableRow key={item.id} aria-rowspan={2}>
+                    <TableRow key={item.id}>
                         {(columnKey) => (
                             <TableCell>{renderCell(item, columnKey)}</TableCell>
                         )}
