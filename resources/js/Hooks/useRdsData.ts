@@ -65,11 +65,13 @@ const useRdsData = ({
 
         return rds
             ? {
+                  id: rds.id,
                   document_title: rds.title_description,
                   retention_period: rds.retention_period,
                   rds_number: rds.rds_number,
               }
             : {
+                  id: null,
                   document_title: null,
                   retention_period: null,
                   rds_number: null,

@@ -25,7 +25,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     const [boxData, setBoxData] = useState<BoxFormState>({
         id: 1,
         box_code: "",
-        priority_level: "",
+        priority_level: null,
         remarks: "",
         disposal_date: "",
         office: null,
@@ -76,7 +76,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         const initialData = {
             id: 1,
             box_code: "",
-            priority_level: "",
+            priority_level: null,
             remarks: "",
             disposal_date: "",
             office: null,
@@ -187,7 +187,10 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         );
 
         if (hasPermanentDisposal) {
-            return "Permanent";
+            return {
+                disposalDate: "Permanent",
+                priorityLevel: { value: "red", label: "RED (Permanent Files)" },
+            };
         }
 
         const validDisposalDates = updatedBoxDetails
@@ -195,7 +198,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             .filter((date) => date.isValid());
 
         if (validDisposalDates.length === 0) {
-            return null;
+            return { disposalDate: null, priorityLevel: null };
         }
 
         const maxDisposalDate = validDisposalDates.reduce(
@@ -203,9 +206,32 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             dayjs(0)
         );
 
-        return maxDisposalDate.isValid()
+        const disposalDate = maxDisposalDate.isValid()
             ? maxDisposalDate.add(1, "year").format("MMMM YYYY")
             : null;
+
+        // Calculate the maximum retention period
+        const maxRetentionPeriod = updatedBoxDetails.reduce((max, doc) => {
+            const retentionYears = parseInt(doc.retention_period, 10);
+            return !isNaN(retentionYears) && retentionYears > max
+                ? retentionYears
+                : max;
+        }, 0);
+
+        let priorityLevel = null;
+        if (maxRetentionPeriod >= 3) {
+            priorityLevel = {
+                value: "green",
+                label: "GREEN (3 years above retention period)",
+            };
+        } else if (maxRetentionPeriod >= 1) {
+            priorityLevel = {
+                value: "black",
+                label: "BLACK (1-2 years retention period or photocopied documents)",
+            };
+        }
+
+        return { disposalDate, priorityLevel };
     };
 
     const onDocumentChange = (
@@ -215,23 +241,30 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     ) => {
         setBoxData((prev) => {
             const updatedDocuments = [...prev.box_details];
+            console.log("field:", field);
+            const formattedDate = formatDateRange(
+                value as RangeValue<DateValue>
+            );
 
             if (field === "id" && typeof value === "string") {
                 // ✅ Fetch retention period & rds number
                 const rdsData = getRdsDetailsById(parseInt(value));
+                console.log("rdsData", rdsData);
 
                 if (rdsData) {
                     updatedDocuments[index] = {
                         ...updatedDocuments[index],
+                        id: rdsData.id,
                         document_title: rdsData.document_title,
                         rds_number: rdsData.rds_number || "",
                         retention_period: String(rdsData.retention_period),
+                        document_date: {
+                            raw: null,
+                            formatted: null,
+                        },
                     };
                 }
             } else if (field === "document_date" && typeof value !== "string") {
-                const formattedDate = formatDateRange(
-                    value as RangeValue<DateValue>
-                );
                 const selectedYear = dayjs(value?.start.toDate("UTC")).year();
 
                 if (value?.start && value?.end) {
@@ -297,10 +330,18 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 box_details: updatedDocuments,
             };
 
-            // Update disposal date based on new box details
-            const updatedDisposalDate = updateBoxDisposalDate(updatedDocuments);
-            if (updatedDisposalDate) {
-                newBoxData.disposal_date = updatedDisposalDate;
+            // Update disposal date and priority level based on new box details
+            const { disposalDate, priorityLevel } =
+                updateBoxDisposalDate(updatedDocuments);
+
+            console.log("Disposal date:", disposalDate);
+            console.log("Priority level:", priorityLevel);
+
+            if (disposalDate) {
+                newBoxData.disposal_date = disposalDate;
+            }
+            if (priorityLevel) {
+                newBoxData.priority_level = priorityLevel;
             }
 
             return newBoxData;
@@ -309,10 +350,6 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const onBoxCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBoxData((prev) => ({ ...prev, box_code: e.target.value }));
-    };
-
-    const onPriorityLevelChange = (level: string) => {
-        setBoxData((prev) => ({ ...prev, priority_level: level }));
     };
 
     const onOfficeChange = (office: { id: number; name: string }) => {
@@ -352,12 +389,14 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 (_, i) => i !== index
             );
 
-            const updatedDisposalDate = updateBoxDisposalDate(updatedDocuments);
+            const { disposalDate, priorityLevel } =
+                updateBoxDisposalDate(updatedDocuments);
 
             return {
                 ...prev,
                 box_details: updatedDocuments,
-                disposal_date: updatedDisposalDate ?? prev.disposal_date, // ✅ Ensure disposal date updates
+                disposal_date: disposalDate ?? prev.disposal_date, // ✅ Ensure disposal date updates
+                priority_level: priorityLevel ?? prev.priority_level, // ✅ Ensure priority level updates
             };
         });
     };
@@ -379,7 +418,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             newErrors.box_code = "Box code is required.";
             hasError = true;
         }
-        if (!boxData.priority_level?.trim()) {
+        if (!boxData.priority_level?.value?.trim()) {
             newErrors.priority_level = "Priority level is required.";
             hasError = true;
         }
@@ -458,7 +497,6 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 saveBoxDataToBoxes,
                 setBoxData,
                 onBoxCodeChange,
-                onPriorityLevelChange,
                 onOfficeChange,
                 onDocumentChange,
                 addDocument,

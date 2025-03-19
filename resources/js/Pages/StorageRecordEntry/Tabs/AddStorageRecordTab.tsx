@@ -5,6 +5,7 @@ import {
     AccordionItem,
     Card,
     CardBody,
+    Chip,
     Table,
     TableBody,
     TableCell,
@@ -17,6 +18,7 @@ import { useBoxForm } from "@/Contexts/BoxFormContext";
 import { columns } from "../columns";
 import { DocumentIcon } from "./icons";
 import { BoxDetails } from "@/Utils/types";
+import { toTitleCase } from "@/Utils/helpers";
 
 const AddStorageRecordTab = () => {
     const TABLE_ID = "storage_record_entry";
@@ -24,9 +26,33 @@ const AddStorageRecordTab = () => {
     const { boxes } = useBoxForm();
 
     const renderCell = (row: any, columnKey: React.Key) => {
+        console.log(row);
+
         if (columnKey === "office") {
             // Return office name
             return row.office.name;
+        }
+
+        if (columnKey === "priority_level") {
+            return row.priority_level?.value ? (
+                <Chip
+                    size="sm"
+                    color={
+                        row.priority_level.value === "black"
+                            ? "default"
+                            : row.priority_level.value === "green"
+                            ? "success"
+                            : row.priority_level.value === "red"
+                            ? "danger"
+                            : "primary"
+                    }
+                >
+                    {toTitleCase(row.priority_level.value)}
+                </Chip>
+            ) : (
+                "N/A"
+            );
+            // return row.priority_level?.value;
         }
 
         if (columnKey === "documents") {
@@ -44,7 +70,7 @@ const AddStorageRecordTab = () => {
                         }
                         isCompact
                         disableIndicatorAnimation
-                        classNames={{ trigger: "p-0 m-0" }}
+                        classNames={{ trigger: "p-0 m-0", title: "text-sm" }}
                     >
                         <Table aria-label="Document table">
                             <TableHeader>
@@ -90,21 +116,19 @@ const AddStorageRecordTab = () => {
         <div>
             <Card>
                 <CardBody>
-                    <div className="flex flex-col flex-1">
-                        <div>
-                            <ListViewLayout
-                                key={boxes.length}
-                                tableid={TABLE_ID}
-                                itemName="Box"
-                                enableFilters={false}
-                                enableSearch={false}
-                                columns={columns}
-                                rows={boxes}
-                                totalRows={boxes.length}
-                                onOpenAddNewForm={() => setIsBoxFormOpen(true)}
-                                renderCell={renderCell}
-                            />
-                        </div>
+                    <div>
+                        <ListViewLayout
+                            key={boxes.length}
+                            tableid={TABLE_ID}
+                            itemName="Box"
+                            enableFilters={false}
+                            enableSearch={false}
+                            columns={columns}
+                            rows={boxes}
+                            totalRows={boxes.length}
+                            onOpenAddNewForm={() => setIsBoxFormOpen(true)}
+                            renderCell={renderCell}
+                        />
                     </div>
                 </CardBody>
             </Card>

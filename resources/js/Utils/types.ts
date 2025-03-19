@@ -43,7 +43,7 @@ export interface Filter {
 export interface BoxFormState {
     id: number;
     box_code: string;
-    priority_level: string;
+    priority_level: { value: string; label: string } | null;
     remarks: string;
     disposal_date: string;
     office: { id: number; name: string } | null;

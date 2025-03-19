@@ -25,15 +25,6 @@ interface ManageBoxDialogProps {
     editBoxData?: boolean;
 }
 
-const priorityLevels = [
-    { value: "red", label: "RED (Permanent Files)" },
-    { value: "green", label: "GREEN (3 years above retention period)" },
-    {
-        value: "black",
-        label: "BLACK (1-2 years retention period or photocopied documents)",
-    },
-];
-
 const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
     const {
         boxData,
@@ -43,7 +34,6 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
         rdsError,
         saveBoxDataToBoxes,
         onBoxCodeChange,
-        onPriorityLevelChange,
         addDocument,
         deleteDocument,
         onDocumentChange,
@@ -86,24 +76,68 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                 placeholder="Enter Box Code"
                                 value={boxData.box_code}
                                 onChange={onBoxCodeChange}
+                                errorMessage={errors.box_code}
                                 isRequired
                             />
-                            <Select
-                                variant="flat"
-                                name="priority_level"
+                            <Input
                                 label="Priority Level"
-                                placeholder="Select priority level"
-                                items={priorityLevels}
-                                keyField={"value"}
-                                labelField="label"
-                                menuTrigger="input"
-                                selectedKeys={new Set([boxData.priority_level])}
-                                onSelectionChange={(value) => {
-                                    onPriorityLevelChange(value.currentKey);
-                                }}
-                                isClearable={false}
-                                errorMessage={errors.priority_level}
-                                isRequired
+                                name="priority_level"
+                                placeholder="This field is automatically filled."
+                                value={
+                                    boxData.priority_level
+                                        ? boxData.priority_level.label
+                                        : ""
+                                }
+                                maxWidthClass={"w-full"}
+                                endContent={
+                                    <Tooltip
+                                        className="text-tiny w-96"
+                                        placement="bottom-end"
+                                        content={
+                                            <div>
+                                                <p>
+                                                    Priority Level is
+                                                    automatically filled based
+                                                    on the largest retention
+                                                    period of each document.
+                                                </p>
+                                                <div className="flex gap-1">
+                                                    <p className="w-12">RED</p>
+                                                    <p>-</p>
+                                                    <p className="flex-grow">
+                                                        Permanent Files
+                                                    </p>
+                                                </div>
+                                                <div className="flex gap-1">
+                                                    <p className="w-12">
+                                                        GREEN
+                                                    </p>
+                                                    <p>-</p>
+                                                    <p className="flex-grow">
+                                                        3 years above retention
+                                                        period
+                                                    </p>
+                                                </div>
+                                                <div className="flex gap-1">
+                                                    <p className="w-12">
+                                                        BLACK
+                                                    </p>
+                                                    <p>-</p>
+                                                    <p className="flex-grow">
+                                                        1-2 years retention
+                                                        period or photocopied
+                                                        documents
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        }
+                                    >
+                                        <div className="z-50">
+                                            <HelpIcon />
+                                        </div>
+                                    </Tooltip>
+                                }
+                                isReadOnly
                             />
                         </div>
                         <Spacer y={4} />
