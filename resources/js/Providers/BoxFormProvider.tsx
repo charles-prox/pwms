@@ -248,6 +248,8 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
 
             if (field === "id" && typeof value === "string") {
                 // ✅ Fetch retention period & rds number
+                console.log("value: " + value);
+
                 const rdsData = getRdsDetailsById(parseInt(value));
                 console.log("rdsData", rdsData);
 

@@ -29,6 +29,8 @@ const Select = <T extends object>({
     selectedKeys,
     menuTrigger,
     onSelectionChange,
+    onInputChange,
+    allowsCustomValue = false,
     variant = undefined,
     section = null,
 }: SelectProps<T>) => {
@@ -47,6 +49,7 @@ const Select = <T extends object>({
         <>
             {autocomplete ? (
                 <Autocomplete
+                    allowsCustomValue={allowsCustomValue}
                     name={name}
                     id={name}
                     defaultItems={items}
@@ -67,6 +70,7 @@ const Select = <T extends object>({
                     isClearable={isClearable}
                     menuTrigger={menuTrigger}
                     onSelectionChange={onSelectionChange}
+                    onInputChange={onInputChange}
                     isRequired={isRequired}
                     isInvalid={!!errorMessage} // Pass the error state
                     color={!!errorMessage ? "danger" : color}

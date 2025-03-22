@@ -165,6 +165,7 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                     >
                                         <div className="flex gap-2">
                                             <Select
+                                                allowsCustomValue={true}
                                                 autocomplete={true}
                                                 variant="flat"
                                                 name="document_title"

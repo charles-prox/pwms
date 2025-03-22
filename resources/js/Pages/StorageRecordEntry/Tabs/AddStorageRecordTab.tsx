@@ -3,9 +3,14 @@ import ListViewLayout from "@/Layouts/ListViewLayout";
 import {
     Accordion,
     AccordionItem,
+    Button,
     Card,
     CardBody,
     Chip,
+    Input,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
     Table,
     TableBody,
     TableCell,
@@ -26,8 +31,6 @@ const AddStorageRecordTab = () => {
     const { boxes } = useBoxForm();
 
     const renderCell = (row: any, columnKey: React.Key) => {
-        console.log(row);
-
         if (columnKey === "office") {
             // Return office name
             return row.office.name;
@@ -58,21 +61,19 @@ const AddStorageRecordTab = () => {
         if (columnKey === "documents") {
             // Concatenate all document details in the same cell
             return (
-                <Accordion>
-                    <AccordionItem
-                        key="anchor"
-                        aria-label="Anchor"
-                        indicator={<DocumentIcon />}
-                        title={
-                            row.box_details.length +
-                            " Document" +
-                            (row.box_details.length > 1 ? "s" : "")
-                        }
-                        isCompact
-                        disableIndicatorAnimation
-                        classNames={{ trigger: "p-0 m-0", title: "text-sm" }}
-                    >
-                        <Table aria-label="Document table">
+                <Popover showArrow placement="bottom-end">
+                    <PopoverTrigger>
+                        <Button color="primary" size="sm">{`${
+                            row.box_details.length
+                        } document${
+                            row.box_details.length > 1 ? "s" : ""
+                        }`}</Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                        <Table
+                            aria-label="Document table"
+                            classNames={{ wrapper: "shadow-none" }}
+                        >
                             <TableHeader>
                                 <TableColumn>DOCUMENT TITLE</TableColumn>
                                 <TableColumn>RDS NO.</TableColumn>
@@ -106,8 +107,8 @@ const AddStorageRecordTab = () => {
                                 })}
                             </TableBody>
                         </Table>
-                    </AccordionItem>
-                </Accordion>
+                    </PopoverContent>
+                </Popover>
             );
         }
     };
@@ -116,20 +117,18 @@ const AddStorageRecordTab = () => {
         <div>
             <Card>
                 <CardBody>
-                    <div>
-                        <ListViewLayout
-                            key={boxes.length}
-                            tableid={TABLE_ID}
-                            itemName="Box"
-                            enableFilters={false}
-                            enableSearch={false}
-                            columns={columns}
-                            rows={boxes}
-                            totalRows={boxes.length}
-                            onOpenAddNewForm={() => setIsBoxFormOpen(true)}
-                            renderCell={renderCell}
-                        />
-                    </div>
+                    <ListViewLayout
+                        key={boxes.length}
+                        tableid={TABLE_ID}
+                        itemName="Box"
+                        enableFilters={false}
+                        enableSearch={false}
+                        columns={columns}
+                        rows={boxes}
+                        totalRows={boxes.length}
+                        onOpenAddNewForm={() => setIsBoxFormOpen(true)}
+                        renderCell={renderCell}
+                    />
                 </CardBody>
             </Card>
             <BoxForm
