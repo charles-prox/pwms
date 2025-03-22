@@ -2,11 +2,6 @@ import { Tabs, Tab, Card, CardBody, Spacer } from "@heroui/react";
 import { Head } from "@inertiajs/react";
 import { BoxFormProvider } from "@/Providers/BoxFormProvider";
 import AddStorageRecordTab from "./Tabs/AddStorageRecordTab";
-import { PlusIcon } from "@/Layouts/ListViewLayout/icons";
-import {
-    EyeFilledIcon,
-    EyeSlashFilledIcon,
-} from "@/Components/PasswordVisibilityButton/icons";
 
 const StorageRecordEntry = () => {
     return (

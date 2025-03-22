@@ -53,7 +53,9 @@ interface SelectProps<T extends object> {
     menuTrigger: "focus" | "input" | "manual";
     section?: keyof T | null; // Section
     onSelectionChange: (keys: any) => void;
+    onInputChange?: (keys: any) => void;
     onKeyDown?: (e: KeyboardEvent) => void;
+    allowsCustomValue?: boolean; //
 }
 
 type AlertType =

@@ -126,8 +126,8 @@ export default function ListViewLayout({
             bottomContentPlacement="outside"
             classNames={{
                 table: "relative ",
-                td: "align-top",
-                wrapper: "w-full overflow-auto h-[calc(100vh-20rem)]",
+                // td: "align-top",
+                // wrapper: "w-full overflow-auto h-[calc(100vh-20rem)]",
                 loadingWrapper:
                     "absolute inset-0 bg-black/50 backdrop-blur-md z-50 rounded-lg",
             }}
