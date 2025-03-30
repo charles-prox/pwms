@@ -26,9 +26,4 @@ class Location extends Model
     {
         return $this->belongsTo(Office::class, 'office_id');
     }
-
-    public function oldBoxes()
-    {
-        return $this->hasMany(OldBox::class, 'location_id');
-    }
 }

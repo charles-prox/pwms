@@ -10,14 +10,15 @@ class BoxLocation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'box_id',
+        'boxable_id',
+        'boxable_type',
         'location_id',
         'position',
     ];
 
-    public function box()
+    public function boxable()
     {
-        return $this->belongsTo(OldBox::class, 'box_id');
+        return $this->morphTo();
     }
 
     public function location()

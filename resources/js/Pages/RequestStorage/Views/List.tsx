@@ -1,3 +1,4 @@
+import BoxForm from "@/Components/Forms/NewBoxForm";
 import ListViewLayout from "@/Layouts/ListViewLayout";
 import {
     Button,
@@ -16,14 +17,12 @@ import {
 } from "@heroui/react";
 import React from "react";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
-import { columns } from "../columns";
 import { BoxDetails } from "@/Utils/types";
 import { toTitleCase } from "@/Utils/helpers";
-import NewBoxForm from "@/Components/Forms/NewBoxForm";
-import OldBoxForm from "@/Components/Forms/OldBoxForm";
+import { columns } from "./columns";
 
-const AddStorageRecordTab = () => {
-    const TABLE_ID = "storage_record_entry";
+const List = () => {
+    const TABLE_ID = "storage-request";
     const [isBoxFormOpen, setIsBoxFormOpen] = React.useState<boolean>(false);
     const { boxes } = useBoxForm();
 
@@ -128,7 +127,7 @@ const AddStorageRecordTab = () => {
                     />
                 </CardBody>
             </Card>
-            <OldBoxForm
+            <BoxForm
                 isOpen={isBoxFormOpen}
                 onClose={() => setIsBoxFormOpen(false)}
                 editBoxData={false}
@@ -137,4 +136,4 @@ const AddStorageRecordTab = () => {
     );
 };
 
-export default AddStorageRecordTab;
+export default List;
