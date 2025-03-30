@@ -1,14 +1,13 @@
 import React from "react";
 import { Head } from "@inertiajs/react";
-import NoRequest from "./EmptyState";
+// import NoRequest from "./EmptyState";
 import RequestView from "@/Components/RequestView";
-import ListViewLayout from "@/Layouts/ListViewLayout";
-import { columns } from "./columns";
-import { users } from "./rows";
+import List from "./Views/List";
+import { BoxFormProvider } from "@/Providers/BoxFormProvider";
 
 const RequestStoragePage = () => {
     return (
-        <div>
+        <BoxFormProvider>
             <Head title="Request Storage" />
             <div className="flex flex-col gap-5">
                 <div className="flex w-full">
@@ -25,9 +24,9 @@ const RequestStoragePage = () => {
                     </div>
                 </div>
                 {/* <NoRequest /> */}
-                <ListViewLayout columns={columns} rows={users} />
+                <List />
             </div>
-        </div>
+        </BoxFormProvider>
     );
 };
 

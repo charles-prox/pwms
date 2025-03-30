@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('box_locations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('box_id')->constrained('old_boxes')->onDelete('cascade');
+            $table->unsignedBigInteger('boxable_id'); // Stores the ID from either table
+            $table->string('boxable_type'); // Stores the table name ('old_boxes' or 'boxes')
             $table->foreignId('location_id')->constrained('locations')->onDelete('cascade');
             $table->integer('position'); // 1 to 9
             $table->timestamps();

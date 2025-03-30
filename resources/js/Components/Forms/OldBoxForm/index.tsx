@@ -13,8 +13,7 @@ import {
     Divider,
     Tooltip,
 } from "@heroui/react";
-import { HelpIcon, TrashIcon } from "./icons";
-import { PlusIcon } from "@/Layouts/ListViewLayout/icons";
+import { PlusIcon, TrashIcon } from "@/Layouts/ListViewLayout/icons";
 import useFetch from "@/Hooks/useFetch";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
@@ -25,7 +24,7 @@ interface ManageBoxDialogProps {
     editBoxData?: boolean;
 }
 
-const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
+const OldBoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
     const {
         boxData,
         errors,
@@ -89,54 +88,6 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                         : ""
                                 }
                                 maxWidthClass={"w-full"}
-                                endContent={
-                                    <Tooltip
-                                        className="text-tiny w-96"
-                                        placement="bottom-end"
-                                        content={
-                                            <div>
-                                                <p>
-                                                    Priority Level is
-                                                    automatically filled based
-                                                    on the largest retention
-                                                    period of each document.
-                                                </p>
-                                                <div className="flex gap-1">
-                                                    <p className="w-12">RED</p>
-                                                    <p>-</p>
-                                                    <p className="flex-grow">
-                                                        Permanent Files
-                                                    </p>
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    <p className="w-12">
-                                                        GREEN
-                                                    </p>
-                                                    <p>-</p>
-                                                    <p className="flex-grow">
-                                                        3 years above retention
-                                                        period
-                                                    </p>
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    <p className="w-12">
-                                                        BLACK
-                                                    </p>
-                                                    <p>-</p>
-                                                    <p className="flex-grow">
-                                                        1-2 years retention
-                                                        period or photocopied
-                                                        documents
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        }
-                                    >
-                                        <div className="z-50">
-                                            <HelpIcon />
-                                        </div>
-                                    </Tooltip>
-                                }
                                 isReadOnly
                             />
                         </div>
@@ -203,29 +154,17 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 section={"department"}
                                             />
 
-                                            <DateRangePicker
+                                            <Input
                                                 label="Document Date"
-                                                value={parseDateRange(
+                                                name="document_date"
+                                                placeholder="This field is automatically filled."
+                                                value={
                                                     details.document_date.raw
-                                                )}
-                                                aria-label="Select document date"
-                                                onChange={(value) =>
-                                                    onDocumentChange(
-                                                        index,
-                                                        "document_date",
-                                                        value
-                                                    )
+                                                        ? details.document_date
+                                                              .raw
+                                                        : ""
                                                 }
-                                                classNames={{ base: "w-1/3" }}
-                                                maxValue={today(
-                                                    getLocalTimeZone()
-                                                )}
-                                                errorMessage={
-                                                    errors.box_details[index]
-                                                        .document_date
-                                                }
-                                                isRequired
-                                                showMonthAndYearPickers
+                                                maxWidthClass={"w-full"}
                                             />
                                         </div>
                                         <div className="flex gap-2 items-center">
@@ -235,19 +174,6 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 placeholder="This is automatically filled"
                                                 value={details.rds_number}
                                                 maxWidthClass={"w-2/4"}
-                                                endContent={
-                                                    <Tooltip
-                                                        className="text-tiny w-60"
-                                                        placement="bottom-end"
-                                                        content={
-                                                            "RDS number is a based on the document. A corresponding RDS number is assigned to each document."
-                                                        }
-                                                    >
-                                                        <div className="z-50">
-                                                            <HelpIcon />
-                                                        </div>
-                                                    </Tooltip>
-                                                }
                                                 isReadOnly
                                             />
                                             <Input
@@ -256,19 +182,6 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                                 placeholder="This is automatically filled"
                                                 value={details.retention_period}
                                                 maxWidthClass={"w-2/4"}
-                                                endContent={
-                                                    <Tooltip
-                                                        className="text-tiny w-60"
-                                                        placement="bottom-end"
-                                                        content={
-                                                            "Retention period is a based on the RDS number or document."
-                                                        }
-                                                    >
-                                                        <div className="z-50">
-                                                            <HelpIcon />
-                                                        </div>
-                                                    </Tooltip>
-                                                }
                                                 isReadOnly
                                             />
                                             <Button
@@ -309,20 +222,6 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
                                 placeholder="This field is automatically filled."
                                 value={boxData.disposal_date}
                                 maxWidthClass={"w-full"}
-                                endContent={
-                                    <Tooltip
-                                        className="text-tiny w-60"
-                                        placement="bottom-end"
-                                        content={
-                                            "Disposal date is automatically calculated based on the largest retention period of each document."
-                                        }
-                                    >
-                                        <div className="z-50">
-                                            <HelpIcon />
-                                        </div>
-                                    </Tooltip>
-                                }
-                                isReadOnly
                             />
                             <Select
                                 autocomplete={true}
@@ -371,4 +270,4 @@ const BoxForm = ({ isOpen, onClose, editBoxData }: ManageBoxDialogProps) => {
     );
 };
 
-export default BoxForm;
+export default OldBoxForm;
