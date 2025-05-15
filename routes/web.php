@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\UpdateUserProfileController;
 use App\Http\Controllers\RegisterAdminController;
+use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\RDSController;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,8 @@ Route::middleware([
 
     Route::post('rds/import', [RDSController::class, 'import'])->name('rds.import');
     Route::get('/rds/get', [RDSController::class, 'index'])->name('rds.index');
+
+    Route::post('/requests/create/{type}', [RequestsController::class, 'createBlankRequest'])->name('requests.create');
 });
 
 

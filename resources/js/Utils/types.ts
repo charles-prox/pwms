@@ -64,3 +64,11 @@ export interface BoxDetails {
         formatted: string | null; // e.g., 'June 1, 2025'
     };
 }
+
+// ========================
+// PROP TYPES
+// ========================
+export type FormProp = {
+    number: string;
+    last_update: string;
+};

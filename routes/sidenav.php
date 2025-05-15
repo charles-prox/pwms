@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RequestsController;
 use Inertia\Inertia;
 
 Route::middleware([
@@ -62,7 +63,6 @@ Route::middleware([
 
 
     // If you have nested routes or dynamic routes, you can add them as well
-    Route::get('/request-storage/{id}', function ($id) {
-        return Inertia::render('RequestStorageDetails', ['id' => $id]);
-    })->name('request.storage.details');
+    Route::get('/request-storage/{form_no}', [RequestsController::class, 'getFormDetails'])
+        ->name('request.storage.details');
 });
