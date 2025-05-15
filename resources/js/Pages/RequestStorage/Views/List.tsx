@@ -1,4 +1,3 @@
-import BoxForm from "@/Components/Forms/NewBoxForm";
 import ListViewLayout from "@/Layouts/ListViewLayout";
 import {
     Button,
@@ -17,14 +16,35 @@ import {
 } from "@heroui/react";
 import React from "react";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
-import { BoxDetails } from "@/Utils/types";
+import { BoxDetails, FormProp } from "@/Utils/types";
 import { toTitleCase } from "@/Utils/helpers";
-import { columns } from "./columns";
+import { formcolumns, boxcolumns } from "./columns";
+import { router, usePage } from "@inertiajs/react";
+import { axiosInstance } from "@/Utils/axios";
 
 const List = () => {
     const TABLE_ID = "storage-request";
-    const [isBoxFormOpen, setIsBoxFormOpen] = React.useState<boolean>(false);
     const { boxes } = useBoxForm();
+    const { form = null } = usePage<{ form?: FormProp }>().props;
+
+    const onCreateRequest = async () => {
+        const type = "storage";
+
+        try {
+            const response = await axiosInstance.post(
+                `/requests/create/${type}`
+            );
+            const form_no = response.data.form_no;
+
+            console.log("Request created!", response.data);
+
+            // Redirect to the newly created request
+            router.visit(`/request-storage/${form_no}`);
+        } catch (error) {
+            console.error("Failed to create request:", error);
+            alert("Something went wrong.");
+        }
+    };
 
     const renderCell = (row: any, columnKey: React.Key) => {
         if (columnKey === "office") {
@@ -116,22 +136,17 @@ const List = () => {
                     <ListViewLayout
                         key={boxes.length}
                         tableid={TABLE_ID}
-                        itemName="Box"
+                        itemName={!!form ? "Box" : "Request"}
                         enableFilters={false}
-                        enableSearch={false}
-                        columns={columns}
+                        enableSearch={!!form ? false : true}
+                        columns={!!form ? boxcolumns : formcolumns}
                         rows={boxes}
                         totalRows={boxes.length}
-                        onOpenAddNewForm={() => setIsBoxFormOpen(true)}
+                        onOpenAddNewForm={() => onCreateRequest()}
                         renderCell={renderCell}
                     />
                 </CardBody>
             </Card>
-            <BoxForm
-                isOpen={isBoxFormOpen}
-                onClose={() => setIsBoxFormOpen(false)}
-                editBoxData={false}
-            />
         </div>
     );
 };

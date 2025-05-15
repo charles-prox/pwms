@@ -122,7 +122,7 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                             <Input
                                 isClearable
                                 className="w-full min-w-[400px] sm:max-w-[44%]"
-                                placeholder="Search by item..."
+                                placeholder="Search item..."
                                 startContent={<SearchIcon />}
                                 value={searchValue}
                                 onClear={onClear}
@@ -278,7 +278,10 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                                 color="primary"
                                 endContent={<PlusIcon />}
                             >
-                                Add New {itemName}
+                                {itemName === "Request"
+                                    ? "Create New"
+                                    : "Add New"}{" "}
+                                {itemName}
                             </Button>
                         ) : hasUpload && !hasAddNew ? (
                             // Only "Upload File" button if `onOpenUploadForm` is defined
