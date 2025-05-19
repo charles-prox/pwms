@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Request as RequestModel;
 
 class User extends Authenticatable
 {
@@ -86,5 +87,23 @@ class User extends Authenticatable
         })->join(' '));
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=7F9CF5&background=EBF4FF&format=svg';
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(RequestModel::class, 'created_by');
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        $names = [$this->first_name];
+
+        if ($this->middle_name) {
+            $names[] = $this->middle_name;
+        }
+
+        $names[] = $this->last_name;
+
+        return implode(' ', $names);
     }
 }

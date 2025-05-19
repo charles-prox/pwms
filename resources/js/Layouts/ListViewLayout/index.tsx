@@ -14,8 +14,9 @@ import {
     Selection,
     SortDescriptor,
     Spinner,
+    Tooltip,
 } from "@heroui/react";
-import { VerticalDotsIcon } from "./icons";
+import { EditIcon, InfoIcon, TrashIcon, VerticalDotsIcon } from "./icons";
 import FooterContent from "./Table/Footer";
 import HeaderContent from "./Table/Header";
 
@@ -45,6 +46,11 @@ interface LayoutProps {
     totalRows?: number;
     enableFilters?: boolean;
     enableSearch?: boolean;
+    customAddNewButton?: React.ReactNode;
+    customEditAction?: React.ReactNode;
+    onEditAction?: (row: RowType) => void;
+    onDeleteAction?: (row: RowType) => void;
+    onViewAction?: (row: RowType) => void;
     renderCell?: (row: RowType, columnKey: React.Key) => React.ReactNode;
 }
 
@@ -61,6 +67,17 @@ export default function ListViewLayout({
     enableFilters,
     enableSearch,
     renderCell: customRenderCell,
+    customAddNewButton,
+    customEditAction,
+    onEditAction = (row: RowType) => {
+        console.log("Edit action not implemented", row);
+    },
+    onDeleteAction = (row: RowType) => {
+        console.log("Delete action not implemented", row);
+    },
+    onViewAction = (row: RowType) => {
+        console.log("View action not implemented", row);
+    },
 }: LayoutProps) {
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
         new Set([])
@@ -90,19 +107,91 @@ export default function ListViewLayout({
 
             if (columnKey === "actions") {
                 return (
-                    <div className="relative flex justify-end items-center gap-2">
-                        <Dropdown>
-                            <DropdownTrigger>
-                                <Button isIconOnly size="sm" variant="light">
-                                    <VerticalDotsIcon className="text-default-300" />
+                    <div className="relative flex justify-center items-center gap-2">
+                        {/* Visible on medium and larger screens */}
+                        <div className="hidden md:flex gap-2">
+                            <Tooltip content={"Edit"}>
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    onPress={() => {
+                                        onEditAction(row);
+                                    }}
+                                    color="primary"
+                                >
+                                    <EditIcon size={18} />
                                 </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu>
-                                <DropdownItem key="view">View</DropdownItem>
-                                <DropdownItem key="edit">Edit</DropdownItem>
-                                <DropdownItem key="delete">Delete</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
+                            </Tooltip>
+                            <Tooltip content="View more information">
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    onPress={() => {
+                                        onViewAction(row);
+                                    }}
+                                    color="warning"
+                                    className={`${
+                                        row.form_number ? "" : "hidden"
+                                    }`}
+                                >
+                                    <InfoIcon />
+                                </Button>
+                            </Tooltip>
+                            <Tooltip content={"Delete"}>
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    onPress={() => {
+                                        onDeleteAction(row);
+                                    }}
+                                    color={row.is_draft ? "default" : "danger"}
+                                    isDisabled={row.is_draft}
+                                    className="disabled:opacity-10"
+                                >
+                                    <TrashIcon size={18} />
+                                </Button>
+                            </Tooltip>
+                        </div>
+
+                        {/* Visible only on small screens */}
+                        <div className="block md:hidden">
+                            <Dropdown>
+                                <DropdownTrigger>
+                                    <Button
+                                        isIconOnly
+                                        size="sm"
+                                        variant="light"
+                                    >
+                                        <VerticalDotsIcon className="text-default-300" />
+                                    </Button>
+                                </DropdownTrigger>
+                                <DropdownMenu>
+                                    <DropdownItem
+                                        key="view"
+                                        onPress={() => console.log("View", row)}
+                                    >
+                                        View
+                                    </DropdownItem>
+                                    <DropdownItem
+                                        key="edit"
+                                        onPress={() => console.log("Edit", row)}
+                                    >
+                                        Edit
+                                    </DropdownItem>
+                                    <DropdownItem
+                                        key="delete"
+                                        onPress={() =>
+                                            console.log("Delete", row)
+                                        }
+                                    >
+                                        Delete
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </div>
                     </div>
                 );
             } else {
@@ -148,6 +237,7 @@ export default function ListViewLayout({
                     tableid={tableid}
                     enableFilters={enableFilters}
                     enableSearch={enableSearch}
+                    customAddNewButton={customAddNewButton}
                 />
             }
             topContentPlacement="outside"

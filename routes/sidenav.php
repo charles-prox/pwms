@@ -13,21 +13,22 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('home');
 
-    Route::get('/request-storage', function () {
-        return Inertia::render('RequestStorage');
-    })->name('request.storage');
+    Route::get('/request', [RequestsController::class, 'getAllRequests'])->name('requests');
 
-    Route::get('/request-withdrawal', function () {
-        return Inertia::render('RequestWithdrawal');
-    })->name('request.withdrawal');
+    Route::get('/request/{form_no}', [RequestsController::class, 'getFormDetails'])
+        ->name('request.details');
 
-    Route::get('/request-return', function () {
-        return Inertia::render('RequestReturn');
-    })->name('request.return');
+    // Route::get('/request/withdrawal', function () {
+    //     return Inertia::render('RequestWithdrawal');
+    // })->name('request.withdrawal');
 
-    Route::get('/request-disposal', function () {
-        return Inertia::render('RequestDisposal');
-    })->name('request.disposal');
+    // Route::get('/request/return', function () {
+    //     return Inertia::render('RequestReturn');
+    // })->name('request.return');
+
+    // Route::get('/request/disposal', function () {
+    //     return Inertia::render('RequestDisposal');
+    // })->name('request.disposal');
 
     Route::get('/users', function () {
         return Inertia::render('Users');
@@ -60,9 +61,4 @@ Route::middleware([
     Route::get('/storage-record-entry', function () {
         return Inertia::render('StorageRecordEntry');
     })->name('storage.record.entry');
-
-
-    // If you have nested routes or dynamic routes, you can add them as well
-    Route::get('/request-storage/{form_no}', [RequestsController::class, 'getFormDetails'])
-        ->name('request.storage.details');
 });

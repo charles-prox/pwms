@@ -16,7 +16,7 @@ class RequestsController extends Controller
     public function createBlankRequest(string $type)
     {
         $type = strtolower($type);
-        $uid = Auth::id();
+        $user = Auth::user();
 
         $validTypes = [
             'storage'    => 'S',
@@ -27,6 +27,19 @@ class RequestsController extends Controller
 
         if (!array_key_exists($type, $validTypes)) {
             return response()->json(['error' => 'Invalid request type'], 400);
+        }
+
+        // ❌ Block if the user already has a draft of this type
+        $existingDraft = RequestModel::where('request_type', $type)
+            ->where('created_by', $user->id)
+            ->where('is_draft', true)
+            ->first();
+
+        if ($existingDraft) {
+            return response()->json([
+                'error' => 'You already have a draft for this request type.',
+                'existing_form_no' => $existingDraft->form_number
+            ], 409);
         }
 
         $prefix = $validTypes[$type];
@@ -53,28 +66,85 @@ class RequestsController extends Controller
         $request->status = 'draft';
         $request->is_draft = true;
         $request->form_number = $formNumber;
-        $request->created_by = $uid; // Assumes user is logged in
+        $request->created_by = $user->id;
+        $request->updated_by = $user->id;
+        $request->office_id = $user->office_id ?? null;
         $request->created_at = now();
-        $request->updated_by = $uid;
         $request->updated_at = now();
         $request->save();
 
         return response()->json([
             'message' => 'Blank request created successfully',
             'form_no' => $formNumber,
+            'created_by' => $user->full_name,
             'request' => $request
         ]);
     }
 
+    /**
+     * Get the details of a specific request form based on type and form number.
+     */
     public function getFormDetails(string $form_no)
     {
-        $request = RequestModel::where('form_number', $form_no)->firstOrFail();
+        $request = RequestModel::where('form_number', $form_no)
+            ->first();
 
-        return Inertia::render('RequestStorage', [
+        // If not found, also redirect to the list
+        if (!$request) {
+            return $this->getAllRequests();
+        }
+
+        return Inertia::render('Requests', [
             'form' => [
-                'number'      => $form_no,
-                'last_update' => $request->updated_at->format('Y-m-d H:i'),
+                'number' => $request->form_number,
+                'type' => ucfirst($request->request_type),
+                'last_update' => $request->updated_at->format('m/d/Y'),
             ],
+        ]);
+    }
+
+    /**
+     * Get all draft requests for the authenticated user's office.
+     */
+    public function getAllRequests()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $officeId = $user->office_id;
+
+        $allRequests = RequestModel::with('creator')
+            ->where('office_id', $officeId)
+            ->orderBy('updated_at', 'desc')
+            ->get()
+            ->map(function ($request) {
+                $creator = $request->creator;
+                $middleInitial = $creator->middle_name ? strtoupper(substr($creator->middle_name, 0, 1)) . '.' : '';
+                $fullName = trim("{$creator->first_name} {$middleInitial} {$creator->last_name}");
+
+                return [
+                    'id' => $request->id,
+                    'form_number' => $request->form_number,
+                    'request_type' => ucfirst($request->request_type),
+                    'status' => ucfirst($request->status),
+                    'is_draft' => $request->is_draft,
+                    'request_date' => $request->request_date ? $request->request_date->format('m/d/Y') : null,
+                    'office_id' => $request->office_id,
+                    'created_by' => $request->created_by,
+                    'created_at' => $request->created_at ? $request->created_at->format('m/d/Y') : null,
+                    'updated_at' => $request->updated_at ? $request->updated_at->format('m/d/Y') : null,
+                    'completed_at' => $request->completed_at ? $request->completed_at->format('m/d/Y') : null,
+                    'approved_at' => $request->approved_at ? $request->approved_at->format('m/d/Y') : null,
+                    'creator' => $fullName,
+                ];
+            });
+
+
+        return Inertia::render('Requests', [
+            'requests' => $allRequests
         ]);
     }
 }

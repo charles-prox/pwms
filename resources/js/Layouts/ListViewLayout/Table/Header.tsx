@@ -34,6 +34,7 @@ interface HeaderContentProps {
     tableid: string; // Unique table identifier
     enableSearch?: boolean;
     enableFilters?: boolean;
+    customAddNewButton?: React.ReactNode;
 }
 
 const HeaderContent: React.FC<HeaderContentProps> = ({
@@ -45,6 +46,7 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
     tableid,
     enableSearch = true,
     enableFilters = true,
+    customAddNewButton,
 }) => {
     const { getTableOptions, updateTableOptions } = useTableOptions();
 
@@ -270,6 +272,8 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                                 </PopoverContent>
                             </Popover>
                         )}
+                        {customAddNewButton}
+
                         {hasAddNew && !hasUpload ? (
                             // Only "Add New" button if `onOpenAddNewForm` is defined
                             <Button
