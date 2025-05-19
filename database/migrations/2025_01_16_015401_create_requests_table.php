@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('status', 20)->comment('draft, pending, approved, rejected');
             $table->boolean('is_draft')->default(true);
             $table->timestamp('request_date')->nullable();
+            $table->bigInteger('office_id')->nullable();
+            $table->foreign('office_id')->references('id')->on('offices');
             $table->bigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users');
             $table->timestamp('created_at')->default('NOW()');

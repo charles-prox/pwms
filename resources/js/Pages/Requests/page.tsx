@@ -13,18 +13,18 @@ const RequestStoragePage = () => {
 
     return (
         <BoxFormProvider>
-            <Head title="Request Storage" />
+            <Head title="Make Request" />
             <div className="flex flex-col gap-5">
                 <div className="flex w-full">
                     <div className="flex-grow">
                         <Breadcrumbs size="lg" separator={<SeparatorIcon />}>
                             <BreadcrumbItem
                                 onPress={() => {
-                                    router.visit("/request/storage");
+                                    router.visit("/request");
                                 }}
                             >
                                 <h1 className="text-2xl font-bold">
-                                    Request Storage
+                                    Make Request
                                 </h1>
                             </BreadcrumbItem>
                             {form?.number && (
@@ -38,7 +38,7 @@ const RequestStoragePage = () => {
                         {form?.number ? (
                             <p>Last updated {form.last_update}</p>
                         ) : (
-                            <p>Easily Request and Track Document Storage</p>
+                            <p>Easily Create and Track Requests</p>
                         )}
                     </div>
                     <div

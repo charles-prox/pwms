@@ -20,10 +20,11 @@ import { BoxDetails, FormProp } from "@/Utils/types";
 import { toTitleCase } from "@/Utils/helpers";
 import { formcolumns, boxcolumns } from "./columns";
 import { router, usePage } from "@inertiajs/react";
-import { axiosInstance } from "@/Utils/axios";
 import NewBoxForm from "@/Components/Forms/NewBoxForm";
+import Menu from "../Menu";
+import { PlusIcon } from "@/Layouts/ListViewLayout/icons";
 
-type DraftRequest = {
+type Request = {
     id: number;
     form_number: string;
     request_type: string;
@@ -33,28 +34,17 @@ type DraftRequest = {
 const List = () => {
     const TABLE_ID = "storage-request";
     const { boxes } = useBoxForm();
-    const [isBoxFormOpen, setIsBoxFormOpen] = React.useState<boolean>(false);
-    const { form = null, draft_requests = [] } = usePage<{
+    const { form = null, requests = [] } = usePage<{
         form?: FormProp;
-        draft_requests?: DraftRequest[];
+        requests?: Request[];
     }>().props;
+    const [isBoxFormOpen, setIsBoxFormOpen] = React.useState<boolean>(false);
+    const [isEdit, setIsEdit] = React.useState<boolean>(false);
 
-    const onCreateRequest = async () => {
-        const type = "storage";
-
-        try {
-            const response = await axiosInstance.post(
-                `/requests/create/${type}`
-            );
-            const form_no = response.data.form_no;
-
-            console.log("Request created!", response.data);
-
-            // Redirect to the newly created request
-            router.visit(`/request/storage/${form_no}`);
-        } catch (error) {
-            console.error("Failed to create request:", error);
-            alert("Something went wrong.");
+    const handleEditAction = (row: any) => {
+        // Check if the row is a draft request
+        if (row.request_type === "Storage") {
+        } else {
         }
     };
 
@@ -146,27 +136,40 @@ const List = () => {
             <Card>
                 <CardBody>
                     <ListViewLayout
-                        key={!!form ? boxes.length : draft_requests.length}
+                        key={!!form ? boxes.length : requests.length}
                         tableid={TABLE_ID}
                         itemName={!!form ? "Box" : "Request"}
-                        enableFilters={false}
+                        enableFilters={!!form ? false : true}
                         enableSearch={!!form ? false : true}
                         columns={!!form ? boxcolumns : formcolumns}
-                        rows={!!form ? boxes : draft_requests}
-                        totalRows={
-                            !!form ? boxes.length : draft_requests.length
-                        }
-                        onOpenAddNewForm={() =>
-                            !!form ? setIsBoxFormOpen(true) : onCreateRequest()
-                        }
+                        rows={!!form ? boxes : requests}
+                        totalRows={!!form ? boxes.length : requests.length}
                         renderCell={renderCell}
+                        customAddNewButton={
+                            form?.type == "Storage" ? (
+                                <Button
+                                    className="hidden sm:flex"
+                                    color="primary"
+                                    endContent={<PlusIcon />}
+                                    onPress={() => setIsBoxFormOpen(true)}
+                                >
+                                    Add New Box
+                                </Button>
+                            ) : (
+                                <Menu />
+                            )
+                        }
+                        onEditAction={(row) => {
+                            router.visit(`/request/${row.form_number}`);
+                        }}
                     />
                 </CardBody>
             </Card>
+
             <NewBoxForm
                 isOpen={isBoxFormOpen}
+                isEdit={isEdit}
                 onClose={() => setIsBoxFormOpen(false)}
-                editBoxData={false}
             />
         </div>
     );

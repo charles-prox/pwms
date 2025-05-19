@@ -16,7 +16,9 @@ return new class extends Migration
         Schema::create('boxes', function (Blueprint $table) {
             $table->id();
             $table->string('box_code', 50)->unique();
-            $table->text('description');
+            $table->bigInteger('request_id');
+            $table->foreign('request_id')->references('id')->on('requests');
+            $table->text('remarks');
             $table->string('status', 20)->comment('stored, withdrawn, returned, disposed');
             $table->bigInteger('office_id');
             $table->foreign('office_id')->references('id')->on('offices');

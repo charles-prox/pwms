@@ -71,4 +71,5 @@ export interface BoxDetails {
 export type FormProp = {
     number: string;
     last_update: string;
+    type: string;
 };
