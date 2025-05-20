@@ -18,6 +18,8 @@ Route::middleware([
     Route::get('/request/{form_no}', [RequestsController::class, 'getFormDetails'])
         ->name('request.details');
 
+    Route::post('/requests/{form_number}/save-draft', [RequestsController::class, 'saveDraft']);
+
     // Route::get('/request/withdrawal', function () {
     //     return Inertia::render('RequestWithdrawal');
     // })->name('request.withdrawal');

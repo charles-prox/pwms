@@ -35,6 +35,7 @@ interface HeaderContentProps {
     enableSearch?: boolean;
     enableFilters?: boolean;
     customAddNewButton?: React.ReactNode;
+    customSaveButton?: React.ReactNode;
 }
 
 const HeaderContent: React.FC<HeaderContentProps> = ({
@@ -47,6 +48,7 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
     enableSearch = true,
     enableFilters = true,
     customAddNewButton,
+    customSaveButton,
 }) => {
     const { getTableOptions, updateTableOptions } = useTableOptions();
 
@@ -273,7 +275,7 @@ const HeaderContent: React.FC<HeaderContentProps> = ({
                             </Popover>
                         )}
                         {customAddNewButton}
-
+                        {customSaveButton}
                         {hasAddNew && !hasUpload ? (
                             // Only "Add New" button if `onOpenAddNewForm` is defined
                             <Button

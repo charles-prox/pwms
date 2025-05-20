@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Document extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'box_id',
+        'rds_id',
+        'document_code',
+        'description',
+        'document_date',
+        'disposal_date',
+        'status',
+        'added_at',
+        'added_by',
+    ];
+
+    protected $casts = [
+        'document_date' => 'date',
+        'disposal_date' => 'date',
+        'added_at' => 'datetime',
+    ];
+
+    // Relationships
+    public function box()
+    {
+        return $this->belongsTo(Box::class);
+    }
+
+    public function rds()
+    {
+        return $this->belongsTo(Rds::class);
+    }
+
+    public function addedBy()
+    {
+        return $this->belongsTo(User::class, 'added_by', 'hris_id');
+    }
+}

@@ -1,4 +1,4 @@
-import Alert from "@/Components/Alert";
+import Alert from "@/Components/Shared/Alert";
 import ModalAlert from "@/Components/ModalAlert";
 import { useForm, usePage } from "@inertiajs/react";
 import { Divider, Spacer } from "@heroui/react";

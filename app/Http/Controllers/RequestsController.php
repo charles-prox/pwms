@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Request as RequestModel;
+use App\Models\Box;
+use App\Models\Document;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class RequestsController extends Controller
 {
@@ -86,13 +89,44 @@ class RequestsController extends Controller
      */
     public function getFormDetails(string $form_no)
     {
-        $request = RequestModel::where('form_number', $form_no)
-            ->first();
+        $request = RequestModel::where('form_number', $form_no)->first();
 
-        // If not found, also redirect to the list
         if (!$request) {
             return $this->getAllRequests();
         }
+
+        $boxes = Box::with(['documents.rds', 'office'])
+            ->where('request_id', $request->id)
+            ->get()
+            ->map(function ($box) {
+                return [
+                    'id' => $box->id,
+                    'box_code' => $box->box_code,
+                    'priority_level' => $box->priority_level,
+                    'remarks' => $box->remarks,
+                    'disposal_date' => $box->disposal_date->format('Y-m-d'),
+                    'office' => $box->office ? [
+                        'id' => $box->office->id,
+                        'name' => $box->office->name,
+                    ] : null,
+                    'box_details' => $box->documents->map(function ($doc) {
+                        return [
+                            'id' => $doc->id,
+                            'document_title' => $doc->rds->title_description ?? null,
+                            'rds_number' => $doc->rds->item_no ?? '',
+                            'retention_period' => $doc->rds->storage ?? '',
+                            'document_date' => [
+                                'raw' => $doc->document_date,
+                                'formatted' => \Carbon\Carbon::parse($doc->document_date)->format('m/d/Y'),
+                            ],
+                            'disposal_date' => [
+                                'raw' => $doc->disposal_date,
+                                'formatted' => \Carbon\Carbon::parse($doc->disposal_date)->format('m/d/Y'),
+                            ],
+                        ];
+                    })->toArray()
+                ];
+            });
 
         return Inertia::render('Requests', [
             'form' => [
@@ -100,8 +134,10 @@ class RequestsController extends Controller
                 'type' => ucfirst($request->request_type),
                 'last_update' => $request->updated_at->format('m/d/Y'),
             ],
+            'boxes' => $boxes,
         ]);
     }
+
 
     /**
      * Get all draft requests for the authenticated user's office.
@@ -143,8 +179,71 @@ class RequestsController extends Controller
             });
 
 
-        return Inertia::render('Requests', [
+        return Inertia::render('RequestsPage', [
             'requests' => $allRequests
         ]);
+    }
+
+    public function saveDraft(Request $request, string $form_number)
+    {
+        $user = Auth::user();
+
+        $requestData = RequestModel::where('form_number', $form_number)->firstOrFail();
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($request->boxes as $boxData) {
+                // Save or update the box
+                $box = Box::updateOrCreate(
+                    [
+                        'id' => $boxData['id'] ?? null,
+                    ],
+                    [
+                        'box_code' => $boxData['box_code'],
+                        'remarks' => $boxData['remarks'],
+                        'priority_level' => $boxData['priority_level'],
+                        'disposal_date' => $boxData['disposal_date'],
+                        'status' => 'stored', // or whatever default applies
+                        'office_id' => $requestData->office_id,
+                        'request_id' => $requestData->id,
+                    ]
+                );
+
+                // Save or update documents under the box
+                foreach ($boxData['box_details'] as $doc) {
+                    Document::updateOrCreate(
+                        [
+                            'id' => $doc['id'] ?? null,
+                        ],
+                        [
+                            'box_id' => $box->id,
+                            'rds_id' => $this->getRdsIdByNumber($doc['rds_number']),
+                            'document_code' => null,
+                            'description' => $doc['document_title'],
+                            'document_date' => $doc['document_date']['raw'],
+                            'disposal_date' => $doc['disposal_date']['raw'],
+                            'status' => 'active',
+                            'added_by' => $user->hris_id,
+                        ]
+                    );
+                }
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Draft saved successfully']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Failed to save draft', 'details' => $e->getMessage()], 500);
+        }
+    }
+
+    // Helper to get RDS ID by number (optional)
+    protected function getRdsIdByNumber(string $rdsNumber): ?int
+    {
+        $rds = \App\Models\RDS::where('item_no', $rdsNumber)->first();
+
+        return $rds?->id;
     }
 }

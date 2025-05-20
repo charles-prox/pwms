@@ -1,4 +1,4 @@
-import Input from "@/Components/Input";
+import Input from "@/Components/Shared/Input";
 import { Card, CardBody } from "@heroui/react";
 import React from "react";
 

@@ -2,6 +2,8 @@ import react from "@vitejs/plugin-react";
 import laravel from "laravel-vite-plugin";
 import { resolve } from "path";
 import { defineConfig } from "vite";
+import svgr from "vite-plugin-svgr";
+
 export default defineConfig({
     plugins: [
         laravel({
@@ -10,6 +12,7 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
+        svgr(),
     ],
     // resolve: {
     //     alias: {

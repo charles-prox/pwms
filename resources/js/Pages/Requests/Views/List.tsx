@@ -4,6 +4,10 @@ import {
     Card,
     CardBody,
     Chip,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
     Popover,
     PopoverContent,
     PopoverTrigger,
@@ -23,6 +27,8 @@ import { router, usePage } from "@inertiajs/react";
 import NewBoxForm from "@/Components/Forms/NewBoxForm";
 import Menu from "../Menu";
 import { PlusIcon } from "@/Layouts/ListViewLayout/icons";
+import { SaveIcon } from "../icons";
+import { axiosInstance } from "@/Utils/axios";
 
 type Request = {
     id: number;
@@ -32,11 +38,12 @@ type Request = {
 };
 
 const List = () => {
-    const TABLE_ID = "storage-request";
+    const TABLE_ID = "request";
     const { boxes } = useBoxForm();
     const { form = null, requests = [] } = usePage<{
         form?: FormProp;
         requests?: Request[];
+        boxes?: Request[];
     }>().props;
     const [isBoxFormOpen, setIsBoxFormOpen] = React.useState<boolean>(false);
     const [isEdit, setIsEdit] = React.useState<boolean>(false);
@@ -45,6 +52,31 @@ const List = () => {
         // Check if the row is a draft request
         if (row.request_type === "Storage") {
         } else {
+        }
+    };
+
+    const handleSaveAction = async (action: Key) => {
+        if (!form || !form.number) {
+            console.error("Form number is missing");
+            return;
+        }
+        if (action === "draft") {
+            // Save as draft logic
+            try {
+                const response = await axiosInstance.post(
+                    `/requests/${form.number}/save-draft`,
+                    {
+                        boxes: boxes,
+                    }
+                );
+
+                console.log("Draft saved successfully:", response.data);
+            } catch (error) {
+                console.error("Error saving draft:", error);
+            }
+        } else if (action === "print") {
+            // Save and print logic
+            console.log("Saving and printing...");
         }
     };
 
@@ -159,8 +191,36 @@ const List = () => {
                                 <Menu />
                             )
                         }
+                        customSaveButton={
+                            <Dropdown>
+                                <DropdownTrigger>
+                                    <Button
+                                        color="secondary"
+                                        endContent={<SaveIcon />}
+                                    >
+                                        Save
+                                    </Button>
+                                </DropdownTrigger>
+                                <DropdownMenu
+                                    aria-label="Save Actions"
+                                    onAction={(key) => handleSaveAction(key)}
+                                >
+                                    <DropdownItem key="draft">
+                                        Save as Draft
+                                    </DropdownItem>
+                                    <DropdownItem key="print">
+                                        Save and Print
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        }
                         onEditAction={(row) => {
-                            router.visit(`/request/${row.form_number}`);
+                            if (form?.type == "Storage") {
+                                setIsEdit(true);
+                                setIsBoxFormOpen(true);
+                            } else {
+                                router.visit(`/request/${row.form_number}`);
+                            }
                         }}
                     />
                 </CardBody>

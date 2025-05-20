@@ -12,7 +12,7 @@ import {
 import { router, useForm } from "@inertiajs/react";
 import { useTheme } from "@/Contexts/ThemeContext";
 import { axiosInstance } from "@/Utils/axios";
-import { CloseIcon } from "@/Components/Alert/icons";
+import { CloseIcon } from "@/Components/Shared/Alert/icons";
 
 interface ConfirmTwoFactorAuthFormProps {
     isOpen: boolean;

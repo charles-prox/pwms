@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('box_code', 50)->unique();
             $table->bigInteger('request_id');
             $table->foreign('request_id')->references('id')->on('requests');
-            $table->text('remarks');
+            $table->text('remarks')->nullable();
             $table->string('status', 20)->comment('stored, withdrawn, returned, disposed');
             $table->bigInteger('office_id');
             $table->foreign('office_id')->references('id')->on('offices');

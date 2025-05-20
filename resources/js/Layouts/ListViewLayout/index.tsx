@@ -47,6 +47,7 @@ interface LayoutProps {
     enableFilters?: boolean;
     enableSearch?: boolean;
     customAddNewButton?: React.ReactNode;
+    customSaveButton?: React.ReactNode;
     customEditAction?: React.ReactNode;
     onEditAction?: (row: RowType) => void;
     onDeleteAction?: (row: RowType) => void;
@@ -68,6 +69,7 @@ export default function ListViewLayout({
     enableSearch,
     renderCell: customRenderCell,
     customAddNewButton,
+    customSaveButton,
     customEditAction,
     onEditAction = (row: RowType) => {
         console.log("Edit action not implemented", row);
@@ -238,6 +240,7 @@ export default function ListViewLayout({
                     enableFilters={enableFilters}
                     enableSearch={enableSearch}
                     customAddNewButton={customAddNewButton}
+                    customSaveButton={customSaveButton}
                 />
             }
             topContentPlacement="outside"

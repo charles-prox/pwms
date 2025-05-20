@@ -13,18 +13,31 @@ class Box extends Model
 
     protected $fillable = [
         'box_code',
-        'description',
+        'remarks',
         'status',
         'office_id',
         'priority_level',
         'disposal_date',
+        'request_id', // Make sure this is fillable if creating/updating
     ];
 
+    protected $casts = [
+        'disposal_date' => 'date',
+    ];
+
+    // Relationship: Each box belongs to an office
     public function office()
     {
         return $this->belongsTo(Office::class);
     }
 
+    // Relationship: Each box can have many documents
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
+    // Optional: if you're using polymorphic locations
     public function boxLocations()
     {
         return $this->morphMany(BoxLocation::class, 'boxable');

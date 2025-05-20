@@ -1,7 +1,7 @@
 import React from "react";
 import { Head, router, usePage } from "@inertiajs/react";
 // import NoRequest from "./EmptyState";
-import RequestView from "@/Components/RequestView";
+import RequestView from "@/Components/Shared/PageLayoutViewController";
 import List from "./Views/List";
 import { BoxFormProvider } from "@/Providers/BoxFormProvider";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/react";
