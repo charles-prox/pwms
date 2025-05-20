@@ -11,11 +11,6 @@ class RDS extends Model
 
     protected $table = 'rds';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'module',
         'item_no',
@@ -25,4 +20,16 @@ class RDS extends Model
         'remarks',
         'department',
     ];
+
+    protected $casts = [
+        'item_no' => 'float',
+    ];
+
+    /**
+     * Get all documents associated with this RDS entry.
+     */
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
 }

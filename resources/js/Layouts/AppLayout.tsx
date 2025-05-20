@@ -3,7 +3,7 @@ import React from "react";
 import { useTheme } from "@/Contexts/ThemeContext";
 import Sidebar from "@/Components/SideNavbar";
 import AppNavbar from "@/Components/AppNavbar";
-import Footer from "@/Components/Footer";
+import Footer from "@/Components/Shared/Footer";
 import { TableOptionsProvider } from "@/Providers/TableOptionsProvider";
 
 const AppLayout = ({

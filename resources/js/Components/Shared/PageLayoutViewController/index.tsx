@@ -1,3 +1,4 @@
+// components/PageLayoutViewController.tsx
 import React from "react";
 import {
     Button,
@@ -8,25 +9,24 @@ import {
     DropdownItem,
 } from "@heroui/react";
 import { ChevronDownIcon, GridIcon, ListIcon } from "./icons";
-import { useRequestViewContext } from "@/Contexts/RequestViewContext";
+import { useLayoutViewContext } from "@/Contexts/LayoutViewContext";
+
+interface PageLayoutViewControllerProps {
+    pageId: string;
+}
 
 interface Layout {
-    key: string;
+    key: "list" | "grid";
     label: string;
     icon: JSX.Element;
 }
 
-interface ViewButtonProps {
-    pageId: string;
-}
+export default function PageLayoutViewController({
+    pageId,
+}: PageLayoutViewControllerProps) {
+    const { getLayoutView, setLayoutView } = useLayoutViewContext();
 
-export default function ViewButton({ pageId }: ViewButtonProps) {
-    const { selectedRequestView, setPageView } = useRequestViewContext();
-
-    // Find the current view for the page (defaults to 'list' if not found)
-    const currentView =
-        selectedRequestView.find((item) => item.pageId === pageId)?.view ||
-        "list";
+    const currentView = getLayoutView(pageId);
 
     const layouts: Layout[] = [
         { key: "list", label: "List view", icon: <ListIcon size="20" /> },
@@ -35,7 +35,9 @@ export default function ViewButton({ pageId }: ViewButtonProps) {
 
     const handleSelectionChange = (keys: any) => {
         const selected = keys.currentKey;
-        setPageView(pageId, selected); // Update context and localStorage for the selected page view
+        if (selected === "list" || selected === "grid") {
+            setLayoutView(pageId, selected);
+        }
     };
 
     return (
@@ -51,7 +53,7 @@ export default function ViewButton({ pageId }: ViewButtonProps) {
                 </DropdownTrigger>
                 <DropdownMenu
                     disallowEmptySelection
-                    aria-label="Merge options"
+                    aria-label="Layout view options"
                     className="max-w-[300px]"
                     selectedKeys={new Set([currentView])}
                     selectionMode="single"

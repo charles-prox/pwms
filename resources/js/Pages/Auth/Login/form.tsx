@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Checkbox } from "@heroui/react";
-import Input from "@/Components/Input";
-import Alert from "@/Components/Alert";
+import Input from "@/Components/Shared/Input";
+import Alert from "@/Components/Shared/Alert";
 import PasswordInput from "@/Components/PasswordInput";
 import { useForm } from "@inertiajs/react";
 import { UserIdIcon } from "./icons";

@@ -1,5 +1,5 @@
-import Input from "@/Components/Input";
-import Select from "@/Components/Select";
+import Input from "@/Components/Shared/Input";
+import Select from "@/Components/Shared/Select";
 import { useTheme } from "@/Contexts/ThemeContext";
 import {
     Modal,

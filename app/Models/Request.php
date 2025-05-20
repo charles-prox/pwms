@@ -50,4 +50,9 @@ class Request extends Model
     {
         return $this->belongsTo(Office::class, 'office_id');
     }
+
+    public function boxes()
+    {
+        return $this->hasMany(Box::class, 'request_id');
+    }
 }

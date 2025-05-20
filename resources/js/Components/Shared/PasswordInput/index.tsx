@@ -1,7 +1,7 @@
 import React from "react";
 import { LockIcon } from "./icons";
 import { PasswordVisibilityButton } from "../PasswordVisibilityButton";
-import Input from "@/Components/Input";
+import Input from "@/Components/Shared/Input";
 
 const PasswordInput: React.FC<InputProps> = ({
     label,

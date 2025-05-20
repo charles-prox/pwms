@@ -1,11 +1,11 @@
 import React from "react";
 import { employmentStatus } from "@/Utils/constants";
-import PasswordInput from "@/Components/PasswordInput";
-import Select from "@/Components/Select";
+import PasswordInput from "@/Components/Shared/PasswordInput";
+import Select from "@/Components/Shared/Select";
 import { useForm } from "@inertiajs/react";
 import { Button } from "@heroui/react";
 import useFetch from "@/Hooks/useFetch";
-import Input from "@/Components/Input";
+import Input from "@/Components/Shared/Input";
 
 const RegisterForm = () => {
     const {

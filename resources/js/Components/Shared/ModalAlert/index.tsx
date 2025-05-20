@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect } from "react";
 import { Modal, ModalContent, ModalBody, Button } from "@heroui/react";
 import { WarningIcon, DangerIcon, InfoIcon, SuccessIcon } from "./icons";
-import { CloseIcon } from "../Alert/icons";
+import { CloseIcon } from "../Shared/Alert/icons";
 import { useTheme } from "@/Contexts/ThemeContext";
 
 type ModalAlertProps = {
