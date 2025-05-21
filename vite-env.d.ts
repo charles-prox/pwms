@@ -1,9 +1,10 @@
-interface ImportMeta {
-    glob: (pattern: string) => Record<string, () => Promise<unknown>>;
-}
+/// <reference types="vite/client" />
 
-declare module "*.svg" {
-    import * as React from "react";
-    const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
-    export default ReactComponent;
-}
+// interface ImportMeta {
+//     readonly env: ImportMetaEnv;
+// }
+
+// // Optional: if you're using `import.meta.glob()`
+// interface ImportMetaEnv {
+//     [key: string]: any;
+// }

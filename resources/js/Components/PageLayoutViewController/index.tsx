@@ -8,8 +8,8 @@ import {
     DropdownMenu,
     DropdownItem,
 } from "@heroui/react";
-import { ChevronDownIcon, GridIcon, ListIcon } from "./icons";
 import { useLayoutViewContext } from "@/Contexts/LayoutViewContext";
+import Icon from "../Icon";
 
 interface PageLayoutViewControllerProps {
     pageId: string;
@@ -29,8 +29,16 @@ export default function PageLayoutViewController({
     const currentView = getLayoutView(pageId);
 
     const layouts: Layout[] = [
-        { key: "list", label: "List view", icon: <ListIcon size="20" /> },
-        { key: "grid", label: "Grid view", icon: <GridIcon size="20" /> },
+        {
+            key: "list",
+            label: "List view",
+            icon: <Icon name="list-view" size="20" />,
+        },
+        {
+            key: "grid",
+            label: "Grid view",
+            icon: <Icon name="grid-view" size="20" />,
+        },
     ];
 
     const handleSelectionChange = (keys: any) => {
@@ -48,7 +56,7 @@ export default function PageLayoutViewController({
             <Dropdown placement="bottom-end">
                 <DropdownTrigger>
                     <Button isIconOnly>
-                        <ChevronDownIcon />
+                        <Icon name="chevron-down" size={15} />
                     </Button>
                 </DropdownTrigger>
                 <DropdownMenu

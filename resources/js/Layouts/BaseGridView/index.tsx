@@ -1,11 +1,11 @@
-// components/BaseGridView.tsx
+import { Card, CardBody } from "@heroui/react";
 import React from "react";
 
 interface BaseGridViewProps<T> {
     data: T[];
     renderItem: (item: T) => React.ReactNode;
-    columns?: number; // number of columns, default 3
-    gap?: string; // gap between items, default "1rem"
+    minWidthClass?: string; // e.g., 'sm:w-1/2 md:w-1/3 xl:w-1/4'
+    gap?: string; // Tailwind spacing class, e.g. 'gap-4'
     emptyMessage?: string;
     loading?: boolean;
 }
@@ -13,30 +13,34 @@ interface BaseGridViewProps<T> {
 export default function BaseGridView<T>({
     data,
     renderItem,
-    columns = 3,
-    gap = "1rem",
+    minWidthClass = "sm:w-1/2 md:w-1/3 xl:w-1/4",
+    gap = "gap-4",
     emptyMessage = "No data available",
     loading = false,
 }: BaseGridViewProps<T>) {
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="text-gray-500">Loading...</div>;
     }
 
     if (data.length === 0) {
-        return <div>{emptyMessage}</div>;
+        return <div className="text-gray-400 italic">{emptyMessage}</div>;
     }
 
     return (
-        <div
-            style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-                gap,
-            }}
-        >
-            {data.map((item, index) => (
-                <div key={index}>{renderItem(item)}</div>
-            ))}
-        </div>
+        <Card>
+            <CardBody>
+                <div className={`flex flex-wrap ${gap} p-4`}>
+                    {data.map((item, index) => (
+                        <Card isPressable key={index}>
+                            <CardBody>
+                                <div key={index} className="w-40">
+                                    {renderItem(item)}
+                                </div>
+                            </CardBody>
+                        </Card>
+                    ))}
+                </div>
+            </CardBody>
+        </Card>
     );
 }
