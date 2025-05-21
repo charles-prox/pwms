@@ -1,6 +1,6 @@
 import React from "react";
 import { Head, router, usePage } from "@inertiajs/react";
-import LayoutViewController from "@/Components/Shared/PageLayoutViewController";
+import PageLayoutViewController from "@/Components/PageLayoutViewController";
 import { BoxFormProvider } from "@/Providers/BoxFormProvider";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
 import { FormProp } from "@/Utils/types";
@@ -56,13 +56,13 @@ const RequestsPage = () => {
                     </div>
 
                     <div className="flex gap-2 justify-end items-end flex-wrap">
-                        <LayoutViewController pageId={PAGE_ID} />
+                        <PageLayoutViewController pageId={PAGE_ID} />
                     </div>
                 </div>
 
                 {/* Main Content: Switch between List or Grid */}
                 {currentLayout === "grid" ? (
-                    <RequestsGridView />
+                    <RequestsGridView data={requests} loading={false} />
                 ) : (
                     <RequestsListView data={requests} loading={false} />
                 )}

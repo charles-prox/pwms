@@ -10,20 +10,23 @@ import {
     Spinner,
 } from "@heroui/react";
 import EmptyState from "@/Components/Shared/EmptyState";
+import type { ColumnSize } from "@react-types/table";
 
 export interface Column<T> {
     key: keyof T | string;
     label: string;
     render?: (item: T) => React.ReactNode;
-    width?: string | number;
+    width?: ColumnSize | null | undefined;
     sortable?: boolean;
 }
 
 interface BaseListViewProps<T> {
     columns: Column<T>[];
-    data: T[];
+    data: any[];
     loading?: boolean;
     emptyMessage?: string;
+    topContent?: React.ReactNode;
+    bottomContent?: React.ReactNode;
 }
 
 export default function BaseListView<T>({
@@ -31,6 +34,8 @@ export default function BaseListView<T>({
     data,
     loading = false,
     emptyMessage = "No data available",
+    topContent,
+    bottomContent,
 }: BaseListViewProps<T>) {
     if (loading) {
         return (
@@ -47,21 +52,47 @@ export default function BaseListView<T>({
     }
 
     return (
-        <Table>
+        <Table
+            aria-label="List of requests"
+            bottomContent={bottomContent}
+            topContent={topContent}
+            topContentPlacement="outside"
+            bottomContentPlacement="outside"
+            classNames={{
+                table: "relative ",
+                loadingWrapper:
+                    "absolute inset-0 bg-black/50 backdrop-blur-md z-50 rounded-lg",
+            }}
+        >
             <TableHeader>
                 {columns.map((col) => (
-                    <TableColumn
-                        key={col.key.toString()}
-                        style={{ width: col.width }}
-                    >
+                    <TableColumn key={col.key.toString()} width={col.width}>
                         {col.label}
                     </TableColumn>
                 ))}
             </TableHeader>
 
-            <TableBody>
-                {data.map((item, index) => (
-                    <TableRow key={index}>
+            <TableBody
+                emptyContent={
+                    <EmptyState title="No data" description={emptyMessage} />
+                }
+                items={data}
+                isLoading={loading}
+                loadingContent={
+                    <div className="absolute inset-0 flex items-start justify-center">
+                        <Spinner
+                            classNames={{
+                                label: "text-white text-sm",
+                                base: "sticky top-1/2",
+                            }}
+                            label="Loading..."
+                            variant="simple"
+                        />
+                    </div>
+                }
+            >
+                {(item) => (
+                    <TableRow key={item.id}>
                         {columns.map((col) => (
                             <TableCell key={col.key.toString()}>
                                 {col.render
@@ -70,7 +101,7 @@ export default function BaseListView<T>({
                             </TableCell>
                         ))}
                     </TableRow>
-                ))}
+                )}
             </TableBody>
         </Table>
     );

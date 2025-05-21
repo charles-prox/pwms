@@ -33,21 +33,20 @@ class RequestsController extends Controller
         }
 
         // ❌ Block if the user already has a draft of this type
-        $existingDraft = RequestModel::where('request_type', $type)
-            ->where('created_by', $user->id)
-            ->where('is_draft', true)
-            ->first();
+        // $existingDraft = RequestModel::where('request_type', $type)
+        //     ->where('created_by', $user->id)
+        //     ->where('is_draft', true)
+        //     ->first();
 
-        if ($existingDraft) {
-            return response()->json([
-                'error' => 'You already have a draft for this request type.',
-                'existing_form_no' => $existingDraft->form_number
-            ], 409);
-        }
+        // if ($existingDraft) {
+        //     return response()->json([
+        //         'message' => 'You already have an existing ' . $type . ' request draft. You can edit it or delete it first before creating a new one.',
+        //         'existing_form_no' => $existingDraft->form_number
+        //     ], 409);
+        // }
 
         $prefix = $validTypes[$type];
         $year = Carbon::now()->year;
-
         // Get the latest request of the same type in the current year
         $latestRequest = RequestModel::where('request_type', $type)
             ->whereYear('created_at', $year)
@@ -79,8 +78,8 @@ class RequestsController extends Controller
         return response()->json([
             'message' => 'Blank request created successfully',
             'form_no' => $formNumber,
-            'created_by' => $user->full_name,
-            'request' => $request
+            // 'created_by' => $user->full_name,
+            // 'request' => $request
         ]);
     }
 

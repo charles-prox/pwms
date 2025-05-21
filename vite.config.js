@@ -12,7 +12,17 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
-        svgr(),
+        svgr({
+            svgrOptions: {
+                icon: true,
+                replaceAttrValues: {
+                    "#000": "currentColor",
+                    "#000000": "currentColor",
+                    "#0F0F0F": "currentColor",
+                    "#1C274C": "currentColor",
+                },
+            },
+        }),
     ],
     // resolve: {
     //     alias: {
