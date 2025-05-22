@@ -33,17 +33,17 @@ class RequestsController extends Controller
         }
 
         // ❌ Block if the user already has a draft of this type
-        // $existingDraft = RequestModel::where('request_type', $type)
-        //     ->where('created_by', $user->id)
-        //     ->where('is_draft', true)
-        //     ->first();
+        $existingDraft = RequestModel::where('request_type', $type)
+            ->where('created_by', $user->id)
+            ->where('is_draft', true)
+            ->first();
 
-        // if ($existingDraft) {
-        //     return response()->json([
-        //         'message' => 'You already have an existing ' . $type . ' request draft. You can edit it or delete it first before creating a new one.',
-        //         'existing_form_no' => $existingDraft->form_number
-        //     ], 409);
-        // }
+        if ($existingDraft) {
+            return response()->json([
+                'message' => 'You already have an existing draft for this request type. Please complete or delete it before creating a new one.',
+                'existing_form_no' => $existingDraft->form_number
+            ], 409);
+        }
 
         $prefix = $validTypes[$type];
         $year = Carbon::now()->year;
@@ -127,7 +127,7 @@ class RequestsController extends Controller
                 ];
             });
 
-        return Inertia::render('Requests', [
+        return Inertia::render('RequestsPage', [
             'form' => [
                 'number' => $request->form_number,
                 'type' => ucfirst($request->request_type),
@@ -244,5 +244,22 @@ class RequestsController extends Controller
         $rds = \App\Models\RDS::where('item_no', $rdsNumber)->first();
 
         return $rds?->id;
+    }
+
+    public function destroy($form_number)
+    {
+        $request = RequestModel::where('form_number', $form_number)->first();
+
+        if (!$request) {
+            return response()->json([
+                'message' => 'Request not found.',
+            ], 404);
+        }
+
+        $request->delete();
+
+        return response()->json([
+            'message' => 'Request deleted successfully.',
+        ]);
     }
 }

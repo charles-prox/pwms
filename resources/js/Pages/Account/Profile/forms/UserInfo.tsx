@@ -4,15 +4,16 @@ import { router } from "@inertiajs/react";
 import { Avatar, Button, Card, CardBody } from "@heroui/react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import Input from "@/Components/Shared/Input";
+import { useModalAlert } from "@/Contexts/ModalAlertContext";
+import { ProfileFormData } from "@/Utils/types";
 
 interface UserInfoFormProps {
     user: any;
     enableEdit: boolean;
     setData: (key: string, value: any) => void;
-    errors: Record<string, string>;
+    errors: Partial<Record<keyof ProfileFormData, string>>;
     data: Record<string, any>;
     reset: () => void;
-    setIsAlertOpen: (value: boolean) => void;
     setEnableEdit: (value: boolean) => void;
 }
 
@@ -23,12 +24,12 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
     errors,
     data,
     reset,
-    setIsAlertOpen,
     setEnableEdit,
 }) => {
     const [dropError, setDropError] = useState<string>("");
     const [fileName, setFileName] = useState<string>("");
     const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
+    const { showAlert } = useModalAlert();
 
     const handleFileChange = (files: File[]) => {
         if (files.length > 0) {
@@ -63,7 +64,14 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
             preserveScroll: true,
             onSuccess: () => {
                 reset();
-                setIsAlertOpen(true);
+                showAlert({
+                    type: "success",
+                    title: "Profile photo removed",
+                    message:
+                        "Your profile picture has been deleted successfully.",
+                    autoClose: true,
+                    autoCloseDuration: 3000,
+                });
                 setEnableEdit(false);
             },
         });

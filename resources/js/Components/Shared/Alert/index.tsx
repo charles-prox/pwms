@@ -1,6 +1,6 @@
 "use client";
 import { Button, Card } from "@heroui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import {
     CloseIcon,
     DangerIcon,
@@ -9,102 +9,115 @@ import {
     WarningIcon,
 } from "./icons";
 
-const Alert = ({
-    title,
-    type,
-    variant,
-    message,
-    isCloseable = true,
-}: AlertProps) => {
-    const [show, setShow] = useState(true);
-    const [isClosing, setIsClosing] = useState(false); // Track closing state for transition
+type AlertType = "error" | "warning" | "info" | "success";
+type AlertVariant = "solid" | "flat" | "bordered";
+type AllowedColors =
+    | "warning"
+    | "success"
+    | "primary"
+    | "danger"
+    | "secondary"
+    | "default"
+    | undefined;
 
-    // Handle close button click and transition
-    const handleClose = () => {
-        setIsClosing(true); // Trigger closing animation
-        setTimeout(() => setShow(false), 300); // Hide after animation duration
-    };
+interface AlertProps {
+    show: boolean;
+    title: string;
+    type: AlertType;
+    variant: AlertVariant;
+    message: string | React.ReactNode;
+    isCloseable?: boolean;
+}
 
-    useEffect(() => {
-        // Cleanup function to remove transition classes when component unmounts
-        return () => {
-            setIsClosing(false); // Reset closing state on unmount
+const iconMap: Record<AlertType, JSX.Element> = {
+    error: <DangerIcon />,
+    warning: <WarningIcon />,
+    info: <InfoIcon />,
+    success: <SuccessIcon />,
+};
+
+const colorMap: Record<AlertType, AllowedColors> = {
+    error: "danger",
+    warning: "warning",
+    info: "secondary",
+    success: "success",
+};
+
+const changeColor = (type: AlertType): AllowedColors => {
+    return colorMap[type] ?? "primary"; // Ensures a valid fallback
+};
+
+const Alert = memo(
+    ({
+        show,
+        title,
+        type,
+        variant,
+        message,
+        isCloseable = true,
+    }: AlertProps) => {
+        const [isVisible, setIsVisible] = useState(show);
+        const [isClosing, setIsClosing] = useState(false);
+
+        useEffect(() => {
+            setIsVisible(show);
+        }, [show]);
+
+        const handleClose = () => {
+            setIsClosing(true);
+            setTimeout(() => setIsVisible(false), 300);
         };
-    }, []);
 
-    const startContent = (type: AlertType) => {
-        // Changes icon in alert component depending on type
-        if (type === "error") return <DangerIcon />;
-        if (type === "warning") return <WarningIcon />;
-        if (type === "info") return <InfoIcon />;
-        if (type === "success") return <SuccessIcon />;
+        const classes = () => {
+            const baseColor = changeColor(type); // Explicitly pass type
+            return {
+                solid: `text-slate-100 bg-${baseColor}/90`,
+                flat: `text-${baseColor} bg-${baseColor}/20`,
+                bordered: `text-${baseColor} border-2 border-${baseColor} bg-transparent`,
+            }[variant];
+        };
 
-        return <SuccessIcon />;
-    };
-
-    const changeColor = () => {
-        if (type === "error") return "danger";
-        if (type === "warning") return "warning";
-        if (type === "info") return "secondary";
-        if (type === "success") return "success";
-        return "primary";
-    };
-
-    const classes = () => {
-        let classnames = "";
-        // Changes classes depending on variant
-
-        if (variant === "solid")
-            classnames = ` text-slate-100 bg-${changeColor()}/90 `;
-        if (variant === "flat")
-            classnames = `text-${changeColor()} bg-${changeColor()}/20`;
-        if (variant === "bordered")
-            classnames = ` text-${changeColor()} border-2 border-${changeColor()} bg-transparent `;
-
-        return classnames;
-    };
-
-    return (
-        <div
-            className={`
-            ${show ? "block transition duration-300 ease-out" : "hidden"} 
-            ${isClosing ? "opacity-0" : "opacity-100"} 
-            w-full mb-4
-            `}
-        >
-            <Card shadow="none" className={`p-2 ${classes()}`}>
-                <div className="flex items-center">
-                    <div className="pr-2 pt-1">{startContent(type)}</div>
-                    <div className="flex-grow">
-                        {title && <p className="text-sm font-bold">{title}</p>}
-                        {typeof message === "string" ? (
-                            <p className="text-xs">{message}</p>
-                        ) : (
-                            <>{message}</>
+        return (
+            <div
+                role="alert"
+                aria-live="assertive"
+                className={`w-full mb-4 transition duration-300 ease-out ${
+                    isVisible ? "opacity-100" : "hidden"
+                } ${isClosing ? "opacity-0" : ""}`}
+            >
+                <Card shadow="none" className={`p-2 ${classes()}`}>
+                    <div className="flex items-center">
+                        <div className="pr-2 pt-1">{iconMap[type]}</div>
+                        <div className="flex-grow">
+                            {title && (
+                                <p className="text-sm font-bold">{title}</p>
+                            )}
+                            {typeof message === "string" ? (
+                                <p className="text-xs">{message}</p>
+                            ) : (
+                                <>{message}</>
+                            )}
+                        </div>
+                        {isCloseable && (
+                            <div className="self-start pl-1">
+                                <Button
+                                    isIconOnly
+                                    variant="light"
+                                    radius="full"
+                                    color={changeColor(type)} // Explicitly pass type
+                                    size="sm"
+                                    className="hover:bg-neutral-100/5"
+                                    onPress={handleClose}
+                                >
+                                    <CloseIcon />
+                                </Button>
+                            </div>
                         )}
                     </div>
-                    <div
-                        className={`${
-                            !isCloseable ? "hidden" : ""
-                        } self-start pl-1`}
-                    >
-                        <Button
-                            isIconOnly
-                            variant="light"
-                            radius="full"
-                            color={changeColor()}
-                            size="sm"
-                            className="hover:bg-neutral-100/5"
-                            onPress={handleClose}
-                            hidden={!isCloseable}
-                        >
-                            <CloseIcon />
-                        </Button>
-                    </div>
-                </div>
-            </Card>
-        </div>
-    );
-};
+                </Card>
+            </div>
+        );
+    }
+);
 
 export default Alert;

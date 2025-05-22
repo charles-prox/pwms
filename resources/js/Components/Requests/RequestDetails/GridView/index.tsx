@@ -1,6 +1,13 @@
 import React from "react";
+interface RequestsGridViewProps {
+    data: Request[];
+    loading?: boolean;
+}
 
-const RequestDetailsGridView = () => {
+const RequestDetailsGridView = ({
+    data,
+    loading = false,
+}: RequestsGridViewProps) => {
     return (
         <div className="border p-4 rounded bg-white shadow">
             <p className="text-gray-600">

@@ -12,6 +12,7 @@ import ThemeProvider from "./Providers/ThemeProvider";
 import { appName } from "./Utils/constants";
 import AuthLayout from "./Layouts/AuthLayout";
 import { SideNavStateProvider } from "@/Providers/SideNavStateProvider";
+import { ModalAlertProvider } from "./Providers/ModalAlertProvider";
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -38,15 +39,17 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            // <React.StrictMode>
-            <HeroUIProvider>
-                <ThemeProvider>
-                    <SideNavStateProvider>
-                        <App {...props} />
-                    </SideNavStateProvider>
-                </ThemeProvider>
-            </HeroUIProvider>
-            // </React.StrictMode>
+            <React.StrictMode>
+                <HeroUIProvider>
+                    <ThemeProvider>
+                        <SideNavStateProvider>
+                            <ModalAlertProvider>
+                                <App {...props} />
+                            </ModalAlertProvider>
+                        </SideNavStateProvider>
+                    </ThemeProvider>
+                </HeroUIProvider>
+            </React.StrictMode>
         );
     },
     progress: {

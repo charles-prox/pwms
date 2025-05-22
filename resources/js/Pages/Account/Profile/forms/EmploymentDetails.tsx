@@ -3,13 +3,14 @@ import Select from "@/Components/Shared/Select";
 import useFetch from "@/Hooks/useFetch";
 import { employmentStatus } from "@/Utils/constants";
 import { toTitleCase } from "@/Utils/helpers";
+import { ProfileFormData } from "@/Utils/types";
 import { Card, CardBody } from "@heroui/react";
 import React from "react";
 
 // Define types for the props
 interface EmploymentDetailsFormProps {
     data: Record<string, any>;
-    errors: Record<string, string>;
+    errors: Partial<Record<keyof ProfileFormData, string>>;
     setData: (field: string, value: string | number) => void;
     enableEdit: boolean;
 }

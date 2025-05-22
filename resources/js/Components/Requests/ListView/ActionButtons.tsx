@@ -1,5 +1,3 @@
-// Components/Requests/ListView/ActionButtons.tsx
-import React from "react";
 import {
     Button,
     Dropdown,
@@ -9,20 +7,55 @@ import {
     Tooltip,
 } from "@heroui/react";
 import Icon from "@/Components/Icon";
+import { router } from "@inertiajs/react";
+import { axiosInstance } from "@/Utils/axios";
+import { useModalAlert } from "@/Contexts/ModalAlertContext";
 
-interface Props {
-    row: any;
-    onEdit: (row: Request) => void;
-    onView: (row: Request) => void;
-    onDelete: (row: Request) => void;
-}
+export default function ActionButtons({ row }: any) {
+    const { showAlert } = useModalAlert();
+    const onDelete = async (row: { form_number: string }) => {
+        showAlert({
+            type: "warning",
+            title: "Confirm Deletion",
+            message: "Are you sure you want to delete this request?",
+            mode: "confirm",
+            onConfirm: async () => {
+                try {
+                    await axiosInstance.delete(`/request/${row.form_number}`);
+                    showAlert({
+                        type: "success",
+                        title: "Request Deleted",
+                        message: "Request deleted successfully.",
+                        autoClose: true,
+                        autoCloseDuration: 3000,
+                    });
+                    router.reload();
+                } catch (error) {
+                    console.error("Failed to delete request:", error);
+                    showAlert({
+                        type: "error",
+                        title: "Error",
+                        message: "Failed to delete request.",
+                        autoClose: true,
+                        autoCloseDuration: 3000,
+                    });
+                }
+            },
+            onCancel: () => {
+                console.log("Deletion canceled");
+            },
+        });
+    };
 
-export default function ActionButtons({
-    row,
-    onEdit,
-    onView,
-    onDelete,
-}: Props) {
+    const onEdit = (row: any) => {
+        router.visit(`/request/${row.form_number}`);
+    };
+
+    const onView = (row: any) => {
+        router.visit(`/request/${row.form_number}`);
+        // showAlert("Redirecting", "info", "Navigating to request details...");
+    };
+
     return (
         <div className="relative flex justify-start items-center gap-2">
             <div className="hidden md:flex gap-2">
@@ -76,13 +109,13 @@ export default function ActionButtons({
                     <DropdownMenu>
                         {!row.is_draft ? (
                             <DropdownItem
-                                key="delete"
+                                key="view"
                                 onPress={() => onView(row)}
                             >
                                 View
                             </DropdownItem>
                         ) : null}
-                        <DropdownItem key="delete" onPress={() => onEdit(row)}>
+                        <DropdownItem key="edit" onPress={() => onEdit(row)}>
                             Edit
                         </DropdownItem>
                         <DropdownItem

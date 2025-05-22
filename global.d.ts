@@ -58,22 +58,6 @@ interface SelectProps<T extends object> {
     allowsCustomValue?: boolean; //
 }
 
-type AlertType =
-    | "error"
-    | "warning"
-    | "info"
-    | "success"
-    | "default"
-    | undefined;
-type AlertVariant = "solid" | "flat" | "bordered";
-interface AlertProps {
-    title: string;
-    type: AlertType;
-    variant: AlertVariant;
-    message: string | React.ReactNode;
-    isCloseable?: boolean;
-}
-
 type Column = {
     name: string;
     uid: string;

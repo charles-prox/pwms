@@ -31,7 +31,7 @@ Route::middleware([
     Route::post('rds/import', [RDSController::class, 'import'])->name('rds.import');
     Route::get('/rds/get', [RDSController::class, 'index'])->name('rds.index');
 
-    Route::post('/requests/create/{type}', [RequestsController::class, 'createBlankRequest'])->name('requests.create');
+    Route::post('/request/create/{type}', [RequestsController::class, 'createBlankRequest'])->name('requests.create');
 });
 
 

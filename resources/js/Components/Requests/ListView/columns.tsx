@@ -11,13 +11,6 @@ export const columns: Column<Request>[] = [
     {
         label: "ACTIONS",
         key: "actions",
-        render: (item) => (
-            <ActionButtons
-                row={item}
-                onEdit={(r) => console.log("Edit", r)}
-                onView={(r) => console.log("View", r)}
-                onDelete={(r) => console.log("Delete", r)}
-            />
-        ),
+        render: (item: any) => <ActionButtons row={item} />,
     },
 ];

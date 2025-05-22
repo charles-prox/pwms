@@ -45,12 +45,6 @@ export default function BaseListView<T>({
         );
     }
 
-    if (data.length === 0) {
-        return (
-            <EmptyState title="Nothing to show" description={emptyMessage} />
-        );
-    }
-
     return (
         <Table
             aria-label="List of requests"
@@ -74,7 +68,7 @@ export default function BaseListView<T>({
 
             <TableBody
                 emptyContent={
-                    <EmptyState title="No data" description={emptyMessage} />
+                    <EmptyState title="Oops..." description={emptyMessage} />
                 }
                 items={data}
                 isLoading={loading}

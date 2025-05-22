@@ -73,3 +73,44 @@ export type FormProp = {
     last_update: string;
     type: string;
 };
+
+export interface ProfileFormData {
+    hris_id: string;
+    user_id: string;
+    first_name: string;
+    middle_name: string;
+    last_name: string;
+    email: string;
+    position: string;
+    contact_no: string;
+    employment_status: string;
+    office_id: string;
+    account_status: string;
+    photo: File | null;
+    [key: string]: any;
+}
+
+export type AlertType = "success" | "error" | "warning" | "info";
+export type AlertMode = "alert" | "confirm";
+export interface AlertOptions {
+    type?: AlertType;
+    title?: string;
+    message?: string;
+    autoClose?: boolean;
+    autoCloseDuration?: number;
+    mode?: AlertMode;
+    onConfirm?: () => void;
+    onCancel?: () => void;
+}
+export interface ModalAlertProps {
+    isOpen: boolean;
+    onClose: () => void;
+    type?: AlertType;
+    title?: string;
+    message?: string;
+    autoClose?: boolean;
+    autoCloseDuration?: number;
+    mode?: "alert" | "confirm";
+    onConfirm?: () => void | Promise<void>;
+    onCancel?: () => void;
+}
