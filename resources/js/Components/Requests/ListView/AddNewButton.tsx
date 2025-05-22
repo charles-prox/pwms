@@ -8,12 +8,14 @@ import {
 import { axiosInstance } from "@/Utils/axios";
 import { router } from "@inertiajs/react";
 import Icon from "@/Components/Icon";
+import { useModalAlert } from "@/Contexts/ModalAlertContext";
 
 export default function App() {
+    const { showAlert } = useModalAlert();
     const onCreateRequest = async (type: Key) => {
         try {
             const response = await axiosInstance.post(
-                `/requests/create/${type}`
+                `/request/create/${type}`
             );
             const form_no = response.data.form_no;
 
@@ -22,10 +24,15 @@ export default function App() {
             // Redirect to the newly created request
             router.visit(`/request/${form_no}`);
         } catch (error: any) {
-            // console.error("Failed to create request: ", error);
-            alert(
-                "Failed to create request: \n" + error.response?.data.message
-            );
+            showAlert({
+                type: "error",
+                title: "Failed to create request",
+                message:
+                    error.response?.data?.message ||
+                    error.message ||
+                    "An unknown error occurred.",
+                autoClose: false,
+            });
         }
     };
 

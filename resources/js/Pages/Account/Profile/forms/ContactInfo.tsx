@@ -1,11 +1,12 @@
 import Input from "@/Components/Shared/Input";
+import { ProfileFormData } from "@/Utils/types";
 import { Card, CardBody } from "@heroui/react";
 import React from "react";
 
 // Define types for the props
 interface ContactInfoProps {
     data: Record<string, any>;
-    errors: Record<string, string>;
+    errors: Partial<Record<keyof ProfileFormData, string>>;
     setData: (field: string, value: string) => void;
     enableEdit: boolean;
 }

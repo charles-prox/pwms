@@ -1,6 +1,13 @@
 import React from "react";
 
-const RequestDetailsListView = () => {
+interface RequestsListViewProps {
+    data: Request[];
+    loading?: boolean;
+}
+const RequestDetailsListView = ({
+    data,
+    loading = false,
+}: RequestsListViewProps) => {
     return (
         <div className="border p-4 rounded bg-white shadow">
             <p className="text-gray-600">

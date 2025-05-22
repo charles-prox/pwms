@@ -1,32 +1,19 @@
+"use client";
 import Alert from "@/Components/Shared/Alert";
-import ModalAlert from "@/Components/ModalAlert";
 import { useForm, usePage } from "@inertiajs/react";
-import { Divider, Spacer } from "@heroui/react";
+import { Divider, Spacer, Button } from "@heroui/react";
 import React, { FormEvent, RefObject } from "react";
 import { UserInfoForm } from "./UserInfo";
 import { ContactInfoForm } from "./ContactInfo";
 import { EmploymentDetailsForm } from "./EmploymentDetails";
+import { useModalAlert } from "@/Contexts/ModalAlertContext";
+import { ProfileFormData } from "@/Utils/types";
 
 interface ProfileFormsProps {
     enableEdit: boolean;
     setEnableEdit: (value: boolean) => void;
     onSubmit: boolean;
     isProcessing: (value: boolean) => void;
-}
-
-interface ProfileFormData {
-    hris_id: string;
-    user_id: string;
-    first_name: string;
-    middle_name: string;
-    last_name: string;
-    email: string;
-    position: string;
-    contact_no: string;
-    employment_status: string;
-    office_id: string;
-    account_status: string;
-    photo: File | null;
 }
 
 export const ProfileForms: React.FC<ProfileFormsProps> = ({
@@ -36,9 +23,9 @@ export const ProfileForms: React.FC<ProfileFormsProps> = ({
     isProcessing,
 }) => {
     const { auth } = usePage<any>().props;
+    const { showAlert } = useModalAlert();
 
     const formRef: RefObject<HTMLFormElement> = React.useRef(null);
-    const [isAlertOpen, setIsAlertOpen] = React.useState(false);
 
     const { data, setData, post, errors, processing, reset } =
         useForm<ProfileFormData>({
@@ -63,8 +50,23 @@ export const ProfileForms: React.FC<ProfileFormsProps> = ({
             preserveScroll: true,
             onSuccess: () => {
                 reset();
-                setIsAlertOpen(true);
                 setEnableEdit(false);
+                showAlert({
+                    type: "success",
+                    title: "Profile Updated",
+                    message:
+                        "Your profile changes have been saved successfully!",
+                    autoClose: true,
+                });
+            },
+            onError: () => {
+                showAlert({
+                    type: "error",
+                    title: "Update Failed",
+                    message:
+                        "There was an issue saving your changes. Please try again.",
+                    autoClose: true,
+                });
             },
             onFinish: () => {},
         });
@@ -83,17 +85,15 @@ export const ProfileForms: React.FC<ProfileFormsProps> = ({
                 contact_no: auth.user.contact_no || "",
                 employment_status: auth.user.employment_status || "",
                 office_id: auth.user.office_id || "",
-                account_status: auth.user.account_status || "", // Ensure this is included
-                photo: null, // You can set a default value here
+                account_status: auth.user.account_status || "",
+                photo: null,
             });
         }
     }, [auth]);
 
     React.useEffect(() => {
         if (onSubmit) {
-            if (formRef.current) {
-                formRef.current.requestSubmit(); // Trigger form submission
-            }
+            formRef.current?.requestSubmit();
         }
     }, [onSubmit]);
 
@@ -103,27 +103,22 @@ export const ProfileForms: React.FC<ProfileFormsProps> = ({
 
     return (
         <React.Fragment>
-            <ModalAlert
-                isOpen={isAlertOpen}
-                setIsAlertOpen={(state: boolean) => setIsAlertOpen(state)}
-                type="success"
-                autoClose={true}
-            />
+            {/* Display alert only if errors exist */}
+            {Object.keys(errors).length > 0 && (
+                <div>
+                    <Spacer y={2} />
+                    <Alert
+                        show={true}
+                        type="error"
+                        title="Error updating profile information"
+                        message="We encountered some issues while saving your changes. Please check the highlighted fields for details."
+                        variant="flat"
+                        isCloseable
+                    />
+                </div>
+            )}
 
             <form ref={formRef} onSubmit={submit}>
-                {Object.keys(errors).length !== 0 && (
-                    <div>
-                        <Spacer y={2} />
-                        <Alert
-                            type={"error"}
-                            title={"Error updating profile information"}
-                            message={
-                                "We encountered some issues while saving your changes. Please check the highlighted fields for details."
-                            }
-                            variant={"flat"}
-                        />
-                    </div>
-                )}
                 <div className="flex flex-col gap-10">
                     <UserInfoForm
                         user={auth.user}
@@ -132,8 +127,7 @@ export const ProfileForms: React.FC<ProfileFormsProps> = ({
                         errors={errors}
                         data={data}
                         reset={reset}
-                        setIsAlertOpen={(state) => setIsAlertOpen(state)}
-                        setEnableEdit={(state) => setEnableEdit(state)}
+                        setEnableEdit={setEnableEdit}
                     />
                     <Divider />
                     <ContactInfoForm
@@ -149,6 +143,12 @@ export const ProfileForms: React.FC<ProfileFormsProps> = ({
                         errors={errors}
                         data={data}
                     />
+
+                    {enableEdit && (
+                        <Button type="submit" color="success">
+                            Save Changes
+                        </Button>
+                    )}
                 </div>
             </form>
         </React.Fragment>

@@ -30,15 +30,14 @@ const LoginForm = () => {
 
     return (
         <>
-            {errors.hris_id && (
-                <Alert
-                    title="Login failed."
-                    type="error"
-                    message={errors.hris_id}
-                    variant={"flat"}
-                    isCloseable={false}
-                />
-            )}
+            <Alert
+                show={!!errors.hris_id}
+                title="Login failed."
+                type="error"
+                message={errors.hris_id}
+                variant={"flat"}
+                isCloseable={false}
+            />
             <form onSubmit={submit}>
                 <div className="flex flex-col gap-3">
                     <Input

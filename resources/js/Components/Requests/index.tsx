@@ -5,11 +5,13 @@ import { BoxFormProvider } from "@/Providers/BoxFormProvider";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
 import { FormProp } from "@/Utils/types";
 import { useLayoutViewContext } from "@/Contexts/LayoutViewContext";
-import { SeparatorIcon } from "./icons";
 import {
     RequestsListView,
     RequestsGridView,
+    RequestDetailsListView,
+    RequestDetailsGridView,
 } from "@/Components/Requests/views";
+import Icon from "../Icon";
 
 const PAGE_ID = "requests";
 
@@ -23,9 +25,30 @@ const RequestsPage = () => {
         requests?: Request[];
         boxes?: Request[];
     }>().props;
-    const { getLayoutView } = useLayoutViewContext();
 
-    const currentLayout = getLayoutView(PAGE_ID) ?? "list"; // Default to list if undefined
+    const { getLayoutView } = useLayoutViewContext();
+    const currentLayout = getLayoutView(PAGE_ID) ?? "list"; // Default to list
+
+    const hasFormAndBoxes = form && boxes && boxes.length > 0;
+    const hasRequests = requests && requests.length > 0;
+
+    const renderContent = () => {
+        if (hasFormAndBoxes) {
+            return currentLayout === "grid" ? (
+                <RequestDetailsGridView data={boxes} loading={false} />
+            ) : (
+                <RequestDetailsListView data={boxes} loading={false} />
+            );
+        } else if (hasRequests) {
+            return currentLayout === "grid" ? (
+                <RequestsGridView data={requests} loading={false} />
+            ) : (
+                <RequestsListView data={requests} loading={false} />
+            );
+        } else {
+            return <div className="text-gray-500">No data available.</div>;
+        }
+    };
 
     return (
         <BoxFormProvider>
@@ -34,7 +57,10 @@ const RequestsPage = () => {
                 {/* Header Section */}
                 <div className="flex w-full">
                     <div className="flex-grow">
-                        <Breadcrumbs size="lg" separator={<SeparatorIcon />}>
+                        <Breadcrumbs
+                            size="lg"
+                            separator={<Icon name="chevron-down" size={18} />}
+                        >
                             <BreadcrumbItem
                                 onPress={() => router.visit("/request")}
                             >
@@ -60,12 +86,8 @@ const RequestsPage = () => {
                     </div>
                 </div>
 
-                {/* Main Content: Switch between List or Grid */}
-                {currentLayout === "grid" ? (
-                    <RequestsGridView data={requests} loading={false} />
-                ) : (
-                    <RequestsListView data={requests} loading={false} />
-                )}
+                {/* Main Content */}
+                {renderContent()}
             </div>
         </BoxFormProvider>
     );
