@@ -1,4 +1,9 @@
+import BaseListView from "@/Layouts/BaseListView";
 import React from "react";
+import { columns } from "./columns";
+import AddNewButton from "./AddNewButton";
+import TableToolbar from "@/Components/TableToolbar";
+import EmptyState from "@/Components/Shared/EmptyState";
 
 interface RequestsListViewProps {
     data: Request[];
@@ -9,11 +14,24 @@ const RequestDetailsListView = ({
     loading = false,
 }: RequestsListViewProps) => {
     return (
-        <div className="border p-4 rounded bg-white shadow">
-            <p className="text-gray-600">
-                📄 Request Details — List View (placeholder)
-            </p>
-        </div>
+        <BaseListView<Request>
+            columns={columns}
+            data={data}
+            loading={loading}
+            emptyContent={<EmptyState icon="box-delivery-package" />}
+            topContent={
+                <TableToolbar
+                    tableId="request-details-table"
+                    showFilters={false}
+                    showSearch={false}
+                    totalRows={data.length}
+                    columns={columns}
+                    createButton={
+                        <AddNewButton /> /* Assuming you have an AddNewButton component */
+                    }
+                />
+            }
+        />
     );
 };
 

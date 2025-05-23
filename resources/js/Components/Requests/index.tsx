@@ -29,8 +29,8 @@ const RequestsPage = () => {
     const { getLayoutView } = useLayoutViewContext();
     const currentLayout = getLayoutView(PAGE_ID) ?? "list"; // Default to list
 
-    const hasFormAndBoxes = form && boxes && boxes.length > 0;
-    const hasRequests = requests && requests.length > 0;
+    const hasFormAndBoxes = form && boxes;
+    const hasRequests = !!requests;
 
     const renderContent = () => {
         if (hasFormAndBoxes) {
@@ -59,7 +59,7 @@ const RequestsPage = () => {
                     <div className="flex-grow">
                         <Breadcrumbs
                             size="lg"
-                            separator={<Icon name="chevron-down" size={18} />}
+                            separator={<Icon name="chevron-right" size={18} />}
                         >
                             <BreadcrumbItem
                                 onPress={() => router.visit("/request")}

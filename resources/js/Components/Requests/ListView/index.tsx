@@ -3,6 +3,7 @@ import { columns } from "./columns";
 import BaseListView from "@/Layouts/BaseListView";
 import TableToolbar from "@/Components/TableToolbar";
 import AddNewButton from "./AddNewButton";
+import EmptyState from "@/Components/Shared/EmptyState";
 
 interface RequestsListViewProps {
     data: Request[];
@@ -17,7 +18,9 @@ export default function RequestsListView({
             columns={columns}
             data={data}
             loading={loading}
-            emptyMessage="No requests available."
+            emptyContent={
+                <EmptyState title="Oops..." description="No request yet." />
+            }
             topContent={
                 <TableToolbar
                     tableId="requests-table"
