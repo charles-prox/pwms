@@ -24,7 +24,7 @@ interface BaseListViewProps<T> {
     columns: Column<T>[];
     data: any[];
     loading?: boolean;
-    emptyMessage?: string;
+    emptyContent?: React.ReactNode | string;
     topContent?: React.ReactNode;
     bottomContent?: React.ReactNode;
 }
@@ -33,7 +33,7 @@ export default function BaseListView<T>({
     columns,
     data,
     loading = false,
-    emptyMessage = "No data available",
+    emptyContent,
     topContent,
     bottomContent,
 }: BaseListViewProps<T>) {
@@ -67,9 +67,7 @@ export default function BaseListView<T>({
             </TableHeader>
 
             <TableBody
-                emptyContent={
-                    <EmptyState title="Oops..." description={emptyMessage} />
-                }
+                emptyContent={emptyContent ?? "No data available."}
                 items={data}
                 isLoading={loading}
                 loadingContent={

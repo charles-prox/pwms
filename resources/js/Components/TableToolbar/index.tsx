@@ -28,7 +28,11 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
     return (
         <div className="flex flex-col gap-4">
             {showToolbar && (
-                <div className="flex justify-between gap-3 items-end flex-wrap">
+                <div
+                    className={`flex ${
+                        showSearch ? "justify-between" : "justify-end"
+                    } gap-3 items-end flex-wrap`}
+                >
                     {showSearch && <Searchbar tableId={tableId} />}
 
                     <div className="flex gap-3 items-center flex-wrap">
