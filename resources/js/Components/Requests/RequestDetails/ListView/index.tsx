@@ -4,31 +4,34 @@ import { columns } from "./columns";
 import AddNewButton from "./AddNewButton";
 import TableToolbar from "@/Components/TableToolbar";
 import EmptyState from "@/Components/Shared/EmptyState";
+import { useBoxForm } from "@/Contexts/BoxFormContext";
 
 interface RequestsListViewProps {
-    data: Request[];
     loading?: boolean;
 }
-const RequestDetailsListView = ({
-    data,
-    loading = false,
-}: RequestsListViewProps) => {
+const RequestDetailsListView = ({ loading = false }: RequestsListViewProps) => {
+    const { boxes } = useBoxForm();
+
     return (
         <BaseListView<Request>
             columns={columns}
-            data={data}
+            data={boxes}
             loading={loading}
-            emptyContent={<EmptyState icon="box-delivery-package" />}
+            emptyContent={
+                <EmptyState
+                    title="This request is empty."
+                    description="You have yet to add boxes for this storage request yet."
+                    icon="box-delivery-package"
+                />
+            }
             topContent={
                 <TableToolbar
                     tableId="request-details-table"
                     showFilters={false}
                     showSearch={false}
-                    totalRows={data.length}
+                    totalRows={boxes.length}
                     columns={columns}
-                    createButton={
-                        <AddNewButton /> /* Assuming you have an AddNewButton component */
-                    }
+                    createButton={<AddNewButton />}
                 />
             }
         />

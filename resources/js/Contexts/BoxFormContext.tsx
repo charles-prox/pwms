@@ -8,10 +8,13 @@ interface BoxFormContextType {
     rdsData: any;
     rdsLoading: boolean;
     rdsError: any;
+    getBoxById: (id: number) => BoxFormState;
+    deleteBox: (id: number) => void;
     saveBoxDataToBoxes: () => void | boolean;
     setBoxData: React.Dispatch<React.SetStateAction<BoxFormState>>;
     onBoxCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onOfficeChange: (office: { id: number; name: string }) => void;
+    onRemarksChange: (remarks: string) => void;
     onDocumentChange: (
         index: number,
         field: keyof BoxDetails,
@@ -20,6 +23,10 @@ interface BoxFormContextType {
     addDocument: () => void;
     deleteDocument: (index: number) => void;
     parseDateRange: (dateStr: string | null) => any;
+    resetBoxes: () => void;
+    setBoxes: React.Dispatch<React.SetStateAction<BoxFormState[]>>;
+    editBox: (updatedBox: BoxFormState) => void | boolean;
+    resetBoxData: () => void;
 }
 
 export const BoxFormContext = createContext<BoxFormContextType | undefined>(

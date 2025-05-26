@@ -1,6 +1,7 @@
+import { BoxFormState } from "@/Utils/types";
 import React from "react";
 interface RequestsGridViewProps {
-    data: Request[];
+    data: BoxFormState[];
     loading?: boolean;
 }
 

@@ -72,6 +72,51 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         disposal_date: "",
     });
 
+    const getBoxById = (idToFind: number): BoxFormState => {
+        const box = boxes.find((box) => box.id === idToFind);
+        if (!box) {
+            throw new Error(`Box with id ${idToFind} not found`);
+        }
+        return box;
+    };
+
+    const editBox = (updatedBox: BoxFormState): boolean => {
+        console.log("UpdatedBox: ", updatedBox);
+
+        const { hasError, errors } = validateBoxData(updatedBox);
+
+        if (hasError) {
+            setErrors(errors);
+            console.error("Validation errors:", errors);
+            return true;
+        }
+
+        const updatedBoxes = boxes.map((box) =>
+            box.id === updatedBox.id ? updatedBox : box
+        );
+
+        setBoxes(updatedBoxes);
+        sessionStorage.setItem("boxes", JSON.stringify(updatedBoxes));
+        resetBoxData();
+
+        return false;
+    };
+
+    const deleteBox = (idToDelete: number) => {
+        setBoxes((prevBoxes) => {
+            const updatedBoxes = prevBoxes.filter(
+                (box) => box.id !== idToDelete
+            );
+            sessionStorage.setItem("boxes", JSON.stringify(updatedBoxes));
+            return updatedBoxes;
+        });
+    };
+
+    const resetBoxes = () => {
+        setBoxes([]);
+        sessionStorage.removeItem("boxes");
+    };
+
     const resetBoxData = () => {
         const initialData = {
             id: 1,
@@ -358,6 +403,10 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         setBoxData((prev) => ({ ...prev, office }));
     };
 
+    const onRemarksChange = (remarks: string) => {
+        setBoxData((prev) => ({ ...prev, remarks }));
+    };
+
     /** ✅ Add a new document */
     const addDocument = () => {
         const newDocument: BoxDetails = {
@@ -404,10 +453,34 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const saveBoxDataToBoxes = () => {
+        const { hasError, errors } = validateBoxData(boxData);
+
+        if (hasError) {
+            setErrors(errors);
+            console.error("Validation errors:", errors);
+            return hasError;
+        }
+
+        const updatedBoxData = {
+            ...boxData,
+            id: boxes.length + 1,
+        };
+
+        const updatedBoxes = [...boxes, updatedBoxData];
+
+        setBoxes(updatedBoxes);
+        sessionStorage.setItem("boxes", JSON.stringify(updatedBoxes));
+
+        resetBoxData();
+    };
+
+    const validateBoxData = (
+        box: BoxFormState
+    ): { hasError: boolean; errors: any } => {
         let hasError = false;
 
         const newErrors: any = {
-            id: 1,
+            id: box.id ?? null,
             box_code: "",
             priority_level: "",
             office: null,
@@ -416,29 +489,30 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             disposal_date: "",
         };
 
-        if (!boxData.box_code?.trim()) {
+        if (!box.box_code?.trim()) {
             newErrors.box_code = "Box code is required.";
             hasError = true;
         }
-        if (!boxData.priority_level?.value?.trim()) {
+        if (!box.priority_level?.value?.trim()) {
             newErrors.priority_level = "Priority level is required.";
             hasError = true;
         }
-        if (!boxData.office) {
-            newErrors.office = "Office is required.";
+
+        if (box.box_details.length === 0) {
             hasError = true;
         }
 
-        if (boxData.box_details.length === 0) {
-            hasError = true;
-        }
+        // if (!boxData.office) {
+        //     newErrors.office = "Office is required.";
+        //     hasError = true;
+        // }
 
-        newErrors.box_details = boxData.box_details.map((doc) => {
+        newErrors.box_details = box.box_details.map((doc) => {
             const docErrors: BoxDetails = {
                 id: doc.id,
                 document_title: "",
-                rds_number: doc.rds_number, // Not required
-                retention_period: doc.retention_period, // Not required
+                rds_number: doc.rds_number,
+                retention_period: doc.retention_period,
                 document_date: {
                     raw: null,
                     formatted: null,
@@ -465,26 +539,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             return docErrors;
         });
 
-        if (hasError) {
-            setErrors(newErrors);
-            console.error("Validation errors:", newErrors);
-            return hasError;
-        }
-
-        const updatedBoxData = {
-            ...boxData,
-            id: boxes.length + 1,
-        };
-
-        const updatedBoxes = [...boxes, updatedBoxData];
-
-        // Save to state
-        setBoxes(updatedBoxes);
-
-        // Save to session storage
-        sessionStorage.setItem("boxes", JSON.stringify(updatedBoxes));
-
-        resetBoxData();
+        return { hasError, errors: newErrors };
     };
 
     return (
@@ -496,14 +551,21 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 rdsData,
                 rdsLoading,
                 rdsError,
+                getBoxById,
+                deleteBox,
                 saveBoxDataToBoxes,
                 setBoxData,
                 onBoxCodeChange,
                 onOfficeChange,
                 onDocumentChange,
+                onRemarksChange,
                 addDocument,
                 deleteDocument,
                 parseDateRange,
+                resetBoxes,
+                setBoxes,
+                editBox,
+                resetBoxData,
             }}
         >
             {children}

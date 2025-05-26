@@ -8,44 +8,13 @@ import {
 } from "@heroui/react";
 import Icon from "@/Components/Icon";
 import { router } from "@inertiajs/react";
-import { axiosInstance } from "@/Utils/axios";
 import { useModalAlert } from "@/Contexts/ModalAlertContext";
+import { useBoxForm } from "@/Contexts/BoxFormContext";
+import NewBoxForm from "@/Components/Forms/NewBoxForm";
 
 export default function ActionButtons({ row }: any) {
     const { showAlert } = useModalAlert();
-    const onDelete = async (row: { form_number: string }) => {
-        showAlert({
-            type: "warning",
-            title: "Confirm Deletion",
-            message: "Are you sure you want to delete this request?",
-            mode: "confirm",
-            onConfirm: async () => {
-                try {
-                    await axiosInstance.delete(`/request/${row.form_number}`);
-                    showAlert({
-                        type: "success",
-                        title: "Request Deleted",
-                        message: "Request deleted successfully.",
-                        autoClose: true,
-                        autoCloseDuration: 3000,
-                    });
-                    router.reload();
-                } catch (error) {
-                    console.error("Failed to delete request:", error);
-                    showAlert({
-                        type: "error",
-                        title: "Error",
-                        message: "Failed to delete request.",
-                        autoClose: true,
-                        autoCloseDuration: 3000,
-                    });
-                }
-            },
-            onCancel: () => {
-                console.log("Deletion canceled");
-            },
-        });
-    };
+    const { deleteBox } = useBoxForm();
 
     const onEdit = (row: any) => {
         router.visit(`/request/${row.form_number}`);
@@ -54,26 +23,26 @@ export default function ActionButtons({ row }: any) {
     return (
         <div className="relative flex justify-start items-center gap-2">
             <div className="hidden md:flex gap-2">
-                <Tooltip content="Edit">
-                    <Button
-                        isIconOnly
-                        size="sm"
-                        variant="light"
-                        onPress={() => onEdit(row)}
-                        color="primary"
-                    >
-                        <Icon name="edit-pen-2" size={20} />
-                    </Button>
-                </Tooltip>
+                <NewBoxForm
+                    triggerButton={
+                        <Button
+                            isIconOnly
+                            size="sm"
+                            variant="light"
+                            color="primary"
+                        >
+                            <Icon name="edit-pen-2" size={20} />
+                        </Button>
+                    }
+                    editBoxId={row.id}
+                />
                 <Tooltip content="Delete">
                     <Button
                         isIconOnly
                         size="sm"
                         variant="light"
-                        onPress={() => onDelete(row)}
-                        color={!row.is_draft ? "default" : "danger"}
-                        isDisabled={!row.is_draft}
-                        className="disabled:opacity-10"
+                        onPress={() => deleteBox(row.id)}
+                        color={"danger"}
                     >
                         <Icon name="trash" size={20} />
                     </Button>
@@ -93,7 +62,7 @@ export default function ActionButtons({ row }: any) {
                         </DropdownItem>
                         <DropdownItem
                             key="delete"
-                            onPress={() => onDelete(row)}
+                            onPress={() => deleteBox(row.id)}
                         >
                             Delete
                         </DropdownItem>
