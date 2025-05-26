@@ -1,5 +1,4 @@
 import Input from "@/Components/Shared/Input";
-import Select from "@/Components/Shared/Select";
 import { useTheme } from "@/Contexts/ThemeContext";
 import {
     Modal,
@@ -11,49 +10,80 @@ import {
     Spacer,
     Tooltip,
     useDisclosure,
+    Textarea,
 } from "@heroui/react";
-import { HelpIcon } from "../icons";
-import useFetch from "@/Hooks/useFetch";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import Icon from "@/Components/Icon";
 import { DocumentFormList } from "./DocumentFormList";
+import React from "react";
 
 interface ManageBoxDialogProps {
-    editData?: any;
+    isEditMode?: boolean;
+    editBoxId?: number;
+    triggerButton?: React.ReactNode;
 }
 
-const NewBoxForm = ({ editData }: ManageBoxDialogProps) => {
+const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
     const {
         boxData,
+        setBoxData,
         errors,
         saveBoxDataToBoxes,
         onBoxCodeChange,
-        onOfficeChange,
+        onRemarksChange,
+        getBoxById,
+        editBox,
+        resetBoxData,
     } = useBoxForm();
-    const {
-        data: offices,
-        loading: loadingOffices,
-        error: officesError,
-    } = useFetch<any[]>(route("offices"));
     const { theme } = useTheme();
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [isEditMode, setIsEditMode] = React.useState(false);
 
     const handleAddBox = () => {
         const hasErrors = saveBoxDataToBoxes();
 
-        !hasErrors && onClose();
+        !hasErrors && handleClose();
     };
+
+    const handleUpdateBox = () => {
+        if (editBoxId) {
+            const hasErrors = editBox(boxData);
+            !hasErrors && handleClose();
+        }
+    };
+
+    const handleClose = () => {
+        setIsEditMode(false);
+        resetBoxData();
+        onClose();
+    };
+
+    React.useEffect(() => {
+        if (isEditMode && editBoxId) {
+            const box = getBoxById(editBoxId);
+            setBoxData(box);
+        }
+    }, [editBoxId, onOpen, isEditMode]);
 
     return (
         <>
-            <Button
-                className="hidden sm:flex"
-                color="primary"
-                endContent={<Icon name="plus" size={20} />}
-                onPress={onOpen}
-            >
-                Add Box
-            </Button>
+            {triggerButton ? (
+                React.cloneElement(triggerButton as React.ReactElement, {
+                    onPress: () => {
+                        setIsEditMode(true);
+                        onOpen();
+                    },
+                })
+            ) : (
+                <Button
+                    className="hidden sm:flex"
+                    color="primary"
+                    endContent={<Icon name="plus" size={20} />}
+                    onPress={onOpen}
+                >
+                    Add Box
+                </Button>
+            )}
             <Modal
                 isOpen={isOpen}
                 placement="top"
@@ -136,7 +166,7 @@ const NewBoxForm = ({ editData }: ManageBoxDialogProps) => {
                                                 </div>
                                             }
                                         >
-                                            <div className="z-50">
+                                            <div className="z-50 cursor-help">
                                                 <Icon
                                                     name="help"
                                                     size={20}
@@ -151,6 +181,20 @@ const NewBoxForm = ({ editData }: ManageBoxDialogProps) => {
                             <Spacer y={4} />
                             <DocumentFormList />
                             <Spacer y={2} />
+                            <Textarea
+                                fullWidth
+                                label="Remarks (Optional)"
+                                placeholder="Enter your description"
+                                classNames={{
+                                    label: "text-black dark:text-white/90 font-bold text-sm",
+                                    inputWrapper: "border-slate-400",
+                                    description: "text-default-500/50",
+                                }}
+                                value={boxData.remarks}
+                                onChange={(e) =>
+                                    onRemarksChange(e.target.value)
+                                }
+                            />
                             <div className="flex gap-2">
                                 <Input
                                     label="Disposal Date"
@@ -166,7 +210,7 @@ const NewBoxForm = ({ editData }: ManageBoxDialogProps) => {
                                                 "Disposal date is automatically calculated based on the largest retention period of each document."
                                             }
                                         >
-                                            <div className="z-50">
+                                            <div className="z-50 cursor-help">
                                                 <Icon
                                                     name="help"
                                                     size={20}
@@ -177,48 +221,28 @@ const NewBoxForm = ({ editData }: ManageBoxDialogProps) => {
                                     }
                                     isReadOnly
                                 />
-                                <Select
-                                    autocomplete={true}
-                                    variant="flat"
-                                    name="office"
-                                    label="Office"
-                                    placeholder={
-                                        loadingOffices
-                                            ? "Loading offices..."
-                                            : "Enter end-user office department/section/office"
-                                    }
-                                    items={offices} // Now, offices is guaranteed to be an array
-                                    keyField={"id"}
-                                    labelField="name"
-                                    menuTrigger="input"
-                                    selectedKeys={boxData.office?.id}
-                                    onSelectionChange={(keys) => {
-                                        let value = {
-                                            id: keys,
-                                            name: offices[keys].name,
-                                        };
-                                        onOfficeChange(value);
-                                    }}
-                                    isClearable={false}
-                                    errorMessage={errors.office || officesError}
-                                    isRequired
-                                    isDisabled={
-                                        loadingOffices || !!officesError
-                                    }
-                                />
                             </div>
                         </ModalBody>
                         <ModalFooter>
                             <Button
                                 color="default"
                                 variant="flat"
-                                onPress={onClose}
+                                onPress={handleClose}
                             >
                                 Cancel
                             </Button>
-                            <Button color="primary" onPress={handleAddBox}>
-                                Add
-                            </Button>
+                            {editBoxId ? (
+                                <Button
+                                    color="primary"
+                                    onPress={handleUpdateBox}
+                                >
+                                    Update
+                                </Button>
+                            ) : (
+                                <Button color="primary" onPress={handleAddBox}>
+                                    Add
+                                </Button>
+                            )}
                         </ModalFooter>
                     </>
                 </ModalContent>

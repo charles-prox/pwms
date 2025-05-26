@@ -4,7 +4,7 @@ import useFetch from "./useFetch";
 interface RdsData {
     id: number;
     rds_number: string;
-    title_description: string;
+    document_title: string;
     retention_period: number;
     department?: string | null;
 }
@@ -53,7 +53,7 @@ const useRdsData = ({
         ? data.data.map((rds: any) => ({
               id: rds.id,
               rds_number: rds.rds_number,
-              title_description: rds.title_description,
+              document_title: rds.document_title,
               retention_period: rds.retention_period,
               department: rds.department,
           }))
@@ -66,7 +66,7 @@ const useRdsData = ({
         return rds
             ? {
                   id: rds.id,
-                  document_title: rds.title_description,
+                  document_title: rds.document_title,
                   retention_period: rds.retention_period,
                   rds_number: rds.rds_number,
               }

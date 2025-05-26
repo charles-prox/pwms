@@ -28,10 +28,10 @@ const AddStorageRecordTab = () => {
     const { boxes } = useBoxForm();
 
     const renderCell = (row: any, columnKey: React.Key) => {
-        if (columnKey === "office") {
-            // Return office name
-            return row.office.name;
-        }
+        // if (columnKey === "office") {
+        //     // Return office name
+        //     return row.office.name;
+        // }
 
         if (columnKey === "priority_level") {
             return row.priority_level?.value ? (

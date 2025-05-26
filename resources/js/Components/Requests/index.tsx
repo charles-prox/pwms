@@ -3,7 +3,7 @@ import { Head, router, usePage } from "@inertiajs/react";
 import PageLayoutViewController from "@/Components/PageLayoutViewController";
 import { BoxFormProvider } from "@/Providers/BoxFormProvider";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
-import { FormProp } from "@/Utils/types";
+import { BoxFormState, FormProp } from "@/Utils/types";
 import { useLayoutViewContext } from "@/Contexts/LayoutViewContext";
 import {
     RequestsListView,
@@ -12,6 +12,7 @@ import {
     RequestDetailsGridView,
 } from "@/Components/Requests/views";
 import Icon from "../Icon";
+import { useBoxForm } from "@/Contexts/BoxFormContext";
 
 const PAGE_ID = "requests";
 
@@ -19,25 +20,31 @@ const RequestsPage = () => {
     const {
         form = null,
         requests = [],
-        boxes = [],
+        boxes: savedBoxes = [],
     } = usePage<{
         form?: FormProp;
         requests?: Request[];
-        boxes?: Request[];
+        boxes?: BoxFormState[];
     }>().props;
-
+    const { setBoxes } = useBoxForm();
     const { getLayoutView } = useLayoutViewContext();
     const currentLayout = getLayoutView(PAGE_ID) ?? "list"; // Default to list
 
-    const hasFormAndBoxes = form && boxes;
+    const hasFormAndBoxes = form && savedBoxes;
     const hasRequests = !!requests;
+
+    // If saved boxes are present, sync them to local unsaved state
+    React.useEffect(() => {
+        setBoxes(savedBoxes);
+        sessionStorage.setItem("boxes", JSON.stringify(savedBoxes)); // optional
+    }, [savedBoxes, setBoxes]);
 
     const renderContent = () => {
         if (hasFormAndBoxes) {
             return currentLayout === "grid" ? (
-                <RequestDetailsGridView data={boxes} loading={false} />
+                <RequestDetailsGridView data={[]} loading={false} />
             ) : (
-                <RequestDetailsListView data={boxes} loading={false} />
+                <RequestDetailsListView loading={false} />
             );
         } else if (hasRequests) {
             return currentLayout === "grid" ? (

@@ -138,7 +138,7 @@ class RDSController extends Controller
             return [
                 'id' => $rds->id,
                 'rds_number' => "RDS-" . $rds->module . " #" . $rds->item_no,
-                'title_description' => $rds->title_description,
+                'document_title' => $rds->title_description,
                 'retention_period' => $retention_period,
                 'department' => $rds->department,
             ];
