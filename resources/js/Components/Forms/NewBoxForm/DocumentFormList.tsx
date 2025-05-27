@@ -11,10 +11,14 @@ import { HelpIcon, TrashIcon } from "../icons";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import Icon from "@/Components/Icon";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
+import { BoxDetails } from "@/Utils/types";
 
-export const DocumentFormList = () => {
+interface DocumentFormListProps {
+    docs: BoxDetails[];
+}
+
+export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
     const {
-        boxData,
         errors,
         rdsData,
         rdsLoading,
@@ -38,13 +42,11 @@ export const DocumentFormList = () => {
                 </Button>
             </div>
             <Spacer y={4} />
-            {boxData.box_details.map((details, index) => {
-                console.log("Document details:", details);
-
+            {docs.map((details, index) => {
                 return (
                     <div
                         className="flex flex-col gap-2"
-                        key={"document-" + index}
+                        key={"document-" + index + "-" + details.id}
                     >
                         <div className="flex gap-2">
                             <Select
@@ -62,9 +64,7 @@ export const DocumentFormList = () => {
                                 keyField="id"
                                 labelField="document_title"
                                 menuTrigger="input"
-                                selectedKeys={`${boxData.box_details[
-                                    index
-                                ].id?.toString()}`}
+                                selectedKeys={details.id?.toString()}
                                 onSelectionChange={(key: string) =>
                                     onDocumentChange(index, "id", key)
                                 }
@@ -156,13 +156,13 @@ export const DocumentFormList = () => {
                                 onPress={() => deleteDocument(index)}
                                 endContent={<TrashIcon />}
                                 className="w-1/4"
-                                isDisabled={boxData.box_details.length <= 1}
+                                isDisabled={docs.length <= 1}
                             >
                                 Remove
                             </Button>
                         </div>
 
-                        {index + 1 !== boxData.box_details.length && (
+                        {index + 1 !== docs.length && (
                             <>
                                 <Spacer y={2} />
                                 <Divider />

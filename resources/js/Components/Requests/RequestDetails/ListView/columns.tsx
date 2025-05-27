@@ -94,7 +94,13 @@ export const columns: Column<Request>[] = [
             </Popover>
         ),
     },
-    { label: "REMARKS", key: "remarks" },
+    {
+        label: "REMARKS",
+        key: "remarks",
+        render: (item: any) => (
+            <p className="whitespace-pre-line">{item.remarks}</p>
+        ),
+    },
     {
         label: "ACTIONS",
         key: "actions",
