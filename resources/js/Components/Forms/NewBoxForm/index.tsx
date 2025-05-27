@@ -179,7 +179,7 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
                                 />
                             </div>
                             <Spacer y={4} />
-                            <DocumentFormList />
+                            <DocumentFormList docs={boxData.box_details} />
                             <Spacer y={2} />
                             <Textarea
                                 fullWidth

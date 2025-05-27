@@ -81,13 +81,13 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const editBox = (updatedBox: BoxFormState): boolean => {
-        console.log("UpdatedBox: ", updatedBox);
+        // console.log("UpdatedBox: ", updatedBox);
 
         const { hasError, errors } = validateBoxData(updatedBox);
 
         if (hasError) {
             setErrors(errors);
-            console.error("Validation errors:", errors);
+            // console.error("Validation errors:", errors);
             return true;
         }
 
@@ -286,17 +286,17 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     ) => {
         setBoxData((prev) => {
             const updatedDocuments = [...prev.box_details];
-            console.log("field:", field);
+            // console.log("field:", field);
             const formattedDate = formatDateRange(
                 value as RangeValue<DateValue>
             );
 
             if (field === "id" && typeof value === "string") {
                 // ✅ Fetch retention period & rds number
-                console.log("value: " + value);
+                // console.log("value: " + value);
 
                 const rdsData = getRdsDetailsById(parseInt(value));
-                console.log("rdsData", rdsData);
+                // console.log("rdsData", rdsData);
 
                 if (rdsData) {
                     updatedDocuments[index] = {
@@ -381,8 +381,8 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             const { disposalDate, priorityLevel } =
                 updateBoxDisposalDate(updatedDocuments);
 
-            console.log("Disposal date:", disposalDate);
-            console.log("Priority level:", priorityLevel);
+            // console.log("Disposal date:", disposalDate);
+            // console.log("Priority level:", priorityLevel);
 
             if (disposalDate) {
                 newBoxData.disposal_date = disposalDate;
@@ -457,7 +457,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (hasError) {
             setErrors(errors);
-            console.error("Validation errors:", errors);
+            // console.error("Validation errors:", errors);
             return hasError;
         }
 

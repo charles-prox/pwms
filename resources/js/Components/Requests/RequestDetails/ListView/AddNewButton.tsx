@@ -1,4 +1,10 @@
-import { Button } from "@heroui/react";
+import {
+    Button,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
+} from "@heroui/react";
 import Icon from "@/Components/Icon";
 import { useModalAlert } from "@/Contexts/ModalAlertContext";
 import NewBoxForm from "@/Components/Forms/NewBoxForm";
@@ -10,13 +16,24 @@ export default function App() {
     return (
         <div className="flex items-center gap-2">
             <NewBoxForm />
-            <Button
-                className="hidden sm:flex"
-                color="secondary"
-                endContent={<Icon name="save" size={20} />}
-            >
-                Save
-            </Button>
+
+            <Dropdown>
+                <DropdownTrigger>
+                    <Button
+                        color="secondary"
+                        endContent={<Icon name="save" size={18} />}
+                    >
+                        Save
+                    </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                    aria-label="Save Actions"
+                    // onAction={(key) => handleSaveAction(key)}
+                >
+                    <DropdownItem key="draft">Save as Draft</DropdownItem>
+                    <DropdownItem key="print">Save and Print</DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
         </div>
     );
 }
