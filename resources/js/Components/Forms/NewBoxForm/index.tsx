@@ -200,7 +200,13 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
                                     label="Disposal Date"
                                     name="disposal_date"
                                     placeholder="This field is automatically filled."
-                                    value={boxData.disposal_date}
+                                    value={
+                                        typeof boxData.disposal_date ===
+                                        "string"
+                                            ? boxData.disposal_date
+                                            : boxData.disposal_date
+                                                  ?.formatted ?? ""
+                                    }
                                     maxWidthClass={"w-full"}
                                     endContent={
                                         <Tooltip

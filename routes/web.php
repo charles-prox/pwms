@@ -32,6 +32,9 @@ Route::middleware([
     Route::get('/rds/get', [RDSController::class, 'index'])->name('rds.index');
 
     Route::post('/request/create/{type}', [RequestsController::class, 'createBlankRequest'])->name('requests.create');
+    Route::get('/request/{form_no}', [RequestsController::class, 'getFormDetails'])->name('request.details');
+    Route::post('/request/{form_number}/save-draft', [RequestsController::class, 'saveDraft']);
+    Route::delete('/request/{form_number}', [RequestsController::class, 'destroy']);
 });
 
 

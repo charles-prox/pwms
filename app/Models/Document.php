@@ -35,7 +35,7 @@ class Document extends Model
 
     public function rds()
     {
-        return $this->belongsTo(Rds::class);
+        return $this->belongsTo(RDS::class);
     }
 
     public function addedBy()

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->timestamp('added_at')->default('NOW()');
             $table->string('added_by');
             $table->foreign('added_by')->references('hris_id')->on('users');
+            $table->timestamps();
         });
     }
 

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations.03051995
      */
     public function up(): void
     {
@@ -23,7 +23,9 @@ return new class extends Migration
             $table->bigInteger('office_id');
             $table->foreign('office_id')->references('id')->on('offices');
             $table->string('priority_level');
-            $table->date('disposal_date');
+            $table->date('disposal_date')->nullable();
+            $table->boolean('is_permanent')->default(false);
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

@@ -80,9 +80,7 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
 
                             <DateRangePicker
                                 label="Document Date"
-                                value={parseDateRange(
-                                    details.document_date.raw
-                                )}
+                                value={parseDateRange(details.document_date)}
                                 aria-label="Select document date"
                                 onChange={(value) =>
                                     onDocumentChange(

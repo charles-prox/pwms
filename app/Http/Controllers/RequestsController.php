@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Request as RequestModel;
 use App\Models\Box;
+use App\Models\RDS;
 use App\Models\Document;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -98,32 +99,58 @@ class RequestsController extends Controller
             ->where('request_id', $request->id)
             ->get()
             ->map(function ($box) {
+
+
                 return [
                     'id' => $box->id,
                     'box_code' => $box->box_code,
-                    'priority_level' => $box->priority_level,
+                    'priority_level' => $box->priority_level ? [
+                        'value' => $box->priority_level,
+                        'label' => ucfirst($box->priority_level),
+                    ] : null,
                     'remarks' => $box->remarks,
-                    'disposal_date' => $box->disposal_date->format('Y-m-d'),
+                    'disposal_date' => $box->is_permanent
+                        ? 'Permanent'
+                        : [
+                            'raw' => $box->disposal_date?->toISOString(), // Ensures ISO format
+                            'formatted' => $box->disposal_date?->format('F j, Y'),
+                        ],
                     'office' => $box->office ? [
                         'id' => $box->office->id,
                         'name' => $box->office->name,
                     ] : null,
                     'box_details' => $box->documents->map(function ($doc) {
+                        $active = trim($doc->rds->active);
+                        $storage = trim($doc->rds->storage);
+
+                        $retention_period = (strcasecmp($active, "Permanent") === 0 || strcasecmp($storage, "Permanent") === 0)
+                            ? "Permanent"
+                            : ((int) $active + (int) $storage);
+
                         return [
                             'id' => $doc->id,
+                            'document_code' => $doc->document_code,
                             'document_title' => $doc->rds->title_description ?? null,
-                            'rds_number' => $doc->rds->item_no ?? '',
-                            'retention_period' => $doc->rds->storage ?? '',
-                            'document_date' => [
-                                'raw' => $doc->document_date,
-                                'formatted' => \Carbon\Carbon::parse($doc->document_date)->format('m/d/Y'),
-                            ],
-                            'disposal_date' => [
-                                'raw' => $doc->disposal_date,
-                                'formatted' => \Carbon\Carbon::parse($doc->disposal_date)->format('m/d/Y'),
-                            ],
+                            'rds_number' => "RDS-" . $doc->rds->module . " #" . $doc->rds->item_no,
+                            'retention_period' => $retention_period,
+                            'document_date' => $doc->document_date_start || $doc->document_date_end ? [
+                                'start' => $doc->document_date_start ? [
+                                    'raw' => $doc->document_date_start->toISOString(),
+                                    'formatted' => $doc->document_date_start->format('F j, Y'),
+                                ] : null,
+                                'end' => $doc->document_date_end ? [
+                                    'raw' => $doc->document_date_end->toISOString(),
+                                    'formatted' => $doc->document_date_end->format('F j, Y'),
+                                ] : null,
+                            ] : null,
+                            'disposal_date' => $doc->is_permanent
+                                ? 'Permanent'
+                                : [
+                                    'raw' => $doc->disposal_date?->toISOString(),
+                                    'formatted' => $doc->disposal_date?->format('F j, Y'),
+                                ],
                         ];
-                    })->toArray()
+                    })->toArray(),
                 ];
             });
 
@@ -136,6 +163,7 @@ class RequestsController extends Controller
             'boxes' => $boxes,
         ]);
     }
+
 
 
     /**
@@ -186,43 +214,55 @@ class RequestsController extends Controller
     public function saveDraft(Request $request, string $form_number)
     {
         $user = Auth::user();
-
         $requestData = RequestModel::where('form_number', $form_number)->firstOrFail();
 
         DB::beginTransaction();
-
+        // dd($request->boxes);
         try {
             foreach ($request->boxes as $boxData) {
+                $rawDisposalDate = is_array($boxData['disposal_date']) ? $boxData['disposal_date']['raw'] : $boxData['disposal_date'];
+                $isPermanentBox = strtolower($rawDisposalDate) === 'permanent';
+
                 // Save or update the box
                 $box = Box::updateOrCreate(
                     [
-                        'id' => $boxData['id'] ?? null,
+                        'box_code' => $boxData['box_code'],
                     ],
                     [
-                        'box_code' => $boxData['box_code'],
                         'remarks' => $boxData['remarks'],
-                        'priority_level' => $boxData['priority_level'],
-                        'disposal_date' => $boxData['disposal_date'],
-                        'status' => 'stored', // or whatever default applies
-                        'office_id' => $requestData->office_id,
+                        'priority_level' => is_array($boxData['priority_level'])
+                            ? $boxData['priority_level']['value']
+                            : $boxData['priority_level'],
+                        'disposal_date' => $isPermanentBox ? null : $rawDisposalDate,
+                        'is_permanent' => $isPermanentBox,
+                        'status' => 'draft',
+                        'office_id' => $user->office_id,
                         'request_id' => $requestData->id,
                     ]
                 );
 
                 // Save or update documents under the box
                 foreach ($boxData['box_details'] as $doc) {
+                    $rawDocDisposalDate = is_array($doc['disposal_date']) ? $doc['disposal_date']['raw'] : $doc['disposal_date'];
+                    $isPermanentDoc = strtolower($rawDocDisposalDate) === 'permanent';
+                    dd($doc['document_date']);
+                    $docDateStart = $doc['document_date']['start']['raw'] ?? null;
+                    $docDateEnd = $doc['document_date']['end']['raw']
+                        ?? $doc['document_date']['start']['raw']
+                        ?? null;
+
                     Document::updateOrCreate(
                         [
-                            'id' => $doc['id'] ?? null,
+                            'box_id' => $box->id,
+                            'document_code' => $doc['document_code'],
                         ],
                         [
-                            'box_id' => $box->id,
-                            'rds_id' => $this->getRdsIdByNumber($doc['rds_number']),
-                            'document_code' => null,
-                            'description' => $doc['document_title'],
-                            'document_date' => $doc['document_date']['raw'],
-                            'disposal_date' => $doc['disposal_date']['raw'],
-                            'status' => 'active',
+                            'rds_id' => $doc['id'],
+                            'document_date_from' => $docDateStart,
+                            'document_date_to' => $docDateEnd,
+                            'disposal_date' => $isPermanentDoc ? null : $rawDocDisposalDate,
+                            'is_permanent' => $isPermanentDoc,
+                            'status' => 'draft',
                             'added_by' => $user->hris_id,
                         ]
                     );
@@ -238,13 +278,7 @@ class RequestsController extends Controller
         }
     }
 
-    // Helper to get RDS ID by number (optional)
-    protected function getRdsIdByNumber(string $rdsNumber): ?int
-    {
-        $rds = \App\Models\RDS::where('item_no', $rdsNumber)->first();
 
-        return $rds?->id;
-    }
 
     public function destroy($form_number)
     {
