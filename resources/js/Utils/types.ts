@@ -40,29 +40,38 @@ export interface Filter {
 // ========================
 // FORM TYPES
 // ========================
+export type BoxDate = {
+    raw: string | null; // e.g., '2025-03-17T10:00:00Z'
+    formatted: string | null; // e.g., 'March 17, 2025'}
+};
+export type BoxDateRange = {
+    start: BoxDate | null;
+    end: BoxDate | null;
+};
+
+export interface PriorityLevel {
+    value: string;
+    label: string;
+}
+
 export interface BoxFormState {
     id: number;
     box_code: string;
-    priority_level: { value: string; label: string } | null;
+    priority_level: PriorityLevel | null;
     remarks: string;
-    disposal_date: string;
+    disposal_date: BoxDate | null | "Permanent"; // e.g., { raw: '2025-12-31T23:59:59Z', formatted: 'December 31, 2025' } or "Permanent"
     office: { id: number; name: string } | null;
     box_details: BoxDetails[];
 }
 
 export interface BoxDetails {
     id: number | null;
+    document_code: string;
     document_title: string | null;
     rds_number: string;
     retention_period: string;
-    document_date: {
-        raw: string | null; // e.g., '2025-03-17T10:00:00Z'
-        formatted: string | null; // e.g., 'March 17, 2025'
-    };
-    disposal_date: {
-        raw: string | null; // e.g., '2025-06-01T00:00:00Z'
-        formatted: string | null; // e.g., 'June 1, 2025'
-    };
+    document_date: BoxDateRange | null; // e.g., { start: { raw: '2025-01-01T00:00:00Z', formatted: 'January 1, 2025' }, end: { raw: '2025-12-31T23:59:59Z', formatted: 'December 31, 2025' } }
+    disposal_date: BoxDate | null | "Permanent"; // e.g., { raw: '2025-12-31T23:59:59Z', formatted: 'December 31, 2025' }
 }
 
 // ========================

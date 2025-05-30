@@ -1,7 +1,6 @@
 import React from "react";
 import { Head, router, usePage } from "@inertiajs/react";
 import PageLayoutViewController from "@/Components/PageLayoutViewController";
-import { BoxFormProvider } from "@/Providers/BoxFormProvider";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
 import { BoxFormState, FormProp } from "@/Utils/types";
 import { useLayoutViewContext } from "@/Contexts/LayoutViewContext";
@@ -37,7 +36,7 @@ const RequestsPage = () => {
     React.useEffect(() => {
         setBoxes(savedBoxes);
         sessionStorage.setItem("boxes", JSON.stringify(savedBoxes)); // optional
-    }, [savedBoxes, setBoxes]);
+    }, []);
 
     const renderContent = () => {
         if (hasFormAndBoxes) {
@@ -58,7 +57,7 @@ const RequestsPage = () => {
     };
 
     return (
-        <BoxFormProvider>
+        <>
             <Head title="Requests" />
             <div className="flex flex-col gap-5">
                 {/* Header Section */}
@@ -96,7 +95,7 @@ const RequestsPage = () => {
                 {/* Main Content */}
                 {renderContent()}
             </div>
-        </BoxFormProvider>
+        </>
     );
 };
 

@@ -15,13 +15,6 @@ Route::middleware([
 
     Route::get('/request', [RequestsController::class, 'getAllRequests'])->name('requests');
 
-    Route::get('/request/{form_no}', [RequestsController::class, 'getFormDetails'])
-        ->name('request.details');
-
-    Route::post('/request/{form_number}/save-draft', [RequestsController::class, 'saveDraft']);
-
-    Route::delete('/request/{form_number}', [RequestsController::class, 'destroy']);
-
 
     // Route::get('/request/withdrawal', function () {
     //     return Inertia::render('RequestWithdrawal');

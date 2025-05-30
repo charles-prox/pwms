@@ -24,6 +24,7 @@ return new class extends Migration
                 ->comment('red, green, black')
                 ->check("status IN ('red, green, black')");
             $table->date('disposal_date');
+            $table->timestamps();
         });
     }
 

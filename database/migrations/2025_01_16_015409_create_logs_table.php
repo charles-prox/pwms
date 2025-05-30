@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('ip_address', 45);
             $table->string('device');
             $table->text('additional_info')->nullable();
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();
