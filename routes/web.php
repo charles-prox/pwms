@@ -34,6 +34,7 @@ Route::middleware([
     Route::post('/request/create/{type}', [RequestsController::class, 'createBlankRequest'])->name('requests.create');
     Route::get('/request/{form_no}', [RequestsController::class, 'getFormDetails'])->name('request.details');
     Route::post('/request/{form_number}/save-draft', [RequestsController::class, 'saveDraft']);
+    Route::post('/request/{form_number}/print', [RequestsController::class, 'submitRequest']);
     Route::delete('/request/{form_number}', [RequestsController::class, 'destroy']);
 });
 

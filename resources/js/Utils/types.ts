@@ -47,6 +47,7 @@ export type BoxDate = {
 export type BoxDateRange = {
     start: BoxDate | null;
     end: BoxDate | null;
+    readable: string | null; // e.g., 'March 17, 2025 - March 31, 2025'
 };
 
 export interface PriorityLevel {
@@ -78,9 +79,19 @@ export interface BoxDetails {
 // PROP TYPES
 // ========================
 export type FormProp = {
-    number: string;
-    last_update: string;
-    type: string;
+    id: number;
+    form_number: string;
+    request_type: string;
+    status: string;
+    is_draft: boolean;
+    request_date: string | null; // nullable date string
+    office_id: number;
+    created_by: number;
+    created_at: string;
+    updated_at: string;
+    completed_at: string | null;
+    approved_at: string | null;
+    creator: string;
 };
 
 export interface ProfileFormData {
