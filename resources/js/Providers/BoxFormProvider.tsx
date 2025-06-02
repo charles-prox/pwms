@@ -59,6 +59,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                         raw: null,
                         formatted: null,
                     },
+                    readable: null,
                 },
                 disposal_date: {
                     raw: null,
@@ -150,6 +151,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                     document_date: {
                         start: { raw: null, formatted: null },
                         end: { raw: null, formatted: null },
+                        readable: null,
                     },
                     disposal_date: {
                         raw: null,
@@ -186,7 +188,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         dateRange: RangeValue<DateValue> | null
     ): BoxDateRange => {
         if (!dateRange || !dateRange.start) {
-            return { start: null, end: null };
+            return { start: null, end: null, readable: null };
         }
 
         const startDate = dayjs(dateRange.start.toDate("UTC"));
@@ -197,25 +199,27 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         const startRaw = startDate.format("YYYY-MM-DD");
         const endRaw = endDate.format("YYYY-MM-DD");
 
-        let startFormatted: string;
-        let endFormatted: string;
+        const startFormatted = startDate.format("MMMM D, YYYY");
+        const endFormatted = endDate.format("MMMM D, YYYY");
+
+        let readable: string;
 
         if (startDate.isSame(endDate, "year")) {
             if (startDate.isSame(endDate, "month")) {
                 if (startDate.isSame(endDate, "day")) {
-                    startFormatted = endFormatted =
-                        startDate.format("MMMM D, YYYY");
+                    readable = startFormatted;
                 } else {
-                    startFormatted = startDate.format("MMMM D");
-                    endFormatted = endDate.format("D, YYYY");
+                    readable = `${startDate.format("MMMM D")}-${endDate.format(
+                        "D, YYYY"
+                    )}`;
                 }
             } else {
-                startFormatted = startDate.format("MMMM D");
-                endFormatted = endDate.format("MMMM D, YYYY");
+                readable = `${startDate.format("MMMM D")} - ${endDate.format(
+                    "MMMM D, YYYY"
+                )}`;
             }
         } else {
-            startFormatted = startDate.format("MMMM D, YYYY");
-            endFormatted = endDate.format("MMMM D, YYYY");
+            readable = `${startFormatted} - ${endFormatted}`;
         }
 
         return {
@@ -227,6 +231,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 raw: endRaw,
                 formatted: endFormatted,
             },
+            readable: readable,
         };
     };
 
@@ -257,9 +262,11 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const calculateDocumentDisposalDate = (
         documentDate: BoxDateRange | null,
-        retentionPeriod: string
+        retentionPeriod: string | number
     ): BoxDate | "Permanent" => {
-        if (retentionPeriod.toLowerCase() === "permanent") {
+        const period = String(retentionPeriod).toLowerCase();
+
+        if (period === "permanent") {
             return { raw: "Permanent", formatted: "Permanent" };
         }
 
@@ -268,7 +275,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         const endDate = dayjs(documentDate.end.raw);
-        const retentionYears = parseInt(retentionPeriod, 10);
+        const retentionYears = parseInt(period, 10);
 
         if (!endDate.isValid() || isNaN(retentionYears)) {
             return { raw: null, formatted: null };
@@ -377,6 +384,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                         document_date: {
                             start: null,
                             end: null,
+                            readable: null,
                         },
                         disposal_date: null,
                     };
@@ -485,6 +493,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             document_date: {
                 start: null,
                 end: null,
+                readable: null,
             },
             disposal_date: {
                 raw: null,

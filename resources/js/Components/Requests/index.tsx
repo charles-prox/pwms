@@ -72,17 +72,17 @@ const RequestsPage = () => {
                             >
                                 <h1 className="text-2xl font-bold">Requests</h1>
                             </BreadcrumbItem>
-                            {form?.number && (
+                            {form?.form_number && (
                                 <BreadcrumbItem>
                                     <h1 className="text-2xl font-bold">
-                                        {form.number}
+                                        {form.form_number}
                                     </h1>
                                 </BreadcrumbItem>
                             )}
                         </Breadcrumbs>
                         <p className="text-sm text-gray-500">
-                            {form?.number
-                                ? `Last updated ${form.last_update}`
+                            {form?.form_number
+                                ? `Last updated ${form.updated_at}`
                                 : "Easily Create and Track Requests"}
                         </p>
                     </div>

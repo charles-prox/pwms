@@ -81,17 +81,8 @@ export const columns: Column<BoxFormState>[] = [
 
                                     {/* document_date: show formatted range */}
                                     <TableCell>
-                                        {document.document_date?.start
-                                            ?.formatted
-                                            ? document.document_date.end
-                                                  ?.formatted &&
-                                              document.document_date.end
-                                                  .formatted !==
-                                                  document.document_date.start
-                                                      .formatted
-                                                ? `${document.document_date.start.formatted} - ${document.document_date.end.formatted}`
-                                                : document.document_date.start
-                                                      .formatted
+                                        {document.document_date?.readable
+                                            ? document.document_date?.readable
                                             : "N/A"}
                                     </TableCell>
 

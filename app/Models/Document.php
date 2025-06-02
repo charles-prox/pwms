@@ -14,7 +14,8 @@ class Document extends Model
         'rds_id',
         'document_code',
         'description',
-        'document_date',
+        'document_date_from',
+        'document_date_to',
         'disposal_date',
         'status',
         'added_at',
@@ -22,7 +23,8 @@ class Document extends Model
     ];
 
     protected $casts = [
-        'document_date' => 'date',
+        'document_date_from' => 'date',
+        'document_date_to' => 'date',
         'disposal_date' => 'date',
         'added_at' => 'datetime',
     ];
