@@ -52,13 +52,16 @@ const SaveButton = () => {
                 mode: "confirm",
                 onConfirm: async () => {
                     try {
-                        const response = await axiosInstance.post(
-                            `/request/${form?.form_number}/print`,
-                            {
-                                boxes: boxes,
-                            }
-                        );
-
+                        router.post(`/request/${form?.form_number}/print`, {
+                            boxes: boxes as any[],
+                        });
+                        showAlert({
+                            type: "success",
+                            title: "Sucess",
+                            message: "You can now print your request.",
+                            autoClose: true,
+                            autoCloseDuration: 3000,
+                        });
                         // Assuming the response contains a URL to the print view
                         // window.open(response.data.printUrl, "_blank");
                     } catch (error) {

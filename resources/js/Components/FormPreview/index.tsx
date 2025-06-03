@@ -9,6 +9,9 @@ export default function FormPreview() {
             preparedBy={{ name: "John Doe", position: "Document Custodian" }}
             office="PhilHealth Main Office"
             officeHead="GLADYS A. ELTANAL"
+            regionDC="CHERRY MAE G. SERIÑA"
+            msdHead="MAE R. DIZON"
+            gsuHHead="GLADYS A. ELTANAL"
         >
             <View>
                 <Text>This is your form content.</Text>

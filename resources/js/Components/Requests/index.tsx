@@ -12,6 +12,7 @@ import {
 } from "@/Components/Requests/views";
 import Icon from "../Icon";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
+import FormPreview from "../FormPreview";
 
 const PAGE_ID = "requests";
 
@@ -20,10 +21,12 @@ const RequestsPage = () => {
         form = null,
         requests = [],
         boxes: savedBoxes = [],
+        show_form = false,
     } = usePage<{
         form?: FormProp;
         requests?: Request[];
         boxes?: BoxFormState[];
+        show_form?: boolean;
     }>().props;
     const { setBoxes } = useBoxForm();
     const { getLayoutView } = useLayoutViewContext();
@@ -39,21 +42,25 @@ const RequestsPage = () => {
     }, []);
 
     const renderContent = () => {
+        if (show_form) return <FormPreview />;
+
         if (hasFormAndBoxes) {
             return currentLayout === "grid" ? (
                 <RequestDetailsGridView data={[]} loading={false} />
             ) : (
                 <RequestDetailsListView loading={false} />
             );
-        } else if (hasRequests) {
+        }
+
+        if (hasRequests) {
             return currentLayout === "grid" ? (
                 <RequestsGridView data={requests} loading={false} />
             ) : (
                 <RequestsListView data={requests} loading={false} />
             );
-        } else {
-            return <div className="text-gray-500">No data available.</div>;
         }
+
+        return <div className="text-gray-500">No data available.</div>;
     };
 
     return (
