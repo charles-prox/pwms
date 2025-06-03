@@ -54,10 +54,8 @@ class RequestStorageService
             foreach ($boxData['box_details'] as $doc) {
                 $rawDocDisposalDate = is_array($doc['disposal_date']) ? $doc['disposal_date']['raw'] : $doc['disposal_date'];
                 $isPermanentDoc = strtolower($rawDocDisposalDate) === 'permanent';
-
                 $docDateStart = $doc['document_date']['start']['raw'] ?? null;
                 $docDateEnd = $doc['document_date']['end']['raw'] ?? $docDateStart;
-
                 Document::updateOrCreate(
                     [
                         'box_id' => $box->id,

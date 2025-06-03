@@ -106,7 +106,10 @@ class RequestsController extends Controller
             $this->requestStorageService->saveRequestData($request, $form_number, 'submitted');
             DB::commit();
 
-            return response()->json(['message' => 'Request submitted successfully', 'show_form' => true]);
+            // return response()->json(['message' => 'Request submitted successfully', 'show_form' => true]);
+            return Inertia::render('RequestsPage', [
+                'show_form' => true,
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'Failed to submit request', 'details' => $e->getMessage()], 500);
