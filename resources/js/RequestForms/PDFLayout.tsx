@@ -7,16 +7,12 @@ import {
     PDFViewer,
     Document,
 } from "@react-pdf/renderer";
-import { styles } from "./styles";
-import Signatories from "./Signatories";
-
-// Supported request types
-type RequestType = "storage" | "withdrawal" | "return" | "disposal";
+import { styles } from "./styles"; // or wherever your shared styles live
+import Signatories from "./Signatories"; // Import the Signatories component
 
 // Props definition
 interface PDFLayoutProps {
     children: ReactNode;
-    requestType: RequestType;
     formNo?: string;
     title?: string;
     preparedBy?: {
@@ -30,48 +26,8 @@ interface PDFLayoutProps {
     gsuHHead?: string;
 }
 
-// Utility to conditionally render content by request type
-const renderContentByRequestType = (
-    type: RequestType,
-    children: ReactNode
-): ReactNode => {
-    switch (type) {
-        case "storage":
-            return (
-                <>
-                    <Text>Request for Records Storage</Text>
-                    {children}
-                </>
-            );
-        case "withdrawal":
-            return (
-                <>
-                    <Text>Request for Records Withdrawal</Text>
-                    {children}
-                </>
-            );
-        case "return":
-            return (
-                <>
-                    <Text>Request for Records Return</Text>
-                    {children}
-                </>
-            );
-        case "disposal":
-            return (
-                <>
-                    <Text>Request for Records Disposal</Text>
-                    {children}
-                </>
-            );
-        default:
-            return children;
-    }
-};
-
 export const PDFLayout: React.FC<PDFLayoutProps> = ({
     children,
-    requestType,
     formNo = "",
     title = "",
     preparedBy = { name: "", position: "" },
@@ -93,18 +49,25 @@ export const PDFLayout: React.FC<PDFLayoutProps> = ({
                                 src="/header/philhealth_logo.png"
                             />
                         </View>
-                        <View style={styles.headerRight}>
-                            <Text style={styles.title}>{title}</Text>
-                            <Text style={styles.formNo}>{formNo}</Text>
+                        <View
+                            style={{
+                                width: "80%",
+                                position: "relative",
+                                height: 70,
+                            }}
+                        >
+                            <Text style={[styles.title, styles.boldFont]}>
+                                Request for Records Withdrawal Form
+                            </Text>
+                            <Text style={styles.formNo}>
+                                PHILHEALTH-QP-02-F02
+                            </Text>
                         </View>
                     </View>
 
                     {/* Main Content */}
-                    <View style={styles.content}>
-                        {renderContentByRequestType(requestType, children)}
-                    </View>
+                    <View style={styles.content}>{children}</View>
 
-                    {/* Signatories */}
                     <Signatories
                         preparedBy={preparedBy}
                         office={office}
