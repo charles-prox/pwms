@@ -10,7 +10,7 @@ import {
     Spacer,
     Progress,
 } from "@heroui/react";
-import { useForm, usePage } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 import axios from "axios";
 import React from "react";
 
@@ -76,12 +76,20 @@ export default function ImportForm({ isOpen, onClose }: ImportFormProps) {
         }
     };
 
+    const handleClose = () => {
+        reset(); // Reset the form data when closing the modal
+        setErrorMessage(null);
+        setSuccessMessage(null);
+        onClose(); // Call the parent onClose function
+        router.reload(); // Optionally reload the page to reflect changes
+    };
+
     return (
         <Modal
             backdrop="blur"
             size="lg"
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={handleClose}
             autoFocus={false}
         >
             <ModalContent>
@@ -180,7 +188,7 @@ export default function ImportForm({ isOpen, onClose }: ImportFormProps) {
                         <Button
                             color="default"
                             variant="light"
-                            onPress={onClose}
+                            onPress={handleClose}
                             isDisabled={isLoading}
                             autoFocus={false}
                         >

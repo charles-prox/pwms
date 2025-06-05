@@ -6,22 +6,21 @@ import RequestForWithdrawal from "@/RequestForms/RequestForWithdrawal";
 import { usePage } from "@inertiajs/react";
 
 function FormPreview() {
-    const requestType: any = "storage";
-    const { form_data = [] } = usePage().props;
+    const { form = {} } = usePage<any>().props;
 
     const renderContent = () => {
-        switch (requestType) {
+        switch (form.request?.type) {
             case "withdrawal":
-                return <RequestForWithdrawal data={form_data} />;
+                return <RequestForWithdrawal data={form} />;
             case "return":
-                return <RequestForReturn data={form_data} />;
+                return <RequestForReturn data={form} />;
             case "disposal":
-                return <RequestForDisposal data={form_data} />;
+                return <RequestForDisposal data={form} />;
             default:
                 return (
                     <RequestForStorage
-                        data={form_data}
-                        gsuHead={"GLADYS A. ELTANAL"}
+                        data={form.request}
+                        gsuHead={form.gsu_head}
                     />
                 );
         }
@@ -29,12 +28,23 @@ function FormPreview() {
 
     return (
         <PDFLayout
-            preparedBy={{ name: "John Doe", position: "Document Custodian" }}
-            office="PhilHealth Main Office"
-            officeHead="GLADYS A. ELTANAL"
-            regionDC="CHERRY MAE G. SERIÑA"
-            msdHead="MAE R. DIZON"
-            gsuHHead="GLADYS A. ELTANAL"
+            requestType={form.request?.type || "storage"}
+            preparedBy={{
+                name:
+                    form.request.creator.first_name +
+                    (form.request.creator.middle_name
+                        ? " " +
+                          form.request.creator.middle_name.charAt(0) +
+                          ". "
+                        : " ") +
+                    form.request.creator.last_name,
+                position: form.request.creator.position,
+            }}
+            office={form.request.creator.office}
+            officeHead={form.creator_office_head}
+            regionDC={form.rdc_officer}
+            msdHead={form.msd_head}
+            gsuHead={form.gsu_head}
         >
             {renderContent()}
         </PDFLayout>

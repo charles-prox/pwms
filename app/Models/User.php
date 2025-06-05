@@ -106,4 +106,9 @@ class User extends Authenticatable
 
         return implode(' ', $names);
     }
+
+    public function office()
+    {
+        return $this->belongsTo(Office::class);
+    }
 }

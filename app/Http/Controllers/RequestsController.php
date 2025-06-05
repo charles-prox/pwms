@@ -108,6 +108,10 @@ class RequestsController extends Controller
 
             return Inertia::render('RequestsPage', [
                 'show_form' => true,
+                'form' => $this->requestStorageService->getRequestDetailsWithBoxesAndOfficers(
+                    RequestModel::where('form_number', $form_number)->value('id')
+                ),
+
             ]);
         } catch (\Exception $e) {
             DB::rollBack();

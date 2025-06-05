@@ -37,6 +37,21 @@ export interface Filter {
     value: string;
 }
 
+export type Officer = {
+    first_name: string;
+    middle_initial?: string | null;
+    last_name: string;
+    extension?: string | null;
+    positions: {
+        name: string;
+    }[];
+};
+
+export type Office = {
+    id: number;
+    name: string;
+};
+
 // ========================
 // FORM TYPES
 // ========================
