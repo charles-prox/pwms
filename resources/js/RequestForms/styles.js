@@ -6,6 +6,7 @@ Font.register({
     fonts: [
         { src: "/fonts/georgia/Georgia.ttf", fontWeight: "normal" },
         { src: "/fonts/georgia/georgia_bold.ttf", fontWeight: "bold" },
+        { src: "/fonts/georgia/georgia_italic.ttf", fontStyle: "italic" },
     ],
 });
 
@@ -21,21 +22,29 @@ export const styles = StyleSheet.create({
         flexDirection: "column",
     },
     boldFont: {
-        fontFamily: "Georgia Bold",
+        fontFamily: "Georgia",
+        fontWeight: "bold",
         fontSize: 12,
+    },
+    itallicFont: {
+        fontFamily: "Georgia",
+        fontStyle: "italic",
     },
     border: {
         border: "1px solid black",
         padding: 2,
-        marginLeft: -1,
+    },
+    leftBorder: {
+        borderLeft: "1px solid black",
+    },
+    rightBorder: {
+        borderRight: "1px solid black",
+    },
+    topBorder: {
+        borderTop: "1px solid black",
     },
     bottomBorder: {
         borderBottom: "1px solid black",
-        borderLeft: "1px solid black",
-        borderRight: "1px solid black",
-        padding: 2,
-        marginLeft: -1,
-        paddingTop: 5,
     },
     cell: {
         border: "1px solid black",
@@ -108,8 +117,8 @@ export const styles = StyleSheet.create({
     noTopBottomBorder: {
         borderTop: 0,
         borderBottom: 0,
-        borderLeft: "1px solid black",
-        borderRight: "1px solid black",
+        borderLeft: 0,
+        borderRight: 0,
         padding: 2,
         marginLeft: -1,
     },
@@ -132,7 +141,8 @@ export const styles = StyleSheet.create({
     },
     signatoryFor: {
         backgroundColor: "#fbd4b4",
-        fontFamily: "Georgia Bold",
+        fontFamily: "Georgia",
+        fontWeight: "bold",
         fontSize: 10,
     },
     signatoryLabel: {
@@ -175,11 +185,10 @@ export const styles = StyleSheet.create({
         textAlign: "center",
     },
     tableCell: {
-        marginTop: -1,
         display: "flex",
         justifyContent: "flex-start",
-        borderTop: 0,
         fontSize: 10,
+        padding: 2,
     },
     tableHeader: {
         display: "flex",
@@ -187,7 +196,8 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "#fbd4b4",
         textTransform: "uppercase",
-        fontFamily: "Georgia Bold",
+        fontFamily: "Georgia",
+        fontWeight: "bold",
         fontSize: 8,
     },
     title: {

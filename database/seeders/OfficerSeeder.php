@@ -25,7 +25,7 @@ class OfficerSeeder extends Seeder
                 'middle_initial' => 'B',
                 'last_name' => 'Lucman',
                 'extension' => null,
-                'office_code' => 'GSU',
+                'office_code' => 'ASS',
             ],
             [
                 'first_name' => 'Gladys',

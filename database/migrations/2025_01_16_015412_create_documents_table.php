@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->string('document_code')->unique();
+            $table->string('description')->nullable();
             $table->bigInteger('box_id');
             $table->foreign('box_id')->references('id')->on('boxes');
             $table->bigInteger('rds_id');

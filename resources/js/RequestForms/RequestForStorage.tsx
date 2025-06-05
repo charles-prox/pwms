@@ -1,48 +1,11 @@
-import {
-    Page,
-    Font,
-    Document,
-    Text,
-    PDFViewer,
-    View,
-    Image,
-} from "@react-pdf/renderer";
+import { Text, View } from "@react-pdf/renderer";
 import React from "react";
 import { styles } from "./styles"; // Adjust path as necessary
-
-// Font registration
-Font.register({
-    family: "Georgia Bold",
-    src: "/fonts/georgia/georgia_bold.ttf",
-});
-Font.register({
-    family: "Georgia Regular",
-    src: "/fonts/georgia/Georgia.ttf",
-});
-
-// Type definitions
-interface DocumentDetail {
-    rds_number: string;
-    document_title: string;
-    description: string;
-    document_date: string;
-}
-
-interface BoxDetail {
-    box_code: string;
-    disposal_date: string;
-    remarks?: string;
-    box_details: DocumentDetail[];
-}
-
-interface RequestData {
-    form_no: string;
-    details: BoxDetail[];
-}
+import { BoxDetails, BoxFormState } from "@/Utils/types";
 
 interface Props {
     data: any;
-    gsuHead: string;
+    gsuHead: any;
 }
 
 // Date formatting
@@ -78,14 +41,20 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                     <Text>TO:</Text>
                 </View>
                 <View style={{ width: "90%" }}>
-                    <Text>{gsuHead}</Text>
+                    <Text>
+                        {gsuHead.first_name +
+                            (gsuHead.middle_initial
+                                ? " " + gsuHead.middle_initial + ". "
+                                : " ") +
+                            gsuHead.last_name}
+                    </Text>
                 </View>
             </View>
 
             <View style={styles.flex}>
                 <View style={{ width: "10%" }} />
                 <View style={{ width: "90%" }}>
-                    <Text>Head, GSU</Text>
+                    <Text>{gsuHead.positions[0].name}</Text>
                 </View>
             </View>
 
@@ -100,7 +69,10 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
             <View style={styles.flex}>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.leftBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
                         { width: "18%" },
                     ]}
@@ -109,7 +81,9 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                 </View>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
                         { width: "12%" },
                     ]}
@@ -118,7 +92,9 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                 </View>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
                         { width: "45%" },
                     ]}
@@ -127,7 +103,9 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                 </View>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
                         { width: "20%" },
                     ]}
@@ -136,7 +114,9 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                 </View>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
                         { width: "15%" },
                     ]}
@@ -146,11 +126,13 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
             </View>
 
             {/* Table Body */}
-            {data.data.details.map((box: BoxDetail, i: number) => (
+            {data.boxes.map((box: BoxFormState, i: number) => (
                 <View key={i} style={styles.flex}>
                     <View
                         style={[
-                            styles.border,
+                            styles.rightBorder,
+                            styles.leftBorder,
+                            styles.bottomBorder,
                             styles.tableCell,
                             { width: "18%" },
                         ]}
@@ -158,53 +140,62 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                         <Text>{box.box_code}</Text>
                     </View>
 
-                    <View style={{ flexDirection: "column", width: "76.5%" }}>
+                    <View
+                        style={{
+                            flexDirection: "column",
+                            width: "76.5%",
+                            padding: 2,
+                        }}
+                    >
                         {box.box_details.map(
-                            (details: DocumentDetail, j: number) => (
+                            (document: BoxDetails, j: number) => (
                                 <View key={j} style={styles.flex}>
                                     <View
                                         style={[
-                                            styles.noTopBottomBorder,
+                                            styles.rightBorder,
                                             styles.tableCell,
                                             { width: "15.75%" },
                                         ]}
                                     >
-                                        <Text>{details.rds_number}</Text>
+                                        <Text>{document.rds_number}</Text>
                                     </View>
                                     <View
                                         style={[
-                                            styles.noTopBottomBorder,
+                                            styles.rightBorder,
                                             styles.tableCell,
                                             { width: "58.9%" },
                                         ]}
                                     >
-                                        <Text>{details.document_title}</Text>
-                                        <Text>{details.description}</Text>
+                                        <Text>{document.document_title}</Text>
+                                        {/* <Text>{document.description}</Text> */}
                                     </View>
                                     <View
                                         style={[
-                                            styles.noTopBottomBorder,
+                                            styles.rightBorder,
                                             styles.tableCell,
                                             { width: "26.29%" },
                                         ]}
                                     >
-                                        <Text>{details.document_date}</Text>
+                                        <Text>
+                                            {document.document_date?.readable}
+                                        </Text>
                                     </View>
                                 </View>
                             )
                         )}
 
-                        <View style={styles.flex}>
+                        <View style={[styles.flex, styles.bottomBorder]}>
                             <View
                                 style={[
-                                    styles.bottomBorder,
+                                    styles.rightBorder,
+                                    styles.leftBorder,
                                     styles.tableCell,
                                     { width: "15.75%" },
                                 ]}
                             ></View>
                             <View
                                 style={[
-                                    styles.bottomBorder,
+                                    styles.rightBorder,
                                     styles.tableCell,
                                     { width: "58.9%" },
                                 ]}
@@ -225,7 +216,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                             </View>
                             <View
                                 style={[
-                                    styles.bottomBorder,
+                                    styles.rightBorder,
                                     styles.tableCell,
                                     { width: "26.29%" },
                                 ]}
@@ -235,17 +226,22 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
 
                     <View
                         style={[
-                            styles.border,
+                            styles.rightBorder,
+                            styles.bottomBorder,
                             styles.tableCell,
                             { width: "15%" },
                         ]}
                     >
-                        <Text>{box.disposal_date}</Text>
+                        <Text>
+                            {box.disposal_date === "Permanent"
+                                ? "Permanent"
+                                : box.disposal_date?.formatted}
+                        </Text>
                     </View>
                 </View>
             ))}
 
-            <Text style={{ fontSize: 10, padding: 5 }}>
+            <Text style={[styles.itallicFont, { fontSize: 10, padding: 5 }]}>
                 Note: The Records Section shall not be responsible for any loss
                 of the box's contents.
             </Text>

@@ -1,24 +1,36 @@
 import React from "react";
 import { View, Text } from "@react-pdf/renderer";
-import { styles } from "./styles"; // or wherever your shared styles live
+import { styles } from "./styles";
+import { Office, Officer } from "@/Utils/types";
+
 type SignatoriesProps = {
     preparedBy: {
         name: string;
     };
-    office: string;
-    officeHead: string;
-    regionDC?: string;
-    msdHead?: string;
-    gsuHHead?: string;
+    office: Office;
+    officeHead?: Officer;
+    regionDC?: Officer;
+    msdHead?: Officer;
+    gsuHead?: Officer;
+};
+
+const getFullName = (officer?: Officer) => {
+    if (!officer) return "";
+    const middle = officer.middle_initial ? ` ${officer.middle_initial}.` : "";
+    return `${officer.first_name}${middle} ${officer.last_name}`;
+};
+
+const getPosition = (officer?: Officer) => {
+    return officer?.positions?.[0]?.name || "";
 };
 
 export const Signatories: React.FC<SignatoriesProps> = ({
     preparedBy,
     office,
     officeHead,
-    regionDC = "",
-    msdHead = "",
-    gsuHHead = "",
+    regionDC,
+    msdHead,
+    gsuHead,
 }) => (
     <View>
         {/* Prepared by */}
@@ -46,7 +58,7 @@ export const Signatories: React.FC<SignatoriesProps> = ({
                         Signature over Printed Name
                     </Text>
                     <Text style={styles.signatoryPosition}>
-                        Document Custodian, {office}
+                        Document Custodian, {office.name}
                     </Text>
                 </View>
                 <View
@@ -69,11 +81,15 @@ export const Signatories: React.FC<SignatoriesProps> = ({
             </View>
             <View style={styles.flex}>
                 <View style={[styles.cell, { width: "35%" }]}>
-                    <Text style={styles.signatoryName}>{officeHead}</Text>
+                    <Text style={styles.signatoryName}>
+                        {getFullName(officeHead)}
+                    </Text>
                 </View>
                 <View style={[styles.cell, { width: "15%" }]} />
                 <View style={[styles.cell, { width: "35%" }]}>
-                    <Text style={styles.signatoryName}>{regionDC}</Text>
+                    <Text style={styles.signatoryName}>
+                        {getFullName(regionDC)}
+                    </Text>
                 </View>
                 <View style={[styles.cell, { width: "15%" }]} />
             </View>
@@ -82,7 +98,9 @@ export const Signatories: React.FC<SignatoriesProps> = ({
                     <Text style={styles.signatoryPosition}>
                         Signature over Printed Name
                     </Text>
-                    <Text style={styles.signatoryPosition}>Head, {office}</Text>
+                    <Text style={styles.signatoryPosition}>
+                        {getPosition(officeHead)}
+                    </Text>
                 </View>
                 <View style={[styles.cell, { width: "15%" }]}>
                     <Text style={styles.signatoryPosition}>Date</Text>
@@ -91,7 +109,9 @@ export const Signatories: React.FC<SignatoriesProps> = ({
                     <Text style={styles.signatoryPosition}>
                         Signature over Printed Name
                     </Text>
-                    <Text style={styles.signatoryPosition}>GSU</Text>
+                    <Text style={styles.signatoryPosition}>
+                        {getPosition(regionDC)}
+                    </Text>
                 </View>
                 <View style={[styles.cell, { width: "15%" }]}>
                     <Text style={styles.signatoryPosition}>Date</Text>
@@ -109,11 +129,15 @@ export const Signatories: React.FC<SignatoriesProps> = ({
             </View>
             <View style={styles.flex}>
                 <View style={[styles.cell, { width: "35%" }]}>
-                    <Text style={styles.signatoryName}>{gsuHHead}</Text>
+                    <Text style={styles.signatoryName}>
+                        {getFullName(gsuHead)}
+                    </Text>
                 </View>
                 <View style={[styles.cell, { width: "15%" }]} />
                 <View style={[styles.cell, { width: "35%" }]}>
-                    <Text style={styles.signatoryName}>{msdHead}</Text>
+                    <Text style={styles.signatoryName}>
+                        {getFullName(msdHead)}
+                    </Text>
                 </View>
                 <View style={[styles.cell, { width: "15%" }]} />
             </View>
@@ -122,7 +146,9 @@ export const Signatories: React.FC<SignatoriesProps> = ({
                     <Text style={styles.signatoryPosition}>
                         Signature over Printed Name
                     </Text>
-                    <Text style={styles.signatoryPosition}>Head, GSU</Text>
+                    <Text style={styles.signatoryPosition}>
+                        {getPosition(gsuHead)}
+                    </Text>
                 </View>
                 <View style={[styles.cell, { width: "15%" }]}>
                     <Text style={styles.signatoryPosition}>Date</Text>
@@ -131,7 +157,9 @@ export const Signatories: React.FC<SignatoriesProps> = ({
                     <Text style={styles.signatoryPosition}>
                         Signature over Printed Name
                     </Text>
-                    <Text style={styles.signatoryPosition}>Chief, MSD</Text>
+                    <Text style={styles.signatoryPosition}>
+                        {getPosition(msdHead)}
+                    </Text>
                 </View>
                 <View style={[styles.cell, { width: "15%" }]}>
                     <Text style={styles.signatoryPosition}>Date</Text>

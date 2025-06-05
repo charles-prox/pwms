@@ -42,7 +42,7 @@ const RequestsPage = () => {
     }, []);
 
     const renderContent = () => {
-        if (show_form) return <FormPreview />;
+        if (show_form && form) return <FormPreview />;
 
         if (hasFormAndBoxes) {
             return currentLayout === "grid" ? (
