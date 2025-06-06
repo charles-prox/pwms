@@ -74,7 +74,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                         styles.leftBorder,
                         styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "18%" },
+                        { width: 90 },
                     ]}
                 >
                     <Text>Box Code</Text>
@@ -85,7 +85,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                         styles.rightBorder,
                         styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "12%" },
+                        { width: 70 },
                     ]}
                 >
                     <Text>RDS No.</Text>
@@ -96,7 +96,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                         styles.rightBorder,
                         styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "45%" },
+                        { width: 200 },
                     ]}
                 >
                     <Text>Title and Description</Text>
@@ -107,7 +107,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                         styles.rightBorder,
                         styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "20%" },
+                        { width: 90 },
                     ]}
                 >
                     <Text>Record Date</Text>
@@ -118,7 +118,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                         styles.rightBorder,
                         styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "15%" },
+                        { width: 60 },
                     ]}
                 >
                     <Text>Disposal Date</Text>
@@ -134,7 +134,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                             styles.leftBorder,
                             styles.bottomBorder,
                             styles.tableCell,
-                            { width: "18%" },
+                            { width: 90 },
                         ]}
                     >
                         <Text>{box.box_code}</Text>
@@ -143,8 +143,6 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                     <View
                         style={{
                             flexDirection: "column",
-                            width: "76.5%",
-                            padding: 2,
                         }}
                     >
                         {box.box_details.map(
@@ -154,7 +152,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                                         style={[
                                             styles.rightBorder,
                                             styles.tableCell,
-                                            { width: "15.75%" },
+                                            { width: 70 },
                                         ]}
                                     >
                                         <Text>{document.rds_number}</Text>
@@ -163,7 +161,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                                         style={[
                                             styles.rightBorder,
                                             styles.tableCell,
-                                            { width: "58.9%" },
+                                            { width: 200 },
                                         ]}
                                     >
                                         <Text>{document.document_title}</Text>
@@ -173,7 +171,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                                         style={[
                                             styles.rightBorder,
                                             styles.tableCell,
-                                            { width: "26.29%" },
+                                            { width: 90 },
                                         ]}
                                     >
                                         <Text>
@@ -188,16 +186,15 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                             <View
                                 style={[
                                     styles.rightBorder,
-                                    styles.leftBorder,
                                     styles.tableCell,
-                                    { width: "15.75%" },
+                                    { width: 70 },
                                 ]}
                             ></View>
                             <View
                                 style={[
                                     styles.rightBorder,
                                     styles.tableCell,
-                                    { width: "58.9%" },
+                                    { width: 200 },
                                 ]}
                             >
                                 {box.remarks && (
@@ -218,7 +215,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                                 style={[
                                     styles.rightBorder,
                                     styles.tableCell,
-                                    { width: "26.29%" },
+                                    { width: 90 },
                                 ]}
                             ></View>
                         </View>
@@ -229,7 +226,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                             styles.rightBorder,
                             styles.bottomBorder,
                             styles.tableCell,
-                            { width: "15%" },
+                            { width: 60 },
                         ]}
                     >
                         <Text>

@@ -10,6 +10,7 @@ import {
 import { styles } from "./styles"; // or wherever your shared styles live
 import Signatories from "./Signatories"; // Import the Signatories component
 import { Officer, Office } from "@/Utils/types";
+import { form } from "@heroui/react";
 
 type RequestType = "storage" | "withdrawal" | "return" | "disposal";
 interface PDFLayoutProps {
@@ -29,6 +30,7 @@ interface PDFLayoutProps {
     regionDC?: Officer;
     msdHead?: Officer;
     gsuHead: Officer;
+    formNumber?: string;
 }
 
 // Supported request types
@@ -72,10 +74,11 @@ export const PDFLayout: React.FC<PDFLayoutProps> = ({
     regionDC,
     msdHead,
     gsuHead,
+    formNumber,
 }) => {
     return (
         <PDFViewer height={innerHeight - 280} showToolbar={true}>
-            <Document>
+            <Document title={formNumber || "Request Form"}>
                 <Page size="A4" style={styles.body}>
                     {/* Header */}
                     <View fixed style={styles.header}>

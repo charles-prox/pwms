@@ -38,7 +38,7 @@ class RequestStorageService
         foreach ($request->boxes as $boxData) {
             $rawDisposalDate = is_array($boxData['disposal_date']) ? $boxData['disposal_date']['raw'] : $boxData['disposal_date'];
             $isPermanentBox = strtolower($rawDisposalDate) === 'permanent';
-
+            // dd($rawDisposalDate, $isPermanentBox);
             $box = Box::updateOrCreate(
                 ['box_code' => $boxData['box_code']],
                 [
