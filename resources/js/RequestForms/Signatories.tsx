@@ -35,24 +35,40 @@ export const Signatories: React.FC<SignatoriesProps> = ({
     <View>
         {/* Prepared by */}
         <View wrap={false}>
-            <Text style={[styles.signatoryFor, styles.border]}>
+            <Text style={[styles.signatoryLabel, styles.border]}>
                 Prepared by:
             </Text>
             <View style={styles.flex}>
                 <View
-                    style={[styles.border, styles.tableCell, { width: "50%" }]}
+                    style={[
+                        styles.leftBorder,
+                        styles.rightBorder,
+                        styles.tableCell,
+                        { width: "50%" },
+                    ]}
                 >
                     <Text style={styles.signatoryName}>{preparedBy.name}</Text>
                 </View>
                 <View
-                    style={[styles.border, styles.tableCell, { width: "50%" }]}
+                    style={[
+                        styles.rightBorder,
+                        styles.tableCell,
+                        { width: "50%" },
+                    ]}
                 >
                     <Text />
                 </View>
             </View>
             <View style={styles.flex}>
                 <View
-                    style={[styles.border, styles.tableCell, { width: "50%" }]}
+                    style={[
+                        styles.leftBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        styles.topBorder,
+                        styles.tableCell,
+                        { width: "50%" },
+                    ]}
                 >
                     <Text style={styles.signatoryPosition}>
                         Signature over Printed Name
@@ -62,7 +78,14 @@ export const Signatories: React.FC<SignatoriesProps> = ({
                     </Text>
                 </View>
                 <View
-                    style={[styles.border, styles.tableCell, { width: "50%" }]}
+                    style={[
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        styles.topBorder,
+                        styles.tableCell,
+                        styles.tableCell,
+                        { width: "50%" },
+                    ]}
                 >
                     <Text style={styles.signatoryPosition}>Date</Text>
                 </View>
@@ -72,29 +95,79 @@ export const Signatories: React.FC<SignatoriesProps> = ({
         {/* Requesting Officer / Received by */}
         <View wrap={false}>
             <View style={[styles.flex, { marginTop: 10 }]}>
-                <Text style={[styles.signatoryLabel, { width: "50%" }]}>
+                <Text
+                    style={[
+                        styles.signatoryLabel,
+                        styles.border,
+                        { width: "50%" },
+                    ]}
+                >
                     Requesting Officer:
                 </Text>
-                <Text style={[styles.signatoryLabel, { width: "50%" }]}>
+                <Text
+                    style={[
+                        styles.signatoryLabel,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "50%" },
+                    ]}
+                >
                     Received by:
                 </Text>
             </View>
             <View style={styles.flex}>
-                <View style={[styles.cell, { width: "35%" }]}>
+                <View
+                    style={[
+                        styles.cell,
+                        styles.leftBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "35%" },
+                    ]}
+                >
                     <Text style={styles.signatoryName}>
                         {getFullName(officeHead)}
                     </Text>
                 </View>
-                <View style={[styles.cell, { width: "15%" }]} />
-                <View style={[styles.cell, { width: "35%" }]}>
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "15%" },
+                    ]}
+                />
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "35%" },
+                    ]}
+                >
                     <Text style={styles.signatoryName}>
                         {getFullName(regionDC)}
                     </Text>
                 </View>
-                <View style={[styles.cell, { width: "15%" }]} />
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "15%" },
+                    ]}
+                />
             </View>
             <View style={styles.flex}>
-                <View style={[styles.cell, { width: "35%" }]}>
+                <View
+                    style={[
+                        styles.cell,
+                        styles.leftBorder,
+                        styles.rightBorder,
+                        { width: "35%" },
+                    ]}
+                >
                     <Text style={styles.signatoryPosition}>
                         Signature over Printed Name
                     </Text>
@@ -102,10 +175,14 @@ export const Signatories: React.FC<SignatoriesProps> = ({
                         {getPosition(officeHead)}
                     </Text>
                 </View>
-                <View style={[styles.cell, { width: "15%" }]}>
+                <View
+                    style={[styles.cell, styles.rightBorder, { width: "15%" }]}
+                >
                     <Text style={styles.signatoryPosition}>Date</Text>
                 </View>
-                <View style={[styles.cell, { width: "35%" }]}>
+                <View
+                    style={[styles.cell, styles.rightBorder, { width: "35%" }]}
+                >
                     <Text style={styles.signatoryPosition}>
                         Signature over Printed Name
                     </Text>
@@ -113,36 +190,89 @@ export const Signatories: React.FC<SignatoriesProps> = ({
                         {getPosition(regionDC)}
                     </Text>
                 </View>
-                <View style={[styles.cell, { width: "15%" }]}>
+                <View
+                    style={[styles.cell, styles.rightBorder, { width: "15%" }]}
+                >
                     <Text style={styles.signatoryPosition}>Date</Text>
                 </View>
             </View>
 
             {/* Verified by / Approved by */}
             <View style={styles.flex}>
-                <Text style={[styles.signatoryLabel, { width: "50%" }]}>
+                <Text
+                    style={[
+                        styles.signatoryLabel,
+                        styles.border,
+                        { width: "50%" },
+                    ]}
+                >
                     Verified by:
                 </Text>
-                <Text style={[styles.signatoryLabel, { width: "50%" }]}>
+                <Text
+                    style={[
+                        styles.signatoryLabel,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "50%" },
+                    ]}
+                >
                     Approved by:
                 </Text>
             </View>
             <View style={styles.flex}>
-                <View style={[styles.cell, { width: "35%" }]}>
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.leftBorder,
+                        styles.bottomBorder,
+                        { width: "35%" },
+                    ]}
+                >
                     <Text style={styles.signatoryName}>
                         {getFullName(gsuHead)}
                     </Text>
                 </View>
-                <View style={[styles.cell, { width: "15%" }]} />
-                <View style={[styles.cell, { width: "35%" }]}>
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "15%" },
+                    ]}
+                />
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "35%" },
+                    ]}
+                >
                     <Text style={styles.signatoryName}>
                         {getFullName(msdHead)}
                     </Text>
                 </View>
-                <View style={[styles.cell, { width: "15%" }]} />
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "15%" },
+                    ]}
+                />
             </View>
             <View style={styles.flex}>
-                <View style={[styles.cell, { width: "35%" }]}>
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.leftBorder,
+                        styles.bottomBorder,
+                        { width: "35%" },
+                    ]}
+                >
                     <Text style={styles.signatoryPosition}>
                         Signature over Printed Name
                     </Text>
@@ -150,10 +280,24 @@ export const Signatories: React.FC<SignatoriesProps> = ({
                         {getPosition(gsuHead)}
                     </Text>
                 </View>
-                <View style={[styles.cell, { width: "15%" }]}>
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "15%" },
+                    ]}
+                >
                     <Text style={styles.signatoryPosition}>Date</Text>
                 </View>
-                <View style={[styles.cell, { width: "35%" }]}>
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "35%" },
+                    ]}
+                >
                     <Text style={styles.signatoryPosition}>
                         Signature over Printed Name
                     </Text>
@@ -161,7 +305,14 @@ export const Signatories: React.FC<SignatoriesProps> = ({
                         {getPosition(msdHead)}
                     </Text>
                 </View>
-                <View style={[styles.cell, { width: "15%" }]}>
+                <View
+                    style={[
+                        styles.cell,
+                        styles.rightBorder,
+                        styles.bottomBorder,
+                        { width: "15%" },
+                    ]}
+                >
                     <Text style={styles.signatoryPosition}>Date</Text>
                 </View>
             </View>

@@ -59,44 +59,45 @@ export default function ActionButtons({ row }: any) {
     return (
         <div className="relative flex justify-start items-center gap-2">
             <div className="hidden md:flex gap-2">
-                <Tooltip content="Edit">
-                    <Button
-                        isIconOnly
-                        size="sm"
-                        variant="light"
-                        onPress={() => onEdit(row)}
-                        color="primary"
-                    >
-                        <Icon name="edit-pen-2" size={20} />
-                    </Button>
-                </Tooltip>
-                {!row.is_draft ? (
-                    <Tooltip content="View more information">
-                        <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            onPress={() => onView(row)}
-                            color="warning"
-                            className={row.form_number ? "" : "hidden"}
-                        >
-                            <Icon name="file-info" size={20} />
-                        </Button>
-                    </Tooltip>
+                {row.is_draft ? (
+                    <>
+                        <Tooltip content="Edit">
+                            <Button
+                                isIconOnly
+                                size="sm"
+                                variant="light"
+                                onPress={() => onEdit(row)}
+                                color="primary"
+                            >
+                                <Icon name="edit-pen-2" size={20} />
+                            </Button>
+                        </Tooltip>
+                        <Tooltip content="Delete">
+                            <Button
+                                isIconOnly
+                                size="sm"
+                                variant="light"
+                                onPress={() => onDelete(row)}
+                                color={!row.is_draft ? "default" : "danger"}
+                                isDisabled={!row.is_draft}
+                                className="disabled:opacity-10"
+                            >
+                                <Icon name="trash" size={20} />
+                            </Button>
+                        </Tooltip>
+                    </>
                 ) : null}
-                <Tooltip content="Delete">
+                {!row.is_draft ? (
                     <Button
-                        isIconOnly
                         size="sm"
-                        variant="light"
-                        onPress={() => onDelete(row)}
-                        color={!row.is_draft ? "default" : "danger"}
-                        isDisabled={!row.is_draft}
-                        className="disabled:opacity-10"
+                        variant="solid"
+                        onPress={() => onView(row)}
+                        color="warning"
+                        className={row.form_number ? "" : "hidden"}
                     >
-                        <Icon name="trash" size={20} />
+                        Details
                     </Button>
-                </Tooltip>
+                ) : null}
             </div>
 
             <div className="block md:hidden">

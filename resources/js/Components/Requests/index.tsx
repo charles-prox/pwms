@@ -22,11 +22,13 @@ const RequestsPage = () => {
         requests = [],
         boxes: savedBoxes = [],
         show_form = false,
+        form_details = null,
     } = usePage<{
         form?: FormProp;
         requests?: Request[];
         boxes?: BoxFormState[];
         show_form?: boolean;
+        form_details?: any;
     }>().props;
     const { setBoxes } = useBoxForm();
     const { getLayoutView } = useLayoutViewContext();
@@ -42,7 +44,7 @@ const RequestsPage = () => {
     }, []);
 
     const renderContent = () => {
-        if (show_form && form) return <FormPreview />;
+        if (show_form && form_details) return <FormPreview />;
 
         if (hasFormAndBoxes) {
             return currentLayout === "grid" ? (
@@ -79,10 +81,28 @@ const RequestsPage = () => {
                             >
                                 <h1 className="text-2xl font-bold">Requests</h1>
                             </BreadcrumbItem>
-                            {form?.form_number && (
+                            {(form?.form_number ||
+                                form_details?.request?.form_number) && (
+                                <BreadcrumbItem
+                                    onPress={() =>
+                                        router.visit(
+                                            "/request/" +
+                                                (form?.form_number ||
+                                                    form_details?.request
+                                                        ?.form_number)
+                                        )
+                                    }
+                                >
+                                    <h1 className="text-2xl font-bold">
+                                        {form?.form_number ||
+                                            form_details?.request?.form_number}
+                                    </h1>
+                                </BreadcrumbItem>
+                            )}
+                            {form_details?.request?.form_number && (
                                 <BreadcrumbItem>
                                     <h1 className="text-2xl font-bold">
-                                        {form.form_number}
+                                        Print Request
                                     </h1>
                                 </BreadcrumbItem>
                             )}

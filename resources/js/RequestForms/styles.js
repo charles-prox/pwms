@@ -32,7 +32,6 @@ export const styles = StyleSheet.create({
     },
     border: {
         border: "1px solid black",
-        padding: 2,
     },
     leftBorder: {
         borderLeft: "1px solid black",
@@ -47,7 +46,6 @@ export const styles = StyleSheet.create({
         borderBottom: "1px solid black",
     },
     cell: {
-        border: "1px solid black",
         padding: 3,
         justifyContent: "center",
         fontSize: 10,
@@ -143,7 +141,7 @@ export const styles = StyleSheet.create({
         backgroundColor: "#fbd4b4",
         fontFamily: "Georgia",
         fontWeight: "bold",
-        fontSize: 10,
+        fontSize: 9,
     },
     signatoryLabel: {
         backgroundColor: "#fbd4b4",
@@ -151,7 +149,6 @@ export const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 9,
         padding: 4,
-        border: "1px solid black",
         textAlign: "left",
     },
     signatoryName: {
@@ -166,13 +163,11 @@ export const styles = StyleSheet.create({
     },
     signCellDate: {
         width: "45%",
-        border: "1px solid black",
         paddingTop: 20,
         textAlign: "center",
     },
     signCellName: {
         width: "55%",
-        border: "1px solid black",
         paddingTop: 20,
         textAlign: "center",
     },
