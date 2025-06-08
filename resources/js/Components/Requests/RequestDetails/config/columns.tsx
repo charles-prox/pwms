@@ -1,5 +1,4 @@
 import { Column } from "@/Layouts/BaseListView";
-import ActionButtons from "./ActionButtons";
 import { BoxDetails, BoxFormState, PriorityLevel } from "@/Utils/types";
 import {
     TableRow,
@@ -15,6 +14,7 @@ import {
     Chip,
 } from "@heroui/react";
 import { toTitleCase } from "@/Utils/helpers";
+import ActionButtons from "../components/ActionButtons";
 
 export const columns: Column<BoxFormState>[] = [
     { label: "BOX CODE", key: "box_code" },

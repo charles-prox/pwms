@@ -9,6 +9,7 @@ class DocumentResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        // dd($this);
         $active = trim($this->rds->active ?? '');
         $storage = trim($this->rds->storage ?? '');
 
@@ -17,7 +18,7 @@ class DocumentResource extends JsonResource
             : ((int) $active + (int) $storage);
 
         return [
-            'id' => $this->id,
+            'id' => $this->rds_id,
             'document_code' => $this->document_code,
             'document_title' => $this->rds->title_description ?? null,
             'rds_number' => "RDS-" . $this->rds->module . " #" . $this->rds->item_no,

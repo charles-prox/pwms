@@ -136,4 +136,29 @@ class RequestsController extends Controller
             'message' => 'Request deleted successfully.',
         ]);
     }
+
+    public function uploadPdf(Request $request)
+    {
+        $request->validate([
+            'pdf' => 'required|file|mimes:pdf',
+            'request_id' => 'required|exists:requests,form_number', // Ensure the request_id exists in the requests table
+        ]);
+
+        // Store the uploaded file in the "public" disk
+        $path = $request->file('pdf')->storeAs(
+            'requests/pdfs', // no need to include 'public/' prefix here
+            'request-' . $request->request_id . '.pdf',
+            'public' // specify the disk
+        );
+
+        // This will return: storage/requests/pdfs/request-123.pdf
+        $publicPath = 'storage/' . $path;
+
+        // Save the relative path in DB
+        RequestModel::where('form_number', $request->request_id)->update([
+            'pdf_path' => $publicPath,
+        ]);
+
+        return response()->json(['message' => 'PDF saved successfully.']);
+    }
 }

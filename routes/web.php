@@ -36,6 +36,7 @@ Route::middleware([
     Route::post('/request/{form_number}/save-draft', [RequestsController::class, 'saveDraft']);
     Route::post('/request/{form_number}/print', [RequestsController::class, 'submitRequest']);
     Route::delete('/request/{form_number}', [RequestsController::class, 'destroy']);
+    Route::post('/request/upload-pdf', [RequestsController::class, 'uploadPdf']);
 });
 
 

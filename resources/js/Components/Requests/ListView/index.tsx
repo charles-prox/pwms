@@ -1,8 +1,8 @@
 import React from "react";
-import { columns } from "./columns";
+import { columns } from "./config/columns";
 import BaseListView from "@/Layouts/BaseListView";
 import TableToolbar from "@/Components/TableToolbar";
-import AddNewButton from "./AddNewButton";
+import AddNewButton from "./components/AddNewButton";
 import EmptyState from "@/Components/Shared/EmptyState";
 
 interface RequestsListViewProps {

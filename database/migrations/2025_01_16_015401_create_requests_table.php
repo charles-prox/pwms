@@ -34,6 +34,7 @@ return new class extends Migration
             $table->timestamp('approved_at')->nullable();
             $table->bigInteger('approved_by')->nullable();
             $table->foreign('approved_by')->references('id')->on('users');
+            $table->string('pdf_path')->nullable();
         });
 
         Schema::enableForeignKeyConstraints();

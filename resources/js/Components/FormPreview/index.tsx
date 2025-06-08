@@ -1,12 +1,18 @@
+import React from "react";
 import { PDFLayout } from "@/RequestForms/PDFLayout";
 import RequestForDisposal from "@/RequestForms/RequestForDisposal";
 import RequestForReturn from "@/RequestForms/RequestForReturn";
 import RequestForStorage from "@/RequestForms/RequestForStorage";
 import RequestForWithdrawal from "@/RequestForms/RequestForWithdrawal";
-import { usePage } from "@inertiajs/react";
+import { FormDetails } from "@/Utils/types";
 
-function FormPreview() {
-    const { form_details = {} } = usePage<any>().props;
+interface FormPreviewProps {
+    form_details: FormDetails; // type this properly if you can
+    previewMode: boolean; // optional prop to control preview mode
+}
+
+function FormPreview({ form_details, previewMode }: FormPreviewProps) {
+    // Use passed prop or fallback to Inertia page props
 
     const renderContent = () => {
         switch (form_details.request?.type) {
@@ -28,7 +34,8 @@ function FormPreview() {
 
     return (
         <PDFLayout
-            requestType={form_details.request?.type || "storage"}
+            previewMode={previewMode}
+            requestType={form_details.request.type || "storage"}
             preparedBy={{
                 name:
                     form_details.request.creator.first_name +

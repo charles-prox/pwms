@@ -19,6 +19,7 @@ class Box extends Model
         'priority_level',
         'disposal_date',
         'request_id', // Make sure this is fillable if creating/updating
+        'is_permanent',
     ];
 
     protected $casts = [

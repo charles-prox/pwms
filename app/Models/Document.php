@@ -20,6 +20,7 @@ class Document extends Model
         'status',
         'added_at',
         'added_by',
+        'is_permanent',
     ];
 
     protected $casts = [

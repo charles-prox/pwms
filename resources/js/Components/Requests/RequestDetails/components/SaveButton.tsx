@@ -6,19 +6,22 @@ import {
     DropdownMenu,
     DropdownTrigger,
 } from "@heroui/react";
-import { FormProp } from "@/Utils/types";
+import { FormDetails, FormProp } from "@/Utils/types";
 import { usePage } from "@inertiajs/react";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import { useModalAlert } from "@/Contexts/ModalAlertContext";
 import { router } from "@inertiajs/react";
 import { axiosInstance } from "@/Utils/axios";
 import Icon from "@/Components/Icon";
+import { savePdfToBackend } from "@/Utils/helpers";
+import FormPreview from "@/Components/FormPreview";
 
 const SaveButton = () => {
     const { showAlert } = useModalAlert();
     const { boxes } = useBoxForm();
     const { form = null } = usePage<{
         form?: FormProp;
+        // form_details: FormDetails;
     }>().props;
 
     const handleSaveAction = async (key: Key) => {
@@ -51,28 +54,48 @@ const SaveButton = () => {
                     "Are you sure you want to save and print this request?",
                 mode: "confirm",
                 onConfirm: async () => {
-                    try {
-                        router.post(`/request/${form?.form_number}/print`, {
+                    router.post(
+                        `/request/${form?.form_number}/print`,
+                        {
                             boxes: boxes as any[],
-                        });
-                        showAlert({
-                            type: "success",
-                            title: "Sucess",
-                            message: "You can now print your request.",
-                            autoClose: true,
-                            autoCloseDuration: 3000,
-                        });
-                        // Assuming the response contains a URL to the print view
-                        // window.open(response.data.printUrl, "_blank");
-                    } catch (error) {
-                        console.error("Error printing request:", error);
-                        showAlert({
-                            title: "Error",
-                            message:
-                                "Failed to prepare request for printing. Please try again.",
-                            type: "error",
-                        });
-                    }
+                        },
+                        {
+                            preserveState: true,
+                            preserveScroll: true,
+                            only: ["form_details", "show_form"],
+                            onSuccess: async (response) => {
+                                const form_details = response.props
+                                    .form_details as FormDetails;
+
+                                const pdfElement = (
+                                    <FormPreview
+                                        previewMode={false}
+                                        form_details={form_details}
+                                    />
+                                );
+                                await savePdfToBackend(
+                                    pdfElement,
+                                    form_details.request.form_number
+                                );
+
+                                showAlert({
+                                    type: "success",
+                                    title: "Success",
+                                    message: "You can now print your request.",
+                                    autoClose: true,
+                                    autoCloseDuration: 3000,
+                                });
+                            },
+                            onError: () => {
+                                showAlert({
+                                    title: "Error",
+                                    message:
+                                        "Failed to update request on server.",
+                                    type: "error",
+                                });
+                            },
+                        }
+                    );
                 },
             });
         }

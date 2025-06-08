@@ -1,5 +1,5 @@
 import { Column } from "@/Layouts/BaseListView";
-import ActionButtons from "./ActionButtons";
+import ActionButtons from "../components/ActionButtons";
 
 export const columns: Column<Request>[] = [
     { label: "FORM NO.", key: "form_number", sortable: true },

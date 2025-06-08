@@ -2,17 +2,17 @@ import React from "react";
 import { Head, router, usePage } from "@inertiajs/react";
 import PageLayoutViewController from "@/Components/PageLayoutViewController";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
-import { BoxFormState, FormProp } from "@/Utils/types";
+import { BoxFormState, FormDetails, FormProp } from "@/Utils/types";
 import { useLayoutViewContext } from "@/Contexts/LayoutViewContext";
 import {
     RequestsListView,
     RequestsGridView,
-    RequestDetailsListView,
-    RequestDetailsGridView,
 } from "@/Components/Requests/views";
 import Icon from "../Icon";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import FormPreview from "../FormPreview";
+import RequestDetails from "./RequestDetails";
+import { dd } from "framer-motion/client";
 
 const PAGE_ID = "requests";
 
@@ -28,7 +28,7 @@ const RequestsPage = () => {
         requests?: Request[];
         boxes?: BoxFormState[];
         show_form?: boolean;
-        form_details?: any;
+        form_details?: FormDetails;
     }>().props;
     const { setBoxes } = useBoxForm();
     const { getLayoutView } = useLayoutViewContext();
@@ -44,21 +44,20 @@ const RequestsPage = () => {
     }, []);
 
     const renderContent = () => {
-        if (show_form && form_details) return <FormPreview />;
+        if (show_form && form_details)
+            return (
+                <FormPreview previewMode={true} form_details={form_details} />
+            );
 
         if (hasFormAndBoxes) {
-            return currentLayout === "grid" ? (
-                <RequestDetailsGridView data={[]} loading={false} />
-            ) : (
-                <RequestDetailsListView loading={false} />
-            );
+            return <RequestDetails isDraft={form.is_draft} />;
         }
 
         if (hasRequests) {
             return currentLayout === "grid" ? (
-                <RequestsGridView data={requests} loading={false} />
+                <RequestsGridView data={requests} loading={!!!requests} />
             ) : (
-                <RequestsListView data={requests} loading={false} />
+                <RequestsListView data={requests} loading={!!!requests} />
             );
         }
 

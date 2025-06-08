@@ -1,4 +1,4 @@
-import { DateValue, RangeValue } from "@heroui/react";
+import { ReactNode } from "react";
 
 // ========================
 // NAVIGATION TYPES
@@ -38,18 +38,15 @@ export interface Filter {
 }
 
 export type Officer = {
+    id?: number;
     first_name: string;
     middle_initial?: string | null;
     last_name: string;
     extension?: string | null;
-    positions: {
-        name: string;
-    }[];
-};
-
-export type Office = {
-    id: number;
-    name: string;
+    office_id?: number;
+    created_at?: string;
+    updated_at?: string;
+    positions: Position[];
 };
 
 // ========================
@@ -148,4 +145,114 @@ export interface ModalAlertProps {
     mode?: "alert" | "confirm";
     onConfirm?: () => void | Promise<void>;
     onCancel?: () => void;
+}
+
+// Helper types
+type DateFormatted = {
+    raw: string;
+    formatted: string;
+};
+
+type DocumentDate = {
+    start: DateFormatted;
+    end: DateFormatted;
+    readable: string;
+};
+
+type Position = {
+    id: number;
+    code: string;
+    name: string;
+    created_at: string;
+    updated_at: string;
+    pivot: {
+        officer_id: number;
+        position_id: number;
+    };
+};
+
+export type Office = {
+    id: number;
+    name: string;
+    address?: string;
+    acronym?: string;
+    type?: string;
+    pro_code?: number;
+    parent_id?: number | null;
+    created_at?: string;
+    updated_at?: string;
+};
+
+type Creator = {
+    id: number;
+    hris_id: string;
+    user_id: string;
+    first_name: string;
+    middle_name: string | null;
+    last_name: string;
+    email: string;
+    position: string;
+    contact_no: string;
+    employment_status: string;
+    office_id: number;
+    account_status: string;
+    avatar: string | null;
+    email_verified_at: string | null;
+    current_team_id: number | null;
+    profile_photo_path: string | null;
+    created_at: string;
+    updated_at: string;
+    two_factor_confirmed_at: string | null;
+    profile_photo_url: string;
+    office: Office;
+};
+
+type BoxDetail = {
+    id: number;
+    document_code: string;
+    document_title: string;
+    rds_number: string;
+    retention_period: number | "Permanent";
+    document_date: DocumentDate;
+    disposal_date: DateFormatted | string; // sometimes it's "Permanent"
+};
+
+type Box = {
+    id: number;
+    box_code: string;
+    priority_level: PriorityLevel;
+    remarks: string | null;
+    disposal_date: DateFormatted | string; // sometimes "Permanent"
+    office: Office;
+    box_details: BoxDetail[];
+};
+
+export type RequestType = "storage" | "withdrawal" | "return" | "disposal";
+
+type Request = {
+    type: RequestType;
+    form_number: string;
+    boxes: Box[];
+    creator: Creator;
+};
+
+export interface FormDetails {
+    request: Request;
+    creator_office_head: Officer;
+    gsu_head: Officer;
+    msd_head: Officer;
+    rdc_officer: Officer;
+    [key: string]: any;
+}
+
+export interface PDFDocumentProps {
+    children: ReactNode;
+    requestType: RequestType;
+    formNumber?: string;
+    preparedBy: { name: string; position: string };
+    office: Office;
+    officeHead?: Officer;
+    regionDC?: Officer;
+    msdHead?: Officer;
+    gsuHead: Officer;
 }

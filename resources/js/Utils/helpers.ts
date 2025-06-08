@@ -27,6 +27,8 @@
  * Organize imports logically and group them by type (e.g., third-party libraries, internal modules).
  * -------------------------------------------------------------------------------------------------------------------
  */
+import { pdf } from "@react-pdf/renderer";
+import { axiosInstance } from "./axios";
 
 /**
  * Functions and helper methods used across the application.
@@ -117,6 +119,7 @@ export const getCurrentDate = (): string => {
  *
  * @returns A string representing the Tailwind width class or undefined if no width is specified.
  */
+
 export const getTailwindWidthClass = (maxWidth?: string | number) => {
     if (typeof maxWidth === "number") {
         // Generate Tailwind class for number input
@@ -124,3 +127,38 @@ export const getTailwindWidthClass = (maxWidth?: string | number) => {
     }
     return maxWidth; // Return string as-is or undefined if not provided
 };
+
+/**
+ * Saves a PDF document to the Laravel backend.
+ *
+ * @param documentElement - React element (e.g. <RequestPDFDocument form_details={...} />)
+ * @param requestId - The ID of the request to associate with the PDF
+ */
+export async function savePdfToBackend(
+    documentElement: JSX.Element,
+    requestId: string
+) {
+    const blob = await pdf(documentElement).toBlob();
+
+    const formData = new FormData();
+    formData.append("pdf", blob, `request-${requestId}.pdf`);
+    formData.append("request_id", String(requestId));
+
+    try {
+        const response = await axiosInstance.post(
+            "/request/upload-pdf",
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+
+        // You can access response data if needed
+        console.log("Upload success:", response.data);
+    } catch (error) {
+        console.error("Upload failed:", error);
+        throw new Error("Failed to upload PDF to backend");
+    }
+}
