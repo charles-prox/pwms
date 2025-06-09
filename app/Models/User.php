@@ -82,12 +82,19 @@ class User extends Authenticatable
      */
     protected function defaultProfilePhotoUrl()
     {
-        $name = trim(collect(explode(' ', $this->first_name . ' ' . $this->last_name))->map(function ($segment) {
-            return mb_substr($segment, 0, 1);
-        })->join(' '));
+        // If the user has a profile photo path, return its full URL
+        if ($this->profile_photo_path) {
+            return asset('storage/' . $this->profile_photo_path);
+        }
+
+        // Otherwise, generate initials from first and last name
+        $name = trim(collect(explode(' ', $this->first_name . ' ' . $this->last_name))
+            ->map(fn($segment) => mb_substr($segment, 0, 1))
+            ->join(' '));
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=7F9CF5&background=EBF4FF&format=svg';
     }
+
 
     public function requests()
     {

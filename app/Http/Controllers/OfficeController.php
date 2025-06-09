@@ -40,7 +40,15 @@ class OfficeController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $office = Office::with([
+            'parentOffice:id,name',
+            'region:pro_code,name',
+            'subOffices:id,name,parent_id',
+        ])->findOrFail($id);
+
+        return response()->json(
+            $office
+        );
     }
 
     /**

@@ -93,7 +93,7 @@ export interface BoxDetails {
 export type FormProp = {
     id: number;
     form_number: string;
-    request_type: string;
+    request_type: RequestType;
     status: string;
     is_draft: boolean;
     request_date: string | null; // nullable date string

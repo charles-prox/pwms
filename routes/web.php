@@ -2,6 +2,7 @@
 
 // use Illuminate\Foundation\Application;
 
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\UpdateUserProfileController;
@@ -37,6 +38,8 @@ Route::middleware([
     Route::post('/request/{form_number}/print', [RequestsController::class, 'submitRequest']);
     Route::delete('/request/{form_number}', [RequestsController::class, 'destroy']);
     Route::post('/request/upload-pdf', [RequestsController::class, 'uploadPdf']);
+
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 });
 
 
@@ -50,3 +53,6 @@ Route::get('/login', [LoginController::class, 'create'])
 
 Route::get('/offices', [OfficeController::class, 'index'])
     ->name('offices');
+
+Route::get('/offices/{id}', [OfficeController::class, 'show'])
+    ->name('offices.show');

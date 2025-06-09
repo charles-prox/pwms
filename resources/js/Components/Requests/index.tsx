@@ -30,12 +30,15 @@ const RequestsPage = () => {
         show_form?: boolean;
         form_details?: FormDetails;
     }>().props;
+    const url = usePage().url;
     const { setBoxes } = useBoxForm();
     const { getLayoutView } = useLayoutViewContext();
     const currentLayout = getLayoutView(PAGE_ID) ?? "list"; // Default to list
 
     const hasFormAndBoxes = form && savedBoxes;
     const hasRequests = !!requests;
+
+    console.log(url);
 
     // If saved boxes are present, sync them to local unsaved state
     React.useEffect(() => {
@@ -50,7 +53,7 @@ const RequestsPage = () => {
             );
 
         if (hasFormAndBoxes) {
-            return <RequestDetails isDraft={form.is_draft} />;
+            return <RequestDetails form={form} />;
         }
 
         if (hasRequests) {
@@ -93,8 +96,7 @@ const RequestsPage = () => {
                                     }
                                 >
                                     <h1 className="text-2xl font-bold">
-                                        {form?.form_number ||
-                                            form_details?.request?.form_number}
+                                        Details
                                     </h1>
                                 </BreadcrumbItem>
                             )}
@@ -106,16 +108,17 @@ const RequestsPage = () => {
                                 </BreadcrumbItem>
                             )}
                         </Breadcrumbs>
-                        <p className="text-sm text-gray-500">
-                            {form?.form_number
-                                ? `Last updated ${form.updated_at}`
-                                : "Easily Create and Track Requests"}
-                        </p>
+                        {url === "/request" && (
+                            <p className="text-sm text-gray-500">
+                                Easily Create and Track Requests
+                            </p>
+                        )}
                     </div>
-
-                    <div className="flex gap-2 justify-end items-end flex-wrap">
-                        <PageLayoutViewController pageId={PAGE_ID} />
-                    </div>
+                    {url === "/request" && (
+                        <div className="flex gap-2 justify-end items-end flex-wrap">
+                            <PageLayoutViewController pageId={PAGE_ID} />
+                        </div>
+                    )}
                 </div>
 
                 {/* Main Content */}

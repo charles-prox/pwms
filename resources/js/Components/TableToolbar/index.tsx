@@ -12,6 +12,8 @@ interface TableToolbarProps {
     showFilters?: boolean;
     showPaginationSummary?: boolean;
     createButton?: React.ReactNode;
+    title?: string;
+    description?: string;
 }
 
 const TableToolbar: React.FC<TableToolbarProps> = ({
@@ -22,6 +24,8 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
     showFilters = true,
     showPaginationSummary = true,
     createButton,
+    title,
+    description = "",
 }) => {
     const showToolbar = showSearch || showFilters || createButton;
 
@@ -30,9 +34,19 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
             {showToolbar && (
                 <div
                     className={`flex ${
-                        showSearch ? "justify-between" : "justify-end"
+                        showSearch || !!title
+                            ? "justify-between"
+                            : "justify-end"
                     } gap-3 items-end flex-wrap`}
                 >
+                    {title && (
+                        <div className="flex flex-col">
+                            <h2 className="text-2xl font-semibold">{title}</h2>
+                            <p className="text-sm font-default-600">
+                                {description}
+                            </p>
+                        </div>
+                    )}
                     {showSearch && <Searchbar tableId={tableId} />}
 
                     <div className="flex gap-3 items-center flex-wrap">

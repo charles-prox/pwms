@@ -1,55 +1,31 @@
 import React from "react";
-import { Chip } from "@heroui/chip";
-import { Card, CardBody } from "@heroui/react";
-
-export type RequestStatusType =
-    | "Pending"
-    | "In Review"
-    | "Approved"
-    | "Rejected";
-export type RequestType = "storage" | "withdrawal" | "return" | "disposal";
+import { Button, Card, CardBody, Chip, Divider, Spacer } from "@heroui/react";
 
 interface RequestStatusProps {
     title?: string;
-    status: RequestStatusType;
-    type: RequestType;
+    status: string;
 }
-
-const statusColors: Record<RequestStatusType, string> = {
-    Pending: "bg-gray-100 text-gray-700",
-    "In Review": "bg-yellow-100 text-yellow-700",
-    Approved: "bg-green-100 text-green-700",
-    Rejected: "bg-red-100 text-red-700",
-};
-
-const typeLabels: Record<RequestType, string> = {
-    storage: "Storage",
-    withdrawal: "Withdrawal",
-    return: "Return",
-    disposal: "Disposal",
-};
 
 const RequestStatus: React.FC<RequestStatusProps> = ({
     title = "Request Details",
     status = "Pending",
-    type = "storage",
 }) => {
     return (
-        <Card>
-            <CardBody>
-                <h2 className="text-lg font-semibold">{title}</h2>
-
-                <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">Status:</span>
-                    <Chip>{status}</Chip>
+        <div className="flex justify-between">
+            <div className="flex gap-6 items-start">
+                <div>
+                    <h2 className="text-2xl font-semibold">
+                        Request No.: {title}
+                    </h2>
                 </div>
-
-                <div className="text-sm text-gray-500">
-                    <span className="font-medium">Type:</span>{" "}
-                    {typeLabels[type]}
+                <div className="p-1">
+                    <Chip color="secondary">{status}</Chip>
                 </div>
-            </CardBody>
-        </Card>
+            </div>
+            <div>
+                <Button>View Form</Button>
+            </div>
+        </div>
     );
 };
 

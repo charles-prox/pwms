@@ -3,7 +3,7 @@ import BaseListView from "@/Layouts/BaseListView";
 import TableToolbar from "@/Components/TableToolbar";
 import EmptyState from "@/Components/Shared/EmptyState";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
-import { BoxFormState } from "@/Utils/types";
+import { BoxFormState, FormProp } from "@/Utils/types";
 
 // Placeholder components for the non-draft layout
 import { columns } from "./config/columns";
@@ -16,16 +16,17 @@ import {
     SaveButton,
 } from "./components";
 import NewBoxForm from "@/Components/Forms/NewBoxForm";
+import RequestCreator from "./components/RequestCreator";
 // import RequestPreview from "./RequestPreview";
 
 interface RequestsViewProps {
-    isDraft?: boolean;
+    form: FormProp;
 }
 
-const RequestDetails = ({ isDraft }: RequestsViewProps) => {
+const RequestDetails = ({ form }: RequestsViewProps) => {
     const { boxes } = useBoxForm();
 
-    if (isDraft) {
+    if (form.is_draft) {
         return (
             <BaseListView<BoxFormState>
                 columns={columns}
@@ -40,6 +41,8 @@ const RequestDetails = ({ isDraft }: RequestsViewProps) => {
                 }
                 topContent={
                     <TableToolbar
+                        title={form.form_number}
+                        description={`Last updated: ${form.updated_at}`}
                         tableId="request-details-table"
                         showFilters={false}
                         showSearch={false}
@@ -58,28 +61,28 @@ const RequestDetails = ({ isDraft }: RequestsViewProps) => {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 p-4">
-                {/* Top row: Status and Timeline */}
-                <div className="col-span-1">
-                    <RequestStatus status={"Pending"} type={"storage"} />
-                </div>
-                <div className="col-span-1 xl:col-span-2">
-                    <RequestTimeline />
-                </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 ">
+            {/* Top row: Status and Timeline */}
+            <div className="col-span-3">
+                <RequestStatus title={form.form_number} status={form.status} />
+            </div>
+            {/* Middle row: Request Details */}
+            <div className="flex flex-col col-span-1 xl:col-span-2 gap-4">
+                <RequestSummary items={boxes.length} form={form} />
+                <RequestBoxes boxes={boxes} />
+            </div>
 
-                {/* Middle row: Request Details */}
-                <div className="col-span-1 xl:col-span-3">
-                    <RequestSummary />
-                </div>
+            <div className="flex flex-col gap-4 col-span-1 xl:col-span-1">
+                <RequestCreator userId={form.created_by} />
+                <RequestTimeline
+                    submittedAt="2025-06-01T10:30:00Z"
+                    approvedAt="2025-06-02T15:00:00Z"
+                    completedAt={null}
+                />
+            </div>
 
-                {/* Bottom row: Boxes and Preview */}
-                <div className="col-span-1 md:col-span-1">
-                    <RequestBoxes />
-                </div>
-                <div className="col-span-1 md:col-span-1">
-                    <RequestPreview />
-                </div>
+            <div className="col-span-1 md:col-span-1">
+                <RequestPreview />
             </div>
         </div>
     );
