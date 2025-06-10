@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Request extends Model
 {
@@ -24,8 +25,10 @@ class Request extends Model
         'updated_at',
         'completed_at',
         'approved_at',
+        'pdf_path',
     ];
 
+    // Relationships
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -54,5 +57,22 @@ class Request extends Model
     public function boxes()
     {
         return $this->hasMany(Box::class, 'request_id');
+    }
+
+    public function statusLogs()
+    {
+        return $this->hasMany(RequestStatusLog::class);
+    }
+
+    // Logs a status change and updates the current status
+    public function logStatus(string $status, ?int $userId = null, ?string $remarks = null): void
+    {
+        $this->update(['status' => $status]);
+
+        $this->statusLogs()->create([
+            'status' => $status,
+            'user_id' => $userId ?? Auth::id(),
+            'remarks' => $remarks,
+        ]);
     }
 }

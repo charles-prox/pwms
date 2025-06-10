@@ -24,7 +24,7 @@ const Requestuser: React.FC<RequestuserProps> = ({ userId }) => {
     return (
         <Card className="p-3">
             <CardBody>
-                <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
+                <p className="text-sm uppercase tracking-wide text-muted-foreground mb-4">
                     Request Created By:
                 </p>
                 <div>
@@ -40,14 +40,14 @@ const Requestuser: React.FC<RequestuserProps> = ({ userId }) => {
                 <Spacer y={4} />
                 <div className="space-y-2">
                     {[
-                        { label: "Contact Number", value: user.contact_number },
                         { label: "Email", value: user.email },
-                        { label: "Account Status", value: user.account_status },
+                        { label: "Contact Number", value: user.contact_number },
+                        { label: "HRIS ID", value: user.hris_id },
                         {
                             label: "Employment Status",
                             value: user.employment_status,
                         },
-                        { label: "HRIS ID", value: user.hris_id },
+                        { label: "Account Status", value: user.account_status },
                     ].map((item) => (
                         <div
                             key={item.label}

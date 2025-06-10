@@ -96,7 +96,7 @@ export type FormProp = {
     request_type: RequestType;
     status: string;
     is_draft: boolean;
-    request_date: string | null; // nullable date string
+    submitted_at: string | null; // nullable date string
     office_id: number;
     created_by: number;
     created_at: string;

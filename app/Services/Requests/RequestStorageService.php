@@ -26,11 +26,10 @@ class RequestStorageService
         } else {
             $requestData->update([
                 'status' => 'pending',
-                'request_date' => now(),
+                'submitted_at' => now(),
                 'office_id' => $user->office_id,
                 'is_draft' => false,
                 'updated_by' => $user->id,
-                'updated_at' => now(),
             ]);
         }
 

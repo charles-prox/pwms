@@ -19,7 +19,7 @@ class RequestResource extends JsonResource
             'request_type' => ucfirst($this->request_type),
             'status' => ucfirst($this->status),
             'is_draft' => $this->is_draft,
-            'request_date' => optional($this->request_date)->format('m/d/Y'),
+            'submitted_at' => optional($this->submitted_at)->format('m/d/Y'),
             'office_id' => $this->office_id,
             'created_by' => $this->created_by,
             'created_at' => optional($this->created_at)->format('m/d/Y'),

@@ -13,20 +13,21 @@ const RegisterForm = () => {
         loading: loadingOffices,
         error: officesError,
     } = useFetch<any[]>(route("offices"));
-    const { data, setData, post, processing, errors, reset } = useForm({
-        hris_id: "",
-        user_id: "",
-        first_name: "",
-        middle_name: "",
-        last_name: "",
-        position: "",
-        contact_no: "",
-        employment_status: "",
-        office_id: "",
-        email: "",
-        password: "",
-        password_confirmation: "",
-    });
+    const { data, setData, post, processing, errors, reset, clearErrors } =
+        useForm({
+            hris_id: "",
+            user_id: "",
+            first_name: "",
+            middle_name: "",
+            last_name: "",
+            position: "",
+            contact_no: "",
+            employment_status: "",
+            office_id: "",
+            email: "",
+            password: "",
+            password_confirmation: "",
+        });
 
     React.useEffect(() => {
         return () => {
@@ -35,6 +36,8 @@ const RegisterForm = () => {
     }, []);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        console.log("sadasdasd");
+
         e.preventDefault();
         post(route("register"));
     };
@@ -49,7 +52,10 @@ const RegisterForm = () => {
                             label="HRIS ID"
                             placeholder="Enter your HRIS ID"
                             value={data.hris_id}
-                            onChange={(e) => setData("hris_id", e.target.value)}
+                            onChange={(e) => {
+                                clearErrors("hris_id");
+                                setData("hris_id", e.target.value);
+                            }}
                             variant="flat"
                             errorMessage={errors.hris_id}
                             isRequired
@@ -59,7 +65,10 @@ const RegisterForm = () => {
                             label="User ID"
                             placeholder="Enter your desired User ID"
                             value={data.user_id}
-                            onChange={(e) => setData("user_id", e.target.value)}
+                            onChange={(e) => {
+                                clearErrors("user_id");
+                                setData("user_id", e.target.value);
+                            }}
                             errorMessage={errors.user_id}
                             variant="flat"
                             isRequired
@@ -76,6 +85,7 @@ const RegisterForm = () => {
                             labelField={"label"}
                             menuTrigger="input"
                             onSelectionChange={(key: string) => {
+                                clearErrors("employment_status");
                                 setData("employment_status", key);
                             }}
                             isClearable={false}
@@ -89,9 +99,10 @@ const RegisterForm = () => {
                             label="Position"
                             placeholder="Enter your current position"
                             value={data.position}
-                            onChange={(e) =>
-                                setData("position", e.target.value)
-                            }
+                            onChange={(e) => {
+                                clearErrors("position");
+                                setData("position", e.target.value);
+                            }}
                             errorMessage={errors.position}
                             variant="flat"
                             isRequired
@@ -111,6 +122,7 @@ const RegisterForm = () => {
                             labelField="name"
                             menuTrigger="input"
                             onSelectionChange={(key: string) => {
+                                clearErrors("office_id");
                                 setData("office_id", key);
                             }}
                             isClearable={false}
@@ -125,9 +137,10 @@ const RegisterForm = () => {
                             label="First Name"
                             placeholder="Enter your first name"
                             value={data.first_name}
-                            onChange={(e) =>
-                                setData("first_name", e.target.value)
-                            }
+                            onChange={(e) => {
+                                clearErrors("first_name");
+                                setData("first_name", e.target.value);
+                            }}
                             errorMessage={errors.first_name}
                             variant="flat"
                             isRequired
@@ -137,9 +150,10 @@ const RegisterForm = () => {
                             label="Middle Name"
                             placeholder="Enter your middle name"
                             value={data.middle_name}
-                            onChange={(e) =>
-                                setData("middle_name", e.target.value)
-                            }
+                            onChange={(e) => {
+                                clearErrors("middle_name");
+                                setData("middle_name", e.target.value);
+                            }}
                             variant="flat"
                             errorMessage={errors.middle_name}
                         />
@@ -148,9 +162,10 @@ const RegisterForm = () => {
                             label="Last Name"
                             placeholder="Enter your last name"
                             value={data.last_name}
-                            onChange={(e) =>
-                                setData("last_name", e.target.value)
-                            }
+                            onChange={(e) => {
+                                clearErrors("last_name");
+                                setData("last_name", e.target.value);
+                            }}
                             variant="flat"
                             errorMessage={errors.last_name}
                             isRequired
@@ -163,7 +178,10 @@ const RegisterForm = () => {
                             name="email"
                             placeholder="Enter your email"
                             value={data.email}
-                            onChange={(e) => setData("email", e.target.value)}
+                            onChange={(e) => {
+                                clearErrors("email");
+                                setData("email", e.target.value);
+                            }}
                             variant="flat"
                             errorMessage={errors.email}
                             isRequired
@@ -173,9 +191,10 @@ const RegisterForm = () => {
                             name="contact_no"
                             placeholder="Enter your contact number"
                             value={data.contact_no}
-                            onChange={(e) =>
-                                setData("contact_no", e.target.value)
-                            }
+                            onChange={(e) => {
+                                clearErrors("contact_no");
+                                setData("contact_no", e.target.value);
+                            }}
                             variant="flat"
                             errorMessage={errors.contact_no}
                             isRequired
@@ -188,9 +207,10 @@ const RegisterForm = () => {
                             label="Password"
                             placeholder="Set your password"
                             value={data.password}
-                            onChange={(e) =>
-                                setData("password", e.target.value)
-                            }
+                            onChange={(e) => {
+                                clearErrors("password");
+                                setData("password", e.target.value);
+                            }}
                             variant="flat"
                             errorMessage={errors.password}
                         />
@@ -199,9 +219,13 @@ const RegisterForm = () => {
                             label="Confirm password"
                             placeholder="Enter your password again"
                             value={data.password_confirmation}
-                            onChange={(e) =>
-                                setData("password_confirmation", e.target.value)
-                            }
+                            onChange={(e) => {
+                                clearErrors("password_confirmation");
+                                setData(
+                                    "password_confirmation",
+                                    e.target.value
+                                );
+                            }}
                             variant="flat"
                             errorMessage={errors.password_confirmation}
                         />

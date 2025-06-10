@@ -12,7 +12,7 @@ import {
     RequestPreview,
     RequestStatus,
     RequestSummary,
-    RequestTimeline,
+    RequestTitle,
     SaveButton,
 } from "./components";
 import NewBoxForm from "@/Components/Forms/NewBoxForm";
@@ -64,7 +64,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 ">
             {/* Top row: Status and Timeline */}
             <div className="col-span-3">
-                <RequestStatus title={form.form_number} status={form.status} />
+                <RequestTitle title={form.form_number} status={form.status} />
             </div>
             {/* Middle row: Request Details */}
             <div className="flex flex-col col-span-1 xl:col-span-2 gap-4">
@@ -74,7 +74,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
 
             <div className="flex flex-col gap-4 col-span-1 xl:col-span-1">
                 <RequestCreator userId={form.created_by} />
-                <RequestTimeline
+                <RequestStatus
                     submittedAt="2025-06-01T10:30:00Z"
                     approvedAt="2025-06-02T15:00:00Z"
                     completedAt={null}

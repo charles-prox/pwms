@@ -1,31 +1,67 @@
+import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
 import React from "react";
-import { Button, Card, CardBody, Chip, Divider, Spacer } from "@heroui/react";
 
 interface RequestStatusProps {
-    title?: string;
-    status: string;
+    submittedAt: string;
+    approvedAt?: string | null;
+    completedAt?: string | null;
 }
 
 const RequestStatus: React.FC<RequestStatusProps> = ({
-    title = "Request Details",
-    status = "Pending",
+    submittedAt,
+    approvedAt,
+    completedAt,
 }) => {
+    const steps = [
+        {
+            label: "Request Submitted",
+            date: submittedAt,
+            status: "done",
+        },
+        {
+            label: "Request Approved",
+            date: approvedAt,
+            status: approvedAt ? "done" : "pending",
+        },
+        {
+            label: "Request Completed",
+            date: completedAt,
+            status: completedAt ? "done" : "pending",
+        },
+    ];
+
     return (
-        <div className="flex justify-between">
-            <div className="flex gap-6 items-start">
-                <div>
-                    <h2 className="text-2xl font-semibold">
-                        Request No.: {title}
-                    </h2>
-                </div>
-                <div className="p-1">
-                    <Chip color="secondary">{status}</Chip>
-                </div>
-            </div>
-            <div>
-                <Button>View Form</Button>
-            </div>
-        </div>
+        <Card className="p-3">
+            <CardBody>
+                <p className="text-sm uppercase tracking-wide text-muted-foreground mb-4">
+                    Status:
+                </p>
+                {steps.map((step, idx) => (
+                    <div key={idx} className="flex items-start">
+                        <div className="flex flex-col items-center mr-4">
+                            <div
+                                className={`w-4 h-4 rounded-full ${
+                                    step.status === "done"
+                                        ? "bg-green-500"
+                                        : "bg-gray-300"
+                                }`}
+                            ></div>
+                            {idx !== steps.length - 1 && (
+                                <div className="w-px h-10 bg-gray-300"></div>
+                            )}
+                        </div>
+                        <div>
+                            <p className="font-medium">{step.label}</p>
+                            <p className="text-sm text-muted-foreground">
+                                {step.date
+                                    ? new Date(step.date).toLocaleString()
+                                    : "—"}
+                            </p>
+                        </div>
+                    </div>
+                ))}
+            </CardBody>
+        </Card>
     );
 };
 

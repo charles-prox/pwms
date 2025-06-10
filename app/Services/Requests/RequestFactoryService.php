@@ -4,7 +4,6 @@ namespace App\Services\Requests;
 
 use App\Models\Request as RequestModel;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class RequestFactoryService
 {
@@ -31,46 +30,43 @@ class RequestFactoryService
 
         $user = Auth::user();
 
+        // Prevent duplicate drafts per office per type
         $existingDraft = RequestModel::where('request_type', $type)
-            ->where('created_by', $user->id)
+            ->where('office_id', $user->office_id)
             ->where('is_draft', true)
             ->first();
 
         if ($existingDraft) {
             return [
                 'success' => false,
-                'message' => 'You already have an existing draft for this request type. Please complete or delete it before creating a new one.',
+                'message' => 'There\'s an existing draft for this request type. Please complete or delete it before creating a new one.',
                 'existing_form_no' => $existingDraft->form_number,
             ];
         }
 
         $prefix = $this->validTypes[$type];
-        $year = Carbon::now()->year;
+        $year = now()->year;
 
-        $latestRequest = RequestModel::where('request_type', $type)
-            ->whereYear('created_at', $year)
-            ->orderBy('id', 'desc')
-            ->first();
+        // Get the latest sequence for this year and type
+        $lastSequence = RequestModel::where('request_type', $type)
+            ->where('form_year', $year)
+            ->orderByDesc('form_sequence')
+            ->value('form_sequence') ?? 0;
 
-        $lastSeries = 0;
-        if ($latestRequest && preg_match('/\d{4}-(\d+)$/', $latestRequest->form_number ?? '', $matches)) {
-            $lastSeries = (int) $matches[1];
-        }
+        $newSequence = $lastSequence + 1;
+        $formNumber = "{$prefix}-{$year}-" . str_pad($newSequence, 3, '0', STR_PAD_LEFT);
 
-        $newSeries = str_pad($lastSeries + 1, 3, '0', STR_PAD_LEFT);
-        $formNumber = "{$prefix}-{$year}-{$newSeries}";
-
-        $request = new RequestModel();
-        $request->request_type = $type;
-        $request->status = 'draft';
-        $request->is_draft = true;
-        $request->form_number = $formNumber;
-        $request->created_by = $user->id;
-        $request->updated_by = $user->id;
-        $request->office_id = $user->office_id ?? null;
-        $request->created_at = now();
-        $request->updated_at = now();
-        $request->save();
+        $request = RequestModel::create([
+            'form_number'   => $formNumber,
+            'request_type'  => $type,
+            'status'        => 'draft',
+            'is_draft'      => true,
+            'created_by'    => $user->id,
+            'updated_by'    => $user->id,
+            'office_id'     => $user->office_id ?? null,
+            'form_year'     => $year,
+            'form_sequence' => $newSequence,
+        ]);
 
         return [
             'success' => true,
