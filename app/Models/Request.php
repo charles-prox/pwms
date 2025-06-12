@@ -26,6 +26,9 @@ class Request extends Model
         'completed_at',
         'approved_at',
         'pdf_path',
+        'form_year',
+        'form_sequence',
+        'submitted_at',
     ];
 
     // Relationships
@@ -61,7 +64,7 @@ class Request extends Model
 
     public function statusLogs()
     {
-        return $this->hasMany(RequestStatusLog::class);
+        return $this->hasMany(RequestStatusLog::class)->latest('created_at');
     }
 
     // Logs a status change and updates the current status
@@ -71,7 +74,7 @@ class Request extends Model
 
         $this->statusLogs()->create([
             'status' => $status,
-            'user_id' => $userId ?? Auth::id(),
+            'updated_by' => $userId ?? Auth::id(),
             'remarks' => $remarks,
         ]);
     }

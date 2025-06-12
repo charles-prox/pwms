@@ -27,6 +27,16 @@ class RequestResource extends JsonResource
             'completed_at' => optional($this->completed_at)->format('m/d/Y'),
             'approved_at' => optional($this->approved_at)->format('m/d/Y'),
             'creator' => $fullName,
+            'status_logs' => $this->whenLoaded('statusLogs', function () {
+                return $this->statusLogs->map(function ($log) {
+                    return [
+                        'status' => $log->status,
+                        'date' => $log->created_at->toIso8601String(),
+                        'remark' => $log->remarks,
+                        'updated_by' => optional($log->updatedBy)->name ?? null,
+                    ];
+                });
+            }),
         ];
     }
 }

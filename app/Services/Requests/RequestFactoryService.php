@@ -55,7 +55,6 @@ class RequestFactoryService
 
         $newSequence = $lastSequence + 1;
         $formNumber = "{$prefix}-{$year}-" . str_pad($newSequence, 3, '0', STR_PAD_LEFT);
-
         $request = RequestModel::create([
             'form_number'   => $formNumber,
             'request_type'  => $type,

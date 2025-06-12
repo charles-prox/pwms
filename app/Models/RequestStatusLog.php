@@ -12,7 +12,7 @@ class RequestStatusLog extends Model
     protected $fillable = [
         'request_id',
         'status',
-        'user_id',
+        'updated_by',
         'remarks',
     ];
 
@@ -22,8 +22,8 @@ class RequestStatusLog extends Model
         return $this->belongsTo(Request::class);
     }
 
-    public function user()
+    public function updatedBy()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

@@ -17,7 +17,6 @@ import {
 } from "./components";
 import NewBoxForm from "@/Components/Forms/NewBoxForm";
 import RequestCreator from "./components/RequestCreator";
-// import RequestPreview from "./RequestPreview";
 
 interface RequestsViewProps {
     form: FormProp;
@@ -75,14 +74,13 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
             <div className="flex flex-col gap-4 col-span-1 xl:col-span-1">
                 <RequestCreator userId={form.created_by} />
                 <RequestStatus
-                    submittedAt="2025-06-01T10:30:00Z"
-                    approvedAt="2025-06-02T15:00:00Z"
-                    completedAt={null}
+                    submittedAt="2025-06-01T08:00:00Z"
+                    rejectedAt="2025-06-01T11:30:00Z"
+                    remarks={{
+                        submitted: "Submitted after office hours.",
+                        rejected: "Missing signatures from approver.",
+                    }}
                 />
-            </div>
-
-            <div className="col-span-1 md:col-span-1">
-                <RequestPreview />
             </div>
         </div>
     );

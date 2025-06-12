@@ -12,7 +12,6 @@ import Icon from "../Icon";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import FormPreview from "../FormPreview";
 import RequestDetails from "./RequestDetails";
-import { dd } from "framer-motion/client";
 
 const PAGE_ID = "requests";
 
