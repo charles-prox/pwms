@@ -25,9 +25,9 @@ class RequestStorageService
             if ($status === 'draft') {
                 $requestData->update([
                     'updated_by' => $user->id,
-                    'updated_at' => now(),
                 ]);
             } else {
+
                 $requestData->update([
                     'status' => 'pending',
                     'submitted_at' => now(),
@@ -36,12 +36,7 @@ class RequestStorageService
                     'updated_by' => $user->id,
                 ]);
 
-                RequestStatusLog::create([
-                    'request_id' => $requestData->id,
-                    'status' => 'pending',
-                    'remarks' => 'Request submitted for review and approval.',
-                    'updated_by' => $user->id,
-                ]);
+                $requestData->logStatus('pending', $user->id, 'Request submitted for review and approval.');
             }
 
             foreach ($request->boxes as $boxData) {

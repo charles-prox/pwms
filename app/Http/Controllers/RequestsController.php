@@ -43,7 +43,9 @@ class RequestsController extends Controller
      */
     public function getFormDetails(string $form_no)
     {
-        $request = RequestModel::where('form_number', $form_no)->first();
+        $request = RequestModel::with(['statusLogs.updatedBy'])
+            ->where('form_number', $form_no)
+            ->first();
 
         if (!$request) {
             return $this->getAllRequests();

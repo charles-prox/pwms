@@ -1,5 +1,5 @@
 import { BoxFormState } from "@/Utils/types";
-import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
+import { Card, CardBody, CardHeader, Divider, Spacer } from "@heroui/react";
 import React from "react";
 
 interface RequestBoxesProps {
@@ -20,78 +20,86 @@ const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes }) => {
             <Divider className="my-2" />
             <CardBody>
                 {boxes.map((box) => (
-                    <div key={box.id}>
-                        <div className="flex justify-between items-start">
-                            <div>
-                                <h3 className="text-md font-semibold">
-                                    Box Code: {box.box_code}
-                                </h3>
-                                {box.priority_level && (
-                                    <p
-                                        className={`text-sm text-${box.priority_level.label.toLowerCase()}-600 font-medium`}
-                                    >
-                                        Priority: {box.priority_level.label}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="text-right text-sm">
-                                <p>
-                                    <span className="font-medium">
-                                        Disposal Date:
-                                    </span>{" "}
-                                    {box.disposal_date === "Permanent"
-                                        ? "Permanent"
-                                        : box.disposal_date?.formatted ?? "N/A"}
-                                </p>
-                            </div>
-                        </div>
-
-                        {box.remarks && (
-                            <p className="mt-2 text-sm italic text-gray-600">
-                                Remarks: {box.remarks}
-                            </p>
-                        )}
-
-                        {/* Documents inside the box */}
-                        {box.box_details.length > 0 && (
-                            <div className="mt-4">
-                                <p className="text-sm font-semibold text-gray-700 mb-2">
-                                    Documents:
-                                </p>
-                                <ul className="space-y-3 pl-4">
-                                    {box.box_details.map((doc) => (
-                                        <li
-                                            key={doc.id}
-                                            className={`border-l-4 border-gray-300 pl-3`}
+                    <>
+                        <div
+                            key={box.id}
+                            className="mb-6 p-4 border border-default-300 rounded-lg"
+                        >
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h3 className="text-md font-semibold">
+                                        Box Code: {box.box_code}
+                                    </h3>
+                                    {box.priority_level && (
+                                        <p
+                                            className={`text-sm text-${box.priority_level.label.toLowerCase()}-600 font-medium`}
                                         >
-                                            <p className="font-medium text-sm">
-                                                {doc.document_title ??
-                                                    "Untitled Document"}
-                                            </p>
-                                            <p className="text-xs text-gray-500">
-                                                RDS No.: {doc.rds_number} |
-                                                Retention:{" "}
-                                                {doc.retention_period}
-                                            </p>
-                                            <p className="text-xs text-gray-500">
-                                                Period:{" "}
-                                                {doc.document_date?.readable ??
-                                                    "N/A"}{" "}
-                                            </p>
-                                            <p className="text-xs text-gray-500">
-                                                Disposal:{" "}
-                                                {doc.disposal_date ===
-                                                "Permanent"
-                                                    ? "Permanent"
-                                                    : doc.disposal_date
-                                                          ?.formatted ?? "N/A"}
-                                            </p>
-                                        </li>
-                                    ))}
-                                </ul>
+                                            Priority: {box.priority_level.label}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="text-right text-sm">
+                                    <p>
+                                        <span className="font-medium">
+                                            Disposal Date:
+                                        </span>{" "}
+                                        {box.disposal_date === "Permanent"
+                                            ? "Permanent"
+                                            : box.disposal_date?.formatted ??
+                                              "N/A"}
+                                    </p>
+                                </div>
                             </div>
-                        )}
-                    </div>
+
+                            {box.remarks && (
+                                <p className="mt-2 text-sm italic text-gray-500">
+                                    Remarks: {box.remarks}
+                                </p>
+                            )}
+
+                            {/* Documents inside the box */}
+                            {box.box_details.length > 0 && (
+                                <div className="mt-4">
+                                    <p className="text-sm font-semibold text-gray-500 mb-2">
+                                        Documents:
+                                    </p>
+                                    <ul className="space-y-3 pl-4">
+                                        {box.box_details.map((doc) => (
+                                            <li
+                                                key={doc.id}
+                                                className={`border-l-4 border-gray-300 pl-3`}
+                                            >
+                                                <p className="font-medium text-sm">
+                                                    {doc.document_title ??
+                                                        "Untitled Document"}
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    RDS No.: {doc.rds_number} |
+                                                    Retention:{" "}
+                                                    {doc.retention_period}
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    Period:{" "}
+                                                    {doc.document_date
+                                                        ?.readable ??
+                                                        "N/A"}{" "}
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    Disposal:{" "}
+                                                    {doc.disposal_date ===
+                                                    "Permanent"
+                                                        ? "Permanent"
+                                                        : doc.disposal_date
+                                                              ?.formatted ??
+                                                          "N/A"}
+                                                </p>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    </>
                 ))}
             </CardBody>
         </Card>

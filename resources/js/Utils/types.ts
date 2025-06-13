@@ -104,6 +104,13 @@ export type FormProp = {
     completed_at: string | null;
     approved_at: string | null;
     creator: string;
+    status_logs: {
+        date: string; // date string
+        status: string; // e.g., "Approved", "Pending", etc.
+        remark?: string; // optional remark
+        updatedBy?: string; // optional name of the user who updated the status
+    }[];
+    [key: string]: any; // Allow additional properties
 };
 
 export interface ProfileFormData {

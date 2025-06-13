@@ -37,8 +37,6 @@ const RequestsPage = () => {
     const hasFormAndBoxes = form && savedBoxes;
     const hasRequests = !!requests;
 
-    console.log(url);
-
     // If saved boxes are present, sync them to local unsaved state
     React.useEffect(() => {
         setBoxes(savedBoxes);

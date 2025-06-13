@@ -73,14 +73,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
 
             <div className="flex flex-col gap-4 col-span-1 xl:col-span-1">
                 <RequestCreator userId={form.created_by} />
-                <RequestStatus
-                    submittedAt="2025-06-01T08:00:00Z"
-                    rejectedAt="2025-06-01T11:30:00Z"
-                    remarks={{
-                        submitted: "Submitted after office hours.",
-                        rejected: "Missing signatures from approver.",
-                    }}
-                />
+                <RequestStatus statusLogs={form.status_logs} />
             </div>
         </div>
     );

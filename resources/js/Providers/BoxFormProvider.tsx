@@ -291,7 +291,6 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const updateBoxDisposalDate = (updatedBoxDetails: BoxDetails[]) => {
         // Check if any disposal_date is the string "Permanent"
-        console.log("Updated Box Details:", updatedBoxDetails);
 
         const hasPermanent = updatedBoxDetails.some(
             (doc) => doc.retention_period === "Permanent"

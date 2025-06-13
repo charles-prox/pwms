@@ -36,8 +36,6 @@ const RegisterForm = () => {
     }, []);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
-        console.log("sadasdasd");
-
         e.preventDefault();
         post(route("register"));
     };

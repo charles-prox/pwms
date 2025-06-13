@@ -31,9 +31,9 @@ class RequestResource extends JsonResource
                 return $this->statusLogs->map(function ($log) {
                     return [
                         'status' => $log->status,
-                        'date' => $log->created_at->toIso8601String(),
+                        'date' => optional($log->created_at)->format('M d, Y'),
                         'remark' => $log->remarks,
-                        'updated_by' => optional($log->updatedBy)->name ?? null,
+                        'updated_by' => optional($log->updatedBy)->full_name ?? null,
                     ];
                 });
             }),

@@ -14,6 +14,12 @@ class RequestStatusLog extends Model
         'status',
         'updated_by',
         'remarks',
+        'created_at',
+    ];
+
+    public $timestamps = false;
+    protected $casts = [
+        'created_at' => 'datetime',
     ];
 
     // Relationships
