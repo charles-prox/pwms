@@ -104,6 +104,7 @@ export type FormProp = {
     completed_at: string | null;
     approved_at: string | null;
     creator: string;
+    pdf_path: string | null; // nullable string for the PDF path
     status_logs: {
         date: string; // date string
         status: string; // e.g., "Approved", "Pending", etc.

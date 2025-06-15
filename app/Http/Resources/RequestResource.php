@@ -27,6 +27,7 @@ class RequestResource extends JsonResource
             'completed_at' => optional($this->completed_at)->format('m/d/Y'),
             'approved_at' => optional($this->approved_at)->format('m/d/Y'),
             'creator' => $fullName,
+            'pdf_path' => url($this->pdf_path),
             'status_logs' => $this->whenLoaded('statusLogs', function () {
                 return $this->statusLogs->map(function ($log) {
                     return [

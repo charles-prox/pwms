@@ -1,5 +1,12 @@
 import { BoxFormState } from "@/Utils/types";
-import { Card, CardBody, CardHeader, Divider, Spacer } from "@heroui/react";
+import {
+    Card,
+    CardBody,
+    CardHeader,
+    Divider,
+    Link,
+    Spacer,
+} from "@heroui/react";
 import React from "react";
 
 interface RequestBoxesProps {
@@ -48,6 +55,14 @@ const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes }) => {
                                             : box.disposal_date?.formatted ??
                                               "N/A"}
                                     </p>
+                                    <Link
+                                        href={"#"}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 text-sm hover:underline inline-block mt-1"
+                                    >
+                                        Print Label
+                                    </Link>
                                 </div>
                             </div>
 

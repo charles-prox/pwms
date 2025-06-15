@@ -63,7 +63,11 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 ">
             {/* Top row: Status and Timeline */}
             <div className="col-span-3">
-                <RequestTitle title={form.form_number} status={form.status} />
+                <RequestTitle
+                    title={form.form_number}
+                    status={form.status}
+                    pdfPath={form.pdf_path || ""}
+                />
             </div>
             {/* Middle row: Request Details */}
             <div className="flex flex-col col-span-1 xl:col-span-2 gap-4">

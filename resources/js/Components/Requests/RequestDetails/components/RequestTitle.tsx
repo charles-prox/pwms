@@ -1,14 +1,24 @@
 import React from "react";
-import { Button, Card, CardBody, Chip, Divider, Spacer } from "@heroui/react";
+import {
+    Button,
+    Card,
+    CardBody,
+    Chip,
+    Divider,
+    Link,
+    Spacer,
+} from "@heroui/react";
 
 interface RequestStatusProps {
     title?: string;
     status: string;
+    pdfPath?: string;
 }
 
 const RequestTitle: React.FC<RequestStatusProps> = ({
     title = "Request Details",
     status = "Pending",
+    pdfPath = "",
 }) => {
     return (
         <div className="flex justify-between">
@@ -23,7 +33,9 @@ const RequestTitle: React.FC<RequestStatusProps> = ({
                 </div>
             </div>
             <div>
-                <Button>View Form</Button>
+                <Button as={Link} href={pdfPath} target="_blank">
+                    View Form
+                </Button>
             </div>
         </div>
     );
