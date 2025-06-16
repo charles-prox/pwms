@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Request as RequestModel;
 use App\Models\Box;
+use App\Models\Office;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use App\Services\Requests\RequestStorageService;
@@ -162,5 +162,11 @@ class RequestsController extends Controller
         ]);
 
         return response()->json(['message' => 'PDF saved successfully.']);
+    }
+
+    public function generateBoxCode(Office $office, RequestStorageService $service)
+    {
+        $code = $service->generateBoxCode($office); // pass necessary data
+        return response()->json(['box_code' => $code]);
     }
 }

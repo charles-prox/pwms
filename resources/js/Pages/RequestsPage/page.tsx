@@ -1,5 +1,5 @@
 // pages/RequestsPage/page.tsx
-import RequestsPage from "@/Components/Requests";
+import RequestsPage from "@/Pages/RequestsPage/RequestViews";
 import { BoxFormProvider } from "@/Providers/BoxFormProvider";
 import { LayoutViewProvider } from "@/Providers/LayoutViewProvider";
 import React from "react";

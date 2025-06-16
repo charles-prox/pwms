@@ -5,7 +5,7 @@ namespace App\Services\Requests;
 use App\Models\Box;
 use App\Models\Document;
 use App\Models\Request as RequestModel;
-use App\Models\RequestStatusLog;
+use Illuminate\Support\Carbon;
 use App\Models\Officer;
 use App\Models\Office;
 use Illuminate\Http\Request;
@@ -133,5 +133,18 @@ class RequestStorageService
             'msd_head' => $msdHead,
             'rdc_officer' => $rdcOfficer,
         ];
+    }
+
+    public static function generateBoxCode(Office $office): string
+    {
+        $year = Carbon::now()->year;
+
+        // Count existing boxes for this office and year
+        $series = Box::where('office_id', $office->id)
+            ->whereYear('created_at', $year)
+            ->count() + 1;
+
+        // Example: GSU-003-2025
+        return sprintf('%s-%03d-%d', strtoupper($office->acronym), $series, $year);
     }
 }

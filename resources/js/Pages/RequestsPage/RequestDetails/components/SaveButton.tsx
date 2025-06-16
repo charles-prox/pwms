@@ -13,8 +13,8 @@ import { useModalAlert } from "@/Contexts/ModalAlertContext";
 import { router } from "@inertiajs/react";
 import { axiosInstance } from "@/Utils/axios";
 import Icon from "@/Components/Icon";
-import { savePdfToBackend } from "@/Utils/helpers";
 import FormPreview from "@/Components/FormPreview";
+import { savePdfToBackend } from "@/Services/pdfService";
 
 const SaveButton = () => {
     const { showAlert } = useModalAlert();

@@ -16,6 +16,10 @@ import { useBoxForm } from "@/Contexts/BoxFormContext";
 import Icon from "@/Components/Icon";
 import { DocumentFormList } from "./DocumentFormList";
 import React from "react";
+import { fetchGeneratedBoxCode } from "@/Services/boxCodeService";
+import { simulateInputEvent } from "@/Utils/helpers";
+import { usePage } from "@inertiajs/react";
+import { FormProp } from "@/Utils/types";
 
 interface ManageBoxDialogProps {
     isEditMode?: boolean;
@@ -36,6 +40,7 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
         resetBoxData,
     } = useBoxForm();
     const { theme } = useTheme();
+    const { form } = usePage<{ form: FormProp }>().props;
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isEditMode, setIsEditMode] = React.useState(false);
 
@@ -79,7 +84,17 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
                     className="hidden sm:flex"
                     color="primary"
                     endContent={<Icon name="plus" size={20} />}
-                    onPress={onOpen}
+                    onPress={async () => {
+                        try {
+                            const boxCode = await fetchGeneratedBoxCode(
+                                form.office_id
+                            );
+                            onBoxCodeChange(simulateInputEvent(boxCode));
+                        } catch (error) {
+                            console.error(error);
+                        }
+                        onOpen();
+                    }}
                 >
                     Add Box
                 </Button>
@@ -105,9 +120,27 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
                                     name="box_code"
                                     placeholder="Enter Box Code"
                                     value={boxData.box_code}
-                                    onChange={onBoxCodeChange}
+                                    // onChange={onBoxCodeChange}
                                     errorMessage={errors.box_code}
+                                    isReadOnly
                                     isRequired
+                                    endContent={
+                                        <Tooltip
+                                            className="text-tiny w-60"
+                                            placement="bottom-end"
+                                            content={
+                                                "Each box code is auto-generated using the office acronym, a sequential number, and the current year (e.g., GSU-001-2025), ensuring standardized and unique identifiers per office."
+                                            }
+                                        >
+                                            <div className="z-50 cursor-help">
+                                                <Icon
+                                                    name="help"
+                                                    size={20}
+                                                    className="opacity-30"
+                                                />
+                                            </div>
+                                        </Tooltip>
+                                    }
                                 />
                                 <Input
                                     label="Priority Level"

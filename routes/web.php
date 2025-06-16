@@ -38,6 +38,7 @@ Route::middleware([
     Route::post('/request/{form_number}/print', [RequestsController::class, 'submitRequest']);
     Route::delete('/request/{form_number}', [RequestsController::class, 'destroy']);
     Route::post('/request/upload-pdf', [RequestsController::class, 'uploadPdf']);
+    Route::get('/requests/generate-box-code/{office}', [RequestsController::class, 'generateBoxCode']);
 
     Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 });

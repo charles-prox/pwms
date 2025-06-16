@@ -1,5 +1,5 @@
 import { Column } from "@/Layouts/BaseListView";
-import { BoxDetails, BoxFormState, PriorityLevel } from "@/Utils/types";
+import { BoxDetails, BoxFormState } from "@/Utils/types";
 import {
     TableRow,
     TableCell,

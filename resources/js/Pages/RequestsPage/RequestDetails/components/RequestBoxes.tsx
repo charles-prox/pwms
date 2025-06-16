@@ -1,19 +1,14 @@
 import { BoxFormState } from "@/Utils/types";
-import {
-    Card,
-    CardBody,
-    CardHeader,
-    Divider,
-    Link,
-    Spacer,
-} from "@heroui/react";
+import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
 import React from "react";
+import BoxLabelViewer from "./BoxLabelViewer";
 
 interface RequestBoxesProps {
     boxes: BoxFormState[];
+    createdBy?: string;
 }
 
-const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes }) => {
+const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes, createdBy }) => {
     if (!boxes || boxes.length === 0) {
         return <p className="text-gray-500">No boxes found.</p>;
     }
@@ -55,19 +50,12 @@ const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes }) => {
                                             : box.disposal_date?.formatted ??
                                               "N/A"}
                                     </p>
-                                    <Link
-                                        href={"#"}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-600 text-sm hover:underline inline-block mt-1"
-                                    >
-                                        Print Label
-                                    </Link>
+                                    <BoxLabelViewer box={box} />
                                 </div>
                             </div>
 
                             {box.remarks && (
-                                <p className="mt-2 text-sm italic text-gray-500">
+                                <p className="whitespace-pre-line mt-2 text-sm italic text-gray-500">
                                     Remarks: {box.remarks}
                                 </p>
                             )}

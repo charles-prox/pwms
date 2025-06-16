@@ -204,7 +204,7 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
                                     label={label}
                                     labelPlacement="outside"
                                     maxWidthClass={"max-w-lg"}
-                                    value={data[id]}
+                                    value={data[id] || " "}
                                     onChange={(e) =>
                                         setData(id, e.target.value)
                                     }

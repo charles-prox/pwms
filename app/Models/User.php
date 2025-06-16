@@ -84,7 +84,7 @@ class User extends Authenticatable
     {
         // If the user has a profile photo path, return its full URL
         if ($this->profile_photo_path) {
-            return asset('storage/' . $this->profile_photo_path);
+            return asset('storage/' . $this->profile_photo_path); //remember to set port in .env in APP_URL
         }
 
         // Otherwise, generate initials from first and last name

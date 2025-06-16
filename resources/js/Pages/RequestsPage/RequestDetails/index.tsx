@@ -9,7 +9,6 @@ import { BoxFormState, FormProp } from "@/Utils/types";
 import { columns } from "./config/columns";
 import {
     RequestBoxes,
-    RequestPreview,
     RequestStatus,
     RequestSummary,
     RequestTitle,
@@ -72,7 +71,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
             {/* Middle row: Request Details */}
             <div className="flex flex-col col-span-1 xl:col-span-2 gap-4">
                 <RequestSummary items={boxes.length} form={form} />
-                <RequestBoxes boxes={boxes} />
+                <RequestBoxes boxes={boxes} createdBy={form.creator} />
             </div>
 
             <div className="flex flex-col gap-4 col-span-1 xl:col-span-1">

@@ -15,7 +15,7 @@ export const PDFLayout: React.FC<PDFLayoutProps> = ({
     const document = <PDFDocument {...pdfDocumentProps} />;
 
     return previewMode ? (
-        <PDFViewer height={innerHeight - 280} showToolbar>
+        <PDFViewer height={innerHeight - 260} showToolbar>
             {document}
         </PDFViewer>
     ) : (

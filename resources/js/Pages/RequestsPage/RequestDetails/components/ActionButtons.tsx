@@ -8,12 +8,12 @@ import {
 } from "@heroui/react";
 import Icon from "@/Components/Icon";
 import { router } from "@inertiajs/react";
-import { useModalAlert } from "@/Contexts/ModalAlertContext";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import NewBoxForm from "@/Components/Forms/NewBoxForm";
+import BoxLabelViewer from "./BoxLabelViewer";
+import { BoxFormState, FormProp } from "@/Utils/types";
 
-export default function ActionButtons({ row }: any) {
-    const { showAlert } = useModalAlert();
+export default function ActionButtons({ row }: { row: BoxFormState }) {
     const { deleteBox } = useBoxForm();
 
     const onEdit = (row: any) => {
@@ -22,7 +22,7 @@ export default function ActionButtons({ row }: any) {
 
     return (
         <div className="relative flex justify-start items-center gap-2">
-            <div className="hidden md:flex gap-2">
+            <div className="hidden md:flex gap-0">
                 <NewBoxForm
                     triggerButton={
                         <Button
@@ -47,6 +47,7 @@ export default function ActionButtons({ row }: any) {
                         <Icon name="trash" size={20} />
                     </Button>
                 </Tooltip>
+                <BoxLabelViewer box={row} trigger="button" />
             </div>
 
             <div className="block md:hidden">

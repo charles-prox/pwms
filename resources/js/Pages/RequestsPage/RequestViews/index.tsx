@@ -7,11 +7,11 @@ import { useLayoutViewContext } from "@/Contexts/LayoutViewContext";
 import {
     RequestsListView,
     RequestsGridView,
-} from "@/Components/Requests/views";
-import Icon from "../Icon";
+} from "@/Pages/RequestsPage/RequestViews/views";
+import Icon from "../../../Components/Icon";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
-import FormPreview from "../FormPreview";
-import RequestDetails from "./RequestDetails";
+import FormPreview from "../../../Components/FormPreview";
+import RequestDetails from "../RequestDetails";
 
 const PAGE_ID = "requests";
 

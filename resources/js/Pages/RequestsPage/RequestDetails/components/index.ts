@@ -5,3 +5,4 @@ export { default as RequestTitle } from "./RequestTitle";
 export { default as RequestSummary } from "./RequestSummary";
 export { default as RequestStatus } from "./RequestStatus";
 export { default as SaveButton } from "./SaveButton";
+export { default as BoxLabelViewer } from "./BoxLabelViewer";

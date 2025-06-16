@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import { BoxFormState, BoxDetails, DateRange, Date } from "@/Utils/types";
+import { BoxFormState, BoxDetails, BoxDateRange } from "@/Utils/types";
 import { DateValue } from "@heroui/react";
 import { RangeValue } from "@react-types/shared";
 
@@ -25,13 +25,13 @@ interface BoxFormContextType {
     addDocument: () => void;
     deleteDocument: (index: number) => void;
     parseDateRange: (
-        dateRange: DateRange | null
+        dateRange: BoxDateRange | null
     ) => RangeValue<DateValue> | null;
     resetBoxes: () => void;
     setBoxes: React.Dispatch<React.SetStateAction<BoxFormState[]>>;
     editBox: (updatedBox: BoxFormState) => void | boolean;
     resetBoxData: () => void;
-    formatDocumentDate: (date: DateRange | null) => string;
+    formatDocumentDate: (date: BoxDateRange | null) => string;
     formatDisposalDate: (date: Date | "Permanent" | null) => string;
 }
 
