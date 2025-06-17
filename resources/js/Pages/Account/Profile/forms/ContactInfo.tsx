@@ -1,4 +1,4 @@
-import Input from "@/Components/Shared/Input";
+import Input from "@/Components/Input";
 import { ProfileFormData } from "@/Utils/types";
 import { Card, CardBody } from "@heroui/react";
 import React from "react";

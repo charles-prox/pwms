@@ -6,32 +6,37 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+
+            // Identity
             $table->string('hris_id', 8)->unique();
-            $table->text('user_id')->unique();
-            $table->text('first_name');
-            $table->text('middle_name')->nullable();
-            $table->text('last_name');
-            $table->text('email');
-            $table->text('position');
-            $table->text('contact_no');
-            $table->text('employment_status');
-            $table->bigInteger('office_id')->nullable();
-            $table->foreign('office_id')->references('id')->on('offices');
+            $table->string('user_id')->unique();
+
+            // Personal Info
+            $table->string('first_name');
+            $table->string('middle_name')->nullable();
+            $table->string('last_name');
+            $table->string('email')->unique(); // typically should be unique
+            $table->string('contact_no');
+            $table->string('employment_status');
+
+            // Relations
+            $table->foreignId('position_id')->nullable()->constrained('positions')->nullOnDelete();
+            $table->foreignId('office_id')->nullable()->constrained('offices');
+
+            // Account
             $table->string('account_status')->default('active');
-            $table->string('avatar')->nullable(); // Changed to string type
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+
+            // Timestamps
             $table->timestamps();
+            $table->softDeletes(); // Soft delete support
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -42,7 +47,7 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
@@ -50,13 +55,10 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

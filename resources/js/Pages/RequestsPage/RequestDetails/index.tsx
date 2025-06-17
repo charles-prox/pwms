@@ -1,7 +1,7 @@
 import React from "react";
 import BaseListView from "@/Layouts/BaseListView";
 import TableToolbar from "@/Components/TableToolbar";
-import EmptyState from "@/Components/Shared/EmptyState";
+import EmptyState from "@/Components/EmptyState";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import { BoxFormState, FormProp } from "@/Utils/types";
 
@@ -52,6 +52,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
                                 <SaveButton />
                             </div>
                         }
+                        itemLabel="request"
                     />
                 }
             />

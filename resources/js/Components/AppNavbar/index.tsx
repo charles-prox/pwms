@@ -126,14 +126,10 @@ const AppNavbar: React.FC = () => {
                                         className="inline-flex items-center rounded-md bg-transparent"
                                     >
                                         <User
-                                            name={`${auth.user.first_name} ${
-                                                auth.user.middle_name
-                                                    ? auth.user.middle_name
-                                                          .charAt(0)
-                                                          .toUpperCase() + ". "
-                                                    : ""
-                                            }${auth.user.last_name}`}
-                                            description={auth.user.position}
+                                            name={`${auth.user.name} `}
+                                            description={
+                                                auth.user.position.name
+                                            }
                                             avatarProps={{
                                                 showFallback: true,
                                                 src: auth.user

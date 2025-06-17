@@ -1,11 +1,11 @@
 import React from "react";
 import { employmentStatus } from "@/Utils/constants";
 import PasswordInput from "@/Components/Shared/PasswordInput";
-import Select from "@/Components/Shared/Select";
+import Select from "@/Components/Select";
 import { useForm } from "@inertiajs/react";
 import { Button } from "@heroui/react";
 import useFetch from "@/Hooks/useFetch";
-import Input from "@/Components/Shared/Input";
+import Input from "@/Components/Input";
 
 const RegisterForm = () => {
     const {
@@ -13,6 +13,11 @@ const RegisterForm = () => {
         loading: loadingOffices,
         error: officesError,
     } = useFetch<any[]>(route("offices"));
+    const {
+        data: positions,
+        loading: loadingPositions,
+        error: positionError,
+    } = useFetch<any[]>(route("positions"));
     const { data, setData, post, processing, errors, reset, clearErrors } =
         useForm({
             hris_id: "",
@@ -20,7 +25,7 @@ const RegisterForm = () => {
             first_name: "",
             middle_name: "",
             last_name: "",
-            position: "",
+            position_id: "",
             contact_no: "",
             employment_status: "",
             office_id: "",
@@ -92,18 +97,28 @@ const RegisterForm = () => {
                         />
                     </div>
                     <div className="flex gap-3">
-                        <Input
-                            name="position"
-                            label="Position"
-                            placeholder="Enter your current position"
-                            value={data.position}
-                            onChange={(e) => {
-                                clearErrors("position");
-                                setData("position", e.target.value);
-                            }}
-                            errorMessage={errors.position}
+                        <Select
+                            autocomplete={true}
                             variant="flat"
+                            name="position_id"
+                            label="Position"
+                            placeholder={
+                                loadingOffices
+                                    ? "Loading positions..."
+                                    : "Enter your current position"
+                            }
+                            items={positions} // Now, offices is guaranteed to be an array
+                            keyField={"id"}
+                            labelField="name"
+                            menuTrigger="input"
+                            onSelectionChange={(key: string) => {
+                                clearErrors("position_id");
+                                setData("position_id", key);
+                            }}
+                            isClearable={false}
+                            errorMessage={errors.position_id || positionError}
                             isRequired
+                            isDisabled={loadingPositions || !!positionError}
                         />
                         <Select
                             autocomplete={true}

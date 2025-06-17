@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RequestsController;
+use App\Http\Controllers\UserController;
 use Inertia\Inertia;
 
 Route::middleware([
@@ -28,9 +29,7 @@ Route::middleware([
     //     return Inertia::render('RequestDisposal');
     // })->name('request.disposal');
 
-    Route::get('/users', function () {
-        return Inertia::render('Users');
-    })->name('users');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
     Route::get('/profile', function () {
         return Inertia::render('Profile');
@@ -39,10 +38,6 @@ Route::middleware([
     Route::get('/reports', function () {
         return Inertia::render('Reports');
     })->name('reports');
-
-    Route::get('/users', function () {
-        return Inertia::render('Users');
-    })->name('users');
 
     Route::get('/offices', function () {
         return Inertia::render('Offices');

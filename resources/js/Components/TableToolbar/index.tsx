@@ -14,6 +14,7 @@ interface TableToolbarProps {
     createButton?: React.ReactNode;
     title?: string;
     description?: string;
+    itemLabel?: string;
 }
 
 const TableToolbar: React.FC<TableToolbarProps> = ({
@@ -26,6 +27,7 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
     createButton,
     title,
     description = "",
+    itemLabel = "item",
 }) => {
     const showToolbar = showSearch || showFilters || createButton;
 
@@ -62,7 +64,11 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
             )}
 
             {showPaginationSummary && (
-                <PaginationSummary tableId={tableId} totalRows={totalRows} />
+                <PaginationSummary
+                    tableId={tableId}
+                    totalRows={totalRows}
+                    itemLabel={itemLabel}
+                />
             )}
         </div>
     );

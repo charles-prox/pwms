@@ -10,6 +10,7 @@ use App\Http\Controllers\RegisterAdminController;
 use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\RDSController;
+use App\Http\Controllers\PositionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -57,3 +58,6 @@ Route::get('/offices', [OfficeController::class, 'index'])
 
 Route::get('/offices/{id}', [OfficeController::class, 'show'])
     ->name('offices.show');
+
+Route::get('/positions', [PositionController::class, 'list'])
+    ->name('positions');

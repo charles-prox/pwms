@@ -2,25 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Request as RequestModel;
+use App\Http\Resources\BoxResource;
+use App\Http\Resources\RequestResource;
 use App\Models\Box;
 use App\Models\Office;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
-use App\Services\Requests\RequestStorageService;
+use App\Models\Request as RequestModel;
 use App\Services\Requests\RequestFactoryService;
-use App\Http\Resources\RequestResource;
-use App\Http\Resources\BoxResource;
-
+use App\Services\Requests\RequestStorageService;
+use App\Services\Requests\RequestApprovalService;
+use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class RequestsController extends Controller
 {
-    public function __construct(protected RequestStorageService $requestStorageService, protected RequestFactoryService $requestFactoryService) {}
-    /**
-     * Create a new blank request based on type and generate a unique form number.
-     */
+    public function __construct(
+        protected RequestStorageService $requestStorageService,
+        protected RequestFactoryService $requestFactoryService,
+        protected RequestApprovalService $requestApprovalService
+    ) {}
+
     public function createBlankRequest(string $type)
     {
         $result = $this->requestFactoryService->createBlankRequest($type);
@@ -38,9 +40,6 @@ class RequestsController extends Controller
         ]);
     }
 
-    /**
-     * Get the details of a specific request form based on type and form number.
-     */
     public function getFormDetails(string $form_no)
     {
         $request = RequestModel::with(['statusLogs.updatedBy'])
@@ -56,18 +55,13 @@ class RequestsController extends Controller
                 ->where('request_id', $request->id)
                 ->get()
         )->toArray(request());
-        // dd($boxes);
+
         return Inertia::render('RequestsPage', [
             'form' => (new RequestResource($request))->toArray(request()),
             'boxes' => $boxes,
         ]);
     }
 
-
-
-    /**
-     * Get all draft requests for the authenticated user's office.
-     */
     public function getAllRequests()
     {
         $user = Auth::user();
@@ -86,87 +80,77 @@ class RequestsController extends Controller
         ]);
     }
 
-
-    public function saveDraft(Request $request, string $form_number)
+    public function saveDraft(HttpRequest $request, string $form_number)
     {
-        DB::beginTransaction();
         try {
-            $this->requestStorageService->saveRequestData($request, $form_number, 'draft');
-            DB::commit();
-
+            DB::transaction(fn() => $this->requestStorageService->saveRequestData($request, $form_number, 'draft'));
             return response()->json(['message' => 'Draft saved successfully']);
         } catch (\Exception $e) {
-            DB::rollBack();
             return response()->json(['error' => 'Failed to save draft', 'details' => $e->getMessage()], 500);
         }
     }
 
-    public function submitRequest(Request $request, string $form_number)
+    public function submitRequest(HttpRequest $request, string $form_number)
     {
-        DB::beginTransaction();
         try {
-            $this->requestStorageService->saveRequestData($request, $form_number, 'submitted');
-            DB::commit();
+            DB::transaction(fn() => $this->requestStorageService->saveRequestData($request, $form_number, 'submitted'));
 
             return Inertia::render('RequestsPage', [
                 'show_form' => true,
                 'form_details' => $this->requestStorageService->getRequestDetailsWithBoxesAndOfficers(
                     RequestModel::where('form_number', $form_number)->value('id')
                 ),
-
             ]);
         } catch (\Exception $e) {
-            DB::rollBack();
             return response()->json(['error' => 'Failed to submit request', 'details' => $e->getMessage()], 500);
         }
     }
 
-
-    public function destroy($form_number)
+    public function destroy(string $form_number)
     {
         $request = RequestModel::where('form_number', $form_number)->first();
 
         if (!$request) {
-            return response()->json([
-                'message' => 'Request not found.',
-            ], 404);
+            return response()->json(['message' => 'Request not found.'], 404);
         }
 
         $request->delete();
 
-        return response()->json([
-            'message' => 'Request deleted successfully.',
-        ]);
+        return response()->json(['message' => 'Request deleted successfully.']);
     }
 
-    public function uploadPdf(Request $request)
+    public function uploadPdf(HttpRequest $request)
     {
         $request->validate([
             'pdf' => 'required|file|mimes:pdf',
-            'request_id' => 'required|exists:requests,form_number', // Ensure the request_id exists in the requests table
+            'request_id' => 'required|exists:requests,form_number',
         ]);
 
-        // Store the uploaded file in the "public" disk
         $path = $request->file('pdf')->storeAs(
-            'requests/pdfs', // no need to include 'public/' prefix here
+            'requests/pdfs',
             'request-' . $request->request_id . '.pdf',
-            'public' // specify the disk
+            'public'
         );
 
-        // This will return: storage/requests/pdfs/request-123.pdf
-        $publicPath = 'storage/' . $path;
-
-        // Save the relative path in DB
         RequestModel::where('form_number', $request->request_id)->update([
-            'pdf_path' => $publicPath,
+            'pdf_path' => 'storage/' . $path,
         ]);
 
         return response()->json(['message' => 'PDF saved successfully.']);
     }
 
-    public function generateBoxCode(Office $office, RequestStorageService $service)
+    public function generateBoxCode(Office $office)
     {
-        $code = $service->generateBoxCode($office); // pass necessary data
-        return response()->json(['box_code' => $code]);
+        return response()->json(['box_code' => $this->requestStorageService->generateBoxCode($office)]);
+    }
+
+    public function approve(HttpRequest $request, string $id)
+    {
+        $requestModel = RequestModel::findOrFail($id);
+        $this->authorize('approve', $requestModel);
+
+        $this->requestApprovalService->approve($requestModel);
+
+        return response()->json(['message' => 'Request approved']);
     }
 }

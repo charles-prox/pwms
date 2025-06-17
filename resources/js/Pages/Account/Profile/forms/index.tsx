@@ -1,5 +1,5 @@
 "use client";
-import Alert from "@/Components/Shared/Alert";
+import Alert from "@/Components/Alert";
 import { useForm, usePage } from "@inertiajs/react";
 import { Divider, Spacer, Button } from "@heroui/react";
 import React, { FormEvent, RefObject } from "react";

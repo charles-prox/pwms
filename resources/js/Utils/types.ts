@@ -241,7 +241,7 @@ type Request = {
     type: RequestType;
     form_number: string;
     boxes: Box[];
-    creator: Creator;
+    creator: UserType;
 };
 
 export interface FormDetails {
@@ -263,4 +263,34 @@ export interface PDFDocumentProps {
     regionDC?: Officer;
     msdHead?: Officer;
     gsuHead: Officer;
+}
+
+export interface UserType {
+    id: number;
+    hris_id: string;
+    user_id: string;
+    first_name: string;
+    middle_name?: string | null;
+    last_name: string;
+    email: string;
+    position_id?: number | null;
+    contact_no: string;
+    pro_code?: string | null; // not in migration, but in $fillable
+    employment_status: string;
+    office_id?: number | null;
+    account_status?: string; // default: 'active'
+    email_verified_at?: string | null;
+    password: string;
+    remember_token?: string | null;
+    current_team_id?: number | null;
+    profile_photo_path?: string | null;
+    profile_photo_url: string; // accessor (appended)
+    full_name: string; // accessor (computed via getFullNameAttribute)
+    created_at: string;
+    updated_at: string;
+
+    // Relationships
+    office?: Office | null;
+    requests?: Request[];
+    position?: Position | null;
 }

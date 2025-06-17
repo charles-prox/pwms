@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique(); // e.g., "chief_msd"
             $table->string('name'); // e.g., "MSD Head", "Regional Document Custodian"
+            $table->string('abbreviation')->nullable();
             $table->timestamps();
         });
     }

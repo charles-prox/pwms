@@ -9,7 +9,7 @@ import {
     TableRow,
     Spinner,
 } from "@heroui/react";
-import EmptyState from "@/Components/Shared/EmptyState";
+import EmptyState from "@/Components/EmptyState";
 import type { ColumnSize } from "@react-types/table";
 
 export interface Column<T> {

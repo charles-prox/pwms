@@ -16,10 +16,12 @@ import {
 import { toTitleCase } from "@/Utils/helpers";
 import Icon from "@/Components/Icon";
 import { usePage } from "@inertiajs/react";
+import useFetch from "@/Hooks/useFetch";
 
 interface LabelProps {
     data: BoxFormState;
     userName?: string;
+    office: string;
 }
 
 const Row: React.FC<{ items: BoxDetails[] }> = ({ items }) => (
@@ -39,7 +41,11 @@ const Row: React.FC<{ items: BoxDetails[] }> = ({ items }) => (
     </>
 );
 
-const BoxLabelPdf: React.FC<LabelProps> = ({ data, userName = "N/A" }) => (
+const BoxLabelPdf: React.FC<LabelProps> = ({
+    data,
+    userName = "N/A",
+    office,
+}) => (
     <PDFViewer
         width={window.innerWidth}
         height={window.innerHeight - 60}
@@ -54,7 +60,7 @@ const BoxLabelPdf: React.FC<LabelProps> = ({ data, userName = "N/A" }) => (
                     <View style={styles.priorityRow}>
                         <Text>Priority Level: </Text>
                         <View style={styles.priorityCode}>
-                            <Text>{data.priority_level?.label || "None"}</Text>
+                            <Text>{data.priority_level?.value || "None"}</Text>
                         </View>
                     </View>
 
@@ -70,9 +76,7 @@ const BoxLabelPdf: React.FC<LabelProps> = ({ data, userName = "N/A" }) => (
                         {/* Department */}
                         <View style={styles.row}>
                             <Text style={styles.rowLabel}>Department: </Text>
-                            <Text style={styles.rowValue}>
-                                {data.office?.name || "N/A"}
-                            </Text>
+                            <Text style={styles.rowValue}>{office}</Text>
                         </View>
 
                         {/* Box Code */}
@@ -162,6 +166,11 @@ interface ViewerProps {
 
 const BoxLabelViewer: React.FC<ViewerProps> = ({ box, trigger = "link" }) => {
     const { form } = usePage<FormProp>().props;
+    const {
+        data: office,
+        loading: loadingOffice,
+        error: officeError,
+    } = useFetch<any>(route("offices.show", { id: form.office_id }));
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     return (
@@ -197,6 +206,7 @@ const BoxLabelViewer: React.FC<ViewerProps> = ({ box, trigger = "link" }) => {
                                 <BoxLabelPdf
                                     data={box}
                                     userName={form.creator}
+                                    office={office.name}
                                 />
                             </ModalBody>
                         </>

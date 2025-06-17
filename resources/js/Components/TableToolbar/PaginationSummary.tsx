@@ -4,9 +4,11 @@ import { useTableOptions } from "@/Contexts/TableOptionsContext";
 const PaginationSummary = ({
     tableId,
     totalRows,
+    itemLabel,
 }: {
     tableId: string;
     totalRows: number;
+    itemLabel: string;
 }) => {
     const { getTableOptions, updateTableOptions } = useTableOptions();
     const tableOptions = getTableOptions(tableId);
@@ -15,7 +17,7 @@ const PaginationSummary = ({
     return (
         <div className="flex justify-between items-center">
             <span className="text-default-400 text-small">
-                Total {totalRows} requests
+                {`Total ${totalRows} ${itemLabel}${totalRows > 1 ? "s" : ""}`}
             </span>
             <label className="flex items-center text-default-400 text-small">
                 Rows per page:

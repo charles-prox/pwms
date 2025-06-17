@@ -9,13 +9,15 @@ class Position extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'code',
-        'name',
-    ];
+    protected $fillable = ['code', 'name', 'abbreviation'];
 
     public function officers()
     {
         return $this->belongsToMany(Officer::class, 'officer_position');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
     }
 }

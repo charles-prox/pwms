@@ -3,7 +3,7 @@ import { url } from "@/Utils/helpers";
 import { router } from "@inertiajs/react";
 import { Avatar, Button, Card, CardBody } from "@heroui/react";
 import Dropzone, { FileRejection } from "react-dropzone";
-import Input from "@/Components/Shared/Input";
+import Input from "@/Components/Input";
 import { useModalAlert } from "@/Contexts/ModalAlertContext";
 import { ProfileFormData } from "@/Utils/types";
 

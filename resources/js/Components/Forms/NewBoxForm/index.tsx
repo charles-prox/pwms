@@ -1,4 +1,4 @@
-import Input from "@/Components/Shared/Input";
+import Input from "@/Components/Input";
 import { useTheme } from "@/Contexts/ThemeContext";
 import {
     Modal,

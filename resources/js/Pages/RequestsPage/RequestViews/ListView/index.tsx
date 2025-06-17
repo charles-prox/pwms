@@ -3,7 +3,7 @@ import { columns } from "./config/columns";
 import BaseListView from "@/Layouts/BaseListView";
 import TableToolbar from "@/Components/TableToolbar";
 import AddNewButton from "./components/AddNewButton";
-import EmptyState from "@/Components/Shared/EmptyState";
+import EmptyState from "@/Components/EmptyState";
 
 interface RequestsListViewProps {
     data: Request[];
@@ -29,6 +29,7 @@ export default function RequestsListView({
                     createButton={
                         <AddNewButton /> /* Assuming you have an AddNewButton component */
                     }
+                    itemLabel="request"
                 />
             }
         />
