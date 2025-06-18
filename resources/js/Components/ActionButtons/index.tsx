@@ -1,4 +1,4 @@
-// Components/Shared/ActionButtons.tsx
+// Components/ActionButtons.tsx
 
 import {
     Button,
@@ -35,7 +35,7 @@ export default function ActionButtons({
 }: ActionButtonsProps) {
     return (
         <div className="relative flex justify-start items-center gap-2">
-            <div className="hidden md:flex gap-2">
+            <div className="hidden md:flex gap-0">
                 {onEdit && (
                     <Tooltip content="Edit">
                         <Button
@@ -64,6 +64,20 @@ export default function ActionButtons({
                         </Button>
                     </Tooltip>
                 )}
+                {!showDetailsButton && onView && (
+                    <Tooltip content="Delete">
+                        <Button
+                            isIconOnly
+                            size="sm"
+                            variant="light"
+                            onPress={onView}
+                            color="secondary"
+                            isDisabled={disabled.delete}
+                        >
+                            <Icon name="eye-open" size={20} />
+                        </Button>
+                    </Tooltip>
+                )}
                 {showDetailsButton && onView && (
                     <Button
                         size="sm"
@@ -85,17 +99,21 @@ export default function ActionButtons({
                         </Button>
                     </DropdownTrigger>
                     <DropdownMenu>
-                        {onView && (
-                            <DropdownItem onPress={onView}>View</DropdownItem>
-                        )}
-                        {onEdit && (
-                            <DropdownItem onPress={onEdit}>Edit</DropdownItem>
-                        )}
-                        {onDelete && (
-                            <DropdownItem onPress={onDelete}>
+                        {onView ? (
+                            <DropdownItem key={"view"} onPress={onView}>
+                                View
+                            </DropdownItem>
+                        ) : null}
+                        {onEdit ? (
+                            <DropdownItem key={"edit"} onPress={onEdit}>
+                                Edit
+                            </DropdownItem>
+                        ) : null}
+                        {onDelete ? (
+                            <DropdownItem key={"delete"} onPress={onDelete}>
                                 Delete
                             </DropdownItem>
-                        )}
+                        ) : null}
                     </DropdownMenu>
                 </Dropdown>
             </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import { employmentStatus } from "@/Utils/constants";
-import PasswordInput from "@/Components/Shared/PasswordInput";
+import PasswordInput from "@/Components/PasswordInput";
 import Select from "@/Components/Select";
 import { useForm } from "@inertiajs/react";
 import { Button } from "@heroui/react";

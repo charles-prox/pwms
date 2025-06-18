@@ -1,3 +1,4 @@
+import ActionButtons from "@/Components/ActionButtons";
 import { Column } from "@/Layouts/BaseListView";
 import { UserType } from "@/Utils/types";
 import { User } from "@heroui/react";
@@ -42,10 +43,14 @@ export const columns: Column<UserType>[] = [
     {
         label: "ACTIONS",
         key: "actions",
-        render: (user: UserType)=> {
+        render: (user: UserType) => {
             return (
-                
-            )
-        }
+                <ActionButtons
+                    onView={() => {}}
+                    onDelete={() => {}}
+                    onEdit={() => {}}
+                />
+            );
+        },
     },
 ];

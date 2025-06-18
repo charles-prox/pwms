@@ -126,7 +126,7 @@ const AppNavbar: React.FC = () => {
                                         className="inline-flex items-center rounded-md bg-transparent"
                                     >
                                         <User
-                                            name={`${auth.user.name} `}
+                                            name={`${auth.user.full_name} `}
                                             description={
                                                 auth.user.position.name
                                             }

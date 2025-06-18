@@ -167,7 +167,7 @@ type DocumentDate = {
     readable: string;
 };
 
-type Position = {
+export type Position = {
     id: number;
     code: string;
     name: string;
@@ -288,9 +288,19 @@ export interface UserType {
     full_name: string; // accessor (computed via getFullNameAttribute)
     created_at: string;
     updated_at: string;
+    role: string;
 
     // Relationships
     office?: Office | null;
     requests?: Request[];
     position?: Position | null;
+}
+
+export interface Role {
+    id: number;
+    name: string;
+    guard_name: string;
+    description: string;
+    created_at: string; // ISO 8601 date string
+    updated_at: string; // ISO 8601 date string
 }

@@ -36,7 +36,12 @@ const NavItems: React.FC<NavItemsProps> = ({
                                 fullWidth
                                 size="md"
                                 radius="sm"
-                                variant={url === item.url ? "flat" : "light"}
+                                variant={
+                                    item.url !== "/" &&
+                                    url.includes(item.url || "")
+                                        ? "flat"
+                                        : "light"
+                                }
                                 color={"primary"}
                                 startContent={item.icon ? item.icon(20) : null}
                                 isIconOnly={sideNavState === "collapse"}

@@ -3,7 +3,7 @@ import React from "react";
 import { useTheme } from "@/Contexts/ThemeContext";
 import Sidebar from "@/Components/SideNavbar";
 import AppNavbar from "@/Components/AppNavbar";
-import Footer from "@/Components/Shared/Footer";
+import Footer from "@/Components/Footer";
 import { TableOptionsProvider } from "@/Providers/TableOptionsProvider";
 
 const AppLayout = ({
@@ -28,7 +28,7 @@ const AppLayout = ({
                     {/* Main Content Area */}
                     <div className={`flex flex-grow flex-col overflow-auto `}>
                         <div
-                            className={`p-10 mx-5 flex-grow bg-gray-900/10 dark:bg-gray-100/10 rounded-lg overflow-auto`}
+                            className={`px-10 pt-5 pb-10 mx-5 flex-grow bg-gray-900/10 dark:bg-gray-100/10 rounded-lg overflow-auto`}
                         >
                             <TableOptionsProvider>
                                 {children}

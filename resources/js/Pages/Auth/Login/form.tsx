@@ -4,7 +4,7 @@ import Input from "@/Components/Input";
 import Alert from "@/Components/Alert";
 import { useForm } from "@inertiajs/react";
 import { UserIdIcon } from "./icons";
-import PasswordInput from "@/Components/Shared/PasswordInput";
+import PasswordInput from "@/Components/PasswordInput";
 
 const LoginForm = () => {
     const { data, setData, post, processing, errors, reset } = useForm<{

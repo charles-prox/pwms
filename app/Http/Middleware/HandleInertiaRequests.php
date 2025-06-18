@@ -40,12 +40,23 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => fn() => $request->user() ? [
                     'id' => $request->user()->id,
-                    'name' => $request->user()->full_name,
+                    'hris_id' => $request->user()->hris_id,
+                    'user_id' => $request->user()->user_id,
+                    'first_name' => $request->user()->first_name,
+                    'middle_name' => $request->user()->middle_name,
+                    'last_name' => $request->user()->last_name,
+                    'full_name' => $request->user()->full_name,
                     'email' => $request->user()->email,
+                    'contact_no' => $request->user()->contact_no,
+                    'employment_status' => $request->user()->employment_status,
+                    'account_status' => $request->user()->account_status,
+                    'office_id' => $request->user()->office_id,
                     'position' => $request->user()->position?->only(['id', 'name', 'abbreviation']),
                     'roles' => $request->user()->getRoleNames(),
-                    'profile_photo_url' => $request->user()->profile_photo_url
+                    'profile_photo_url' => $request->user()->profile_photo_url,
+                    'photo' => null,
                 ] : null,
+
             ],
         ]);
 

@@ -9,7 +9,7 @@ import {
 } from "@heroui/react";
 import { useTheme } from "@/Contexts/ThemeContext";
 import { axiosInstance } from "@/Utils/axios";
-import PasswordInput from "../Shared/PasswordInput";
+import PasswordInput from "../PasswordInput";
 
 // Define types for the props
 interface ConfirmPasswordProps {

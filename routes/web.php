@@ -41,6 +41,8 @@ Route::middleware([
     Route::post('/request/upload-pdf', [RequestsController::class, 'uploadPdf']);
     Route::get('/requests/generate-box-code/{office}', [RequestsController::class, 'generateBoxCode']);
 
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 });
 

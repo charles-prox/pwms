@@ -111,6 +111,7 @@ const Select = <T extends object>({
             ) : (
                 <NextuiSelect
                     label={label}
+                    labelPlacement={labelPlacement}
                     variant={variant}
                     placeholder={placeholder}
                     selectedKeys={selectedKeys}
