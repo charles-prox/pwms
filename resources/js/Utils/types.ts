@@ -52,6 +52,8 @@ export type Officer = {
 // ========================
 // FORM TYPES
 // ========================
+export type FormMode = "view" | "edit" | "create";
+
 export type BoxDate = {
     raw: string | null; // e.g., '2025-03-17T10:00:00Z'
     formatted: string | null; // e.g., 'March 17, 2025'}

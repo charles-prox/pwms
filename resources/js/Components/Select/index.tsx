@@ -33,6 +33,7 @@ const Select = <T extends object>({
     allowsCustomValue = false,
     variant = undefined,
     section = null,
+    isReadOnly = false, // Add isReadOnly prop
 }: SelectProps<T>) => {
     const groupedItems = section
         ? Array.from(items).reduce((acc, item) => {
@@ -79,6 +80,7 @@ const Select = <T extends object>({
                     endContent={endContent}
                     isDisabled={isDisabled}
                     allowsEmptyCollection
+                    isReadOnly={isReadOnly}
                 >
                     {!!section && Object.keys(groupedItems).length > 0
                         ? Object.entries(groupedItems).map(

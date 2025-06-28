@@ -40,8 +40,10 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request, UserService $userService)
     {
-        $userService->create($request->validated());
+        $result = $userService->create($request->validated());
 
-        return redirect()->route('users.index')->with('success', 'User created successfully!');
+        return Inertia::render('Users/Modules/Create', [
+            'response' => $result,
+        ]);
     }
 }

@@ -20,7 +20,7 @@ class UserService
             'middle_name' => $data['middle_name'] ?? null,
             'last_name' => $data['last_name'],
             'email' => $data['email'],
-            'position' => $data['position'],
+            'position_id' => $data['position'],
             'contact_no' => $data['contact_no'] ?? null,
             'employment_status' => $data['employment_status'],
             'office_id' => $data['office_id'],

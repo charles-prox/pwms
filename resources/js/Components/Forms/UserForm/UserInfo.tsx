@@ -5,26 +5,24 @@ import { Avatar, Button, Card, CardBody } from "@heroui/react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import Input from "@/Components/Input";
 import { useModalAlert } from "@/Contexts/ModalAlertContext";
-import { ProfileFormData } from "@/Utils/types";
+import { ProfileFormData, UserType } from "@/Utils/types";
 
 interface UserInfoFormProps {
-    user: any;
-    enableEdit: boolean;
+    user?: UserType;
+    isEditable: boolean;
     setData: (key: string, value: any) => void;
     errors: Partial<Record<keyof ProfileFormData, string>>;
     data: Record<string, any>;
     reset: () => void;
-    setEnableEdit: (value: boolean) => void;
 }
 
 export const UserInfoForm: React.FC<UserInfoFormProps> = ({
     user,
-    enableEdit,
+    isEditable,
     setData,
     errors,
     data,
     reset,
-    setEnableEdit,
 }) => {
     const [dropError, setDropError] = useState<string>("");
     const [fileName, setFileName] = useState<string>("");
@@ -72,7 +70,6 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
                     autoClose: true,
                     autoCloseDuration: 3000,
                 });
-                setEnableEdit(false);
             },
         });
     };
@@ -94,31 +91,33 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
                                 <Avatar
                                     src={
                                         currentPhoto ||
-                                        (user.profile_photo_path
+                                        (user?.profile_photo_path
                                             ? url(user.profile_photo_path)
-                                            : user.profile_photo_url)
+                                            : user?.profile_photo_url)
                                     }
                                     fallback={
-                                        user.first_name[0] + user.last_name[0]
+                                        user
+                                            ? user.first_name[0] +
+                                              user.last_name[0]
+                                            : "U"
                                     }
                                     className={`min-w-36 min-h-36 text-[5rem] ${
-                                        currentPhoto || user.profile_photo_path
+                                        currentPhoto || user?.profile_photo_path
                                             ? "bg-transparent"
                                             : `bg-[#EBF4FF] dark:bg-[#7F9CF5]`
                                     } text-[#7F9CF5] dark:text-[#EBF4FF]`}
                                 />
-                                {enableEdit && (
+
+                                {isEditable && (
                                     <div className="flex flex-col gap-1 items-center">
                                         <Dropzone
-                                            onDrop={(files) =>
-                                                handleFileChange(files)
-                                            }
+                                            onDrop={handleFileChange}
                                             multiple={false}
                                             onDropAccepted={() => {
                                                 setDropError("");
                                             }}
                                             onDropRejected={(
-                                                rejections: FileRejection[]
+                                                _: FileRejection[]
                                             ) => {
                                                 setDropError(
                                                     "The selected file is not a valid image."
@@ -141,8 +140,9 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
                                                         })}
                                                         className={`border-3 border-dashed rounded-md p-5 hover:cursor-pointer ${
                                                             errors?.photo ||
-                                                            (dropError &&
-                                                                "border-red-300")
+                                                            dropError
+                                                                ? "border-red-300"
+                                                                : ""
                                                         }`}
                                                     >
                                                         <input
@@ -154,9 +154,8 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
                                                             to select a file.
                                                         </p>
                                                         <p className="text-sm text-center text-default-500">
-                                                            Accepted formats:
-                                                            JPG, JPEG, PNG. Max
-                                                            file size: 5MB.
+                                                            Accepted: JPG, JPEG,
+                                                            PNG. Max: 5MB.
                                                         </p>
                                                         {fileName && (
                                                             <p className="text-sm text-center text-default-500 pt-2">
@@ -171,16 +170,18 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
                                                             dropError) && (
                                                             <p className="text-xs text-red-500 text-center pt-2">
                                                                 {dropError ||
-                                                                    errors?.photo}
+                                                                    errors.photo}
                                                             </p>
                                                         )}
                                                     </div>
                                                 </div>
                                             )}
                                         </Dropzone>
+
                                         <p className="text-xs text-default-500">
                                             or
                                         </p>
+
                                         <Button
                                             size="sm"
                                             color="danger"
@@ -194,24 +195,44 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
                                 )}
                             </div>
 
+                            {/* Text Inputs */}
                             {[
-                                { id: "first_name", label: "First Name" },
-                                { id: "middle_name", label: "Middle Name" },
-                                { id: "last_name", label: "Last Name" },
-                            ].map(({ id, label }) => (
+                                {
+                                    id: "first_name",
+                                    label: "First Name",
+                                    placeholder: "e.g. Juan",
+                                },
+                                {
+                                    id: "middle_name",
+                                    label: "Middle Name",
+                                    placeholder: "e.g. Santos",
+                                },
+                                {
+                                    id: "last_name",
+                                    label: "Last Name",
+                                    placeholder: "e.g. Dela Cruz",
+                                },
+                                {
+                                    id: "user_id",
+                                    label: "User ID",
+                                    placeholder: "e.g. user123",
+                                },
+                            ].map(({ id, label, placeholder }) => (
                                 <Input
+                                    key={id}
                                     name={id}
                                     label={label}
                                     labelPlacement="outside"
-                                    maxWidthClass={"max-w-lg"}
-                                    value={data[id] || " "}
+                                    placeholder={placeholder}
+                                    maxWidthClass="max-w-lg"
+                                    value={data[id] || ""}
                                     onChange={(e) =>
                                         setData(id, e.target.value)
                                     }
-                                    variant={enableEdit ? "bordered" : "flat"}
+                                    variant={isEditable ? "bordered" : "flat"}
                                     errorMessage={errors[id]}
-                                    isReadOnly={!enableEdit}
-                                    isRequired={enableEdit}
+                                    isReadOnly={!isEditable}
+                                    isRequired={id !== "middle_name"}
                                 />
                             ))}
                         </div>

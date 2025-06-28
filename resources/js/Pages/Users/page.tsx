@@ -18,8 +18,8 @@ const UsersPage = ({ users }: { users: UserType[] }) => {
             </Breadcrumbs>
             <div className="flex flex-col gap-10 ">
                 <div>
-                    <h1 className="text-2xl font-bold">Users Management</h1>
-                    <p className="text-sm text-muted-foreground">
+                    <h1 className="text-xl font-bold">Users Management</h1>
+                    <p className="text-sm text-default-500">
                         View, add, and manage user accounts, positions, and
                         roles across all offices.
                     </p>

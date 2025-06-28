@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class StoreUserRequest extends FormRequest
 {
@@ -12,7 +13,10 @@ class StoreUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        /** @var \App\Models\User|\Spatie\Permission\Traits\HasRoles $user */
+        $user = Auth::user();
+
+        return  Auth::check() && $user->hasRole('super-admin');
     }
 
     /**

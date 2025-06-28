@@ -1,17 +1,35 @@
 import { Head } from "@inertiajs/react";
 import { Button, Spacer } from "@heroui/react";
-import React, { useState } from "react";
-import { ProfileForms } from "./forms";
-import DeleteAccount from "./forms/DeleteAccount";
+import React, { useRef, useState } from "react";
 import { EditIcon, SaveIcon } from "./icons";
+import { FormMode, ProfileFormData, UserType } from "@/Utils/types";
+import { UserForm } from "@/Components/Forms/UserForm";
+import DeleteAccount from "@/Components/Forms/UserForm/DeleteAccount";
 
-const ProfilePage: React.FC = () => {
-    const [enableEdit, setEnableEdit] = useState<boolean>(false);
-    const [onSubmit, setOnSubmit] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
+interface AuthProps {
+    user: UserType;
+}
+
+const ProfilePage = ({ auth }: { auth: AuthProps }) => {
+    const [mode, setMode] = useState<FormMode>("view");
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+    const formRef = useRef<HTMLFormElement>(null);
+
+    const handleSave = () => {
+        if (!isSubmitting) {
+            setIsSubmitting(true);
+            formRef.current?.requestSubmit();
+        }
+    };
+
+    const onSubmitSuccess = () => {
+        setIsSubmitting(false);
+        setMode("view");
+    };
 
     return (
-        <React.Fragment>
+        <>
             <Head title="Profile" />
             <div className="flex flex-col gap-10">
                 <div className="flex justify-between items-end">
@@ -20,23 +38,26 @@ const ProfilePage: React.FC = () => {
                             Profile Management
                         </h1>
                         <p>
-                            Manage Your Personal Information and Account
-                            Settings
+                            Manage your personal information and account
+                            settings
                         </p>
                     </div>
-                    {enableEdit ? (
+                    {mode === "edit" ? (
                         <div className="flex gap-2">
                             <Button
                                 color="danger"
-                                onPress={() => setEnableEdit(false)}
+                                onPress={() => {
+                                    formRef.current?.reset?.(); // only if exposed
+                                    setMode("view");
+                                }}
                             >
                                 Cancel
                             </Button>
                             <Button
                                 color="primary"
-                                onPress={() => setOnSubmit(true)}
                                 startContent={<SaveIcon />}
-                                isLoading={loading}
+                                onPress={handleSave}
+                                isLoading={isSubmitting}
                             >
                                 Save Changes
                             </Button>
@@ -44,26 +65,26 @@ const ProfilePage: React.FC = () => {
                     ) : (
                         <Button
                             color="primary"
-                            onPress={() => setEnableEdit(true)}
                             startContent={<EditIcon />}
+                            onPress={() => setMode("edit")}
                         >
                             Edit Profile
                         </Button>
                     )}
                 </div>
+
                 <Spacer y={1} />
-                <ProfileForms
-                    enableEdit={enableEdit}
-                    setEnableEdit={(state: boolean) => {
-                        setEnableEdit(state);
-                        setOnSubmit(false);
-                    }}
-                    onSubmit={onSubmit}
-                    isProcessing={(state: boolean) => setLoading(state)}
+
+                <UserForm
+                    mode={mode}
+                    user={auth.user} // will default to `auth.user` internally, if implemented that way
+                    onSubmitSuccess={onSubmitSuccess}
+                    formRef={formRef}
                 />
-                <DeleteAccount />
+
+                {mode === "view" && <DeleteAccount />}
             </div>
-        </React.Fragment>
+        </>
     );
 };
 

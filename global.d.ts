@@ -56,6 +56,7 @@ interface SelectProps<T extends object> {
     onInputChange?: (keys: any) => void;
     onKeyDown?: (e: KeyboardEvent) => void;
     allowsCustomValue?: boolean; //
+    isReadOnly?: boolean; // Add isReadOnly prop
 }
 
 type Column = {

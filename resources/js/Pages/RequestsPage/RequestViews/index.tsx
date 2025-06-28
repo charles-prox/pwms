@@ -67,48 +67,42 @@ const RequestsPage = () => {
     return (
         <>
             <Head title="Requests" />
+            <Breadcrumbs
+                className="mb-3"
+                onAction={(key) => router.visit(key as string)}
+            >
+                <BreadcrumbItem key="/">Dashboard</BreadcrumbItem>
+                <BreadcrumbItem isCurrent={url === "/request"} key="/request">
+                    Requests
+                </BreadcrumbItem>
+                {url !== "/request" && (
+                    <BreadcrumbItem isCurrent={url !== "/request"}>
+                        Details
+                    </BreadcrumbItem>
+                )}
+            </Breadcrumbs>
             <div className="flex flex-col gap-5">
                 {/* Header Section */}
                 <div className="flex w-full">
                     <div className="flex-grow">
-                        <Breadcrumbs
-                            size="lg"
-                            separator={<Icon name="chevron-right" size={18} />}
-                        >
-                            <BreadcrumbItem
-                                onPress={() => router.visit("/request")}
-                            >
-                                <h1 className="text-2xl font-bold">Requests</h1>
-                            </BreadcrumbItem>
-                            {(form?.form_number ||
-                                form_details?.request?.form_number) && (
-                                <BreadcrumbItem
-                                    onPress={() =>
-                                        router.visit(
-                                            "/request/" +
-                                                (form?.form_number ||
-                                                    form_details?.request
-                                                        ?.form_number)
-                                        )
-                                    }
-                                >
-                                    <h1 className="text-2xl font-bold">
-                                        Details
-                                    </h1>
-                                </BreadcrumbItem>
-                            )}
-                            {form_details?.request?.form_number && (
-                                <BreadcrumbItem>
-                                    <h1 className="text-2xl font-bold">
-                                        Print Request
-                                    </h1>
-                                </BreadcrumbItem>
-                            )}
-                        </Breadcrumbs>
-                        {url === "/request" && (
-                            <p className="text-sm text-gray-500">
-                                Easily Create and Track Requests
-                            </p>
+                        {url === "/request" ? (
+                            <>
+                                <h1 className="text-xl font-bold">
+                                    Requests Management
+                                </h1>
+                                <p className="text-sm text-gray-500">
+                                    Easily Create and Track Requests
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <h1 className="text-xl font-bold">
+                                    Request Details
+                                </h1>
+                                <p className="text-sm text-gray-500">
+                                    View and Manage Request Details
+                                </p>
+                            </>
                         )}
                     </div>
                     {url === "/request" && (

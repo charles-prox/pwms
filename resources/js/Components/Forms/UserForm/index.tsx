@@ -1,46 +1,80 @@
 "use client";
 
-import { useForm } from "@inertiajs/react";
-import { Divider, Spacer, Button } from "@heroui/react";
-import React, { FormEvent, RefObject, useEffect } from "react";
-import { useModalAlert } from "@/Contexts/ModalAlertContext";
-import { ProfileFormData, UserType } from "@/Utils/types";
+import React, { FormEvent, useEffect, RefObject } from "react";
+import { Divider, Button, Spacer } from "@heroui/react";
 import Alert from "@/Components/Alert";
+import { useModalAlert } from "@/Contexts/ModalAlertContext";
+import { useForm } from "@inertiajs/react";
 import { UserInfoForm } from "./UserInfo";
 import { ContactInfoForm } from "./ContactInfo";
 import { EmploymentDetailsForm } from "./EmploymentDetails";
+import { FormMode, ProfileFormData, UserType } from "@/Utils/types";
 
-interface NewUserFormProps {
+interface UserFormProps {
+    mode: FormMode;
     user?: UserType;
-    enableEdit?: boolean;
-    formRef: RefObject<HTMLFormElement>;
-    form: ReturnType<typeof useForm<ProfileFormData>>;
+    onSubmitSuccess?: () => void;
+    formRef?: RefObject<HTMLFormElement>;
+    submitRoute?: string; // fallback for inertia post route
 }
 
-export const NewUserForm: React.FC<NewUserFormProps> = ({
+export const UserForm: React.FC<UserFormProps> = ({
+    mode,
     user,
-    enableEdit = false,
+    onSubmitSuccess,
     formRef,
-    form,
+    submitRoute,
 }) => {
     const { showAlert } = useModalAlert();
-    const { data, setData, post, errors, reset } = form;
+
+    const { data, setData, post, errors, reset, processing } =
+        useForm<ProfileFormData>({
+            hris_id: "",
+            user_id: "",
+            first_name: "",
+            middle_name: "",
+            last_name: "",
+            email: "",
+            position: "",
+            contact_no: "",
+            employment_status: "",
+            office_id: "",
+            account_status: "",
+            photo: null,
+        });
 
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
 
-        post(route("users.store"), {
+        const routeName =
+            submitRoute ??
+            (mode === "create" ? "users.store" : "account.profile.update");
+
+        post(route(routeName), {
+            preserveState: true,
             preserveScroll: true,
+            only: ["response"],
             onSuccess: () => {
                 reset();
                 showAlert({
                     type: "success",
-                    title: "User Created",
-                    message: "The new user has been added successfully.",
+                    title:
+                        mode === "create" ? "User Created" : "Profile Updated",
+                    message:
+                        mode === "create"
+                            ? "The new user has been added successfully."
+                            : "Your profile changes have been saved successfully!",
                     autoClose: true,
                 });
+
+                if (onSubmitSuccess) {
+                    onSubmitSuccess();
+                }
             },
             onError: () => {
+                if (onSubmitSuccess) {
+                    onSubmitSuccess();
+                }
                 showAlert({
                     type: "error",
                     title: "Error",
@@ -51,6 +85,8 @@ export const NewUserForm: React.FC<NewUserFormProps> = ({
         });
     };
 
+    const isEditable = mode !== "view";
+
     useEffect(() => {
         if (!user) return;
         setData({
@@ -60,12 +96,11 @@ export const NewUserForm: React.FC<NewUserFormProps> = ({
             middle_name: user.middle_name || "",
             last_name: user.last_name || "",
             email: user.email || "",
-            position: user.position?.name || "",
+            position: String(user.position?.id ?? ""),
             contact_no: user.contact_no || "",
             employment_status: user.employment_status || "",
             office_id: String(user.office_id ?? ""),
             account_status: user.account_status || "",
-            role: user.role || "",
             photo: null,
         });
     }, [user]);
@@ -90,7 +125,7 @@ export const NewUserForm: React.FC<NewUserFormProps> = ({
                 <div className="flex flex-col gap-10">
                     <UserInfoForm
                         user={user}
-                        enableEdit={enableEdit}
+                        isEditable={isEditable}
                         setData={setData}
                         data={data}
                         reset={reset}
@@ -100,7 +135,7 @@ export const NewUserForm: React.FC<NewUserFormProps> = ({
                     <Divider />
 
                     <ContactInfoForm
-                        enableEdit={enableEdit}
+                        isEditable={isEditable}
                         setData={setData}
                         data={data}
                         errors={errors}
@@ -109,15 +144,15 @@ export const NewUserForm: React.FC<NewUserFormProps> = ({
                     <Divider />
 
                     <EmploymentDetailsForm
-                        enableEdit={enableEdit}
+                        isEditable={isEditable}
                         setData={setData}
                         data={data}
                         errors={errors}
                     />
 
-                    {enableEdit && (
+                    {isEditable && (
                         <Button type="submit" color="success">
-                            Save Changes
+                            {mode === "create" ? "Create User" : "Save Changes"}
                         </Button>
                     )}
                 </div>

@@ -43,8 +43,8 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
                 >
                     {title && (
                         <div className="flex flex-col">
-                            <h2 className="text-2xl font-semibold">{title}</h2>
-                            <p className="text-sm font-default-600">
+                            <h2 className="text-lg font-semibold">{title}</h2>
+                            <p className="text-tiny font-default-500">
                                 {description}
                             </p>
                         </div>
