@@ -68,6 +68,7 @@ const Select = <T extends object>({
                         },
                     }}
                     defaultSelectedKey={selectedKeys}
+                    selectedKey={selectedKeys}
                     isClearable={isClearable}
                     menuTrigger={menuTrigger}
                     onSelectionChange={onSelectionChange}

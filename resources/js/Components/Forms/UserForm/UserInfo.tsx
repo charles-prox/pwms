@@ -11,6 +11,7 @@ interface UserInfoFormProps {
     user?: UserType;
     isEditable: boolean;
     setData: (key: string, value: any) => void;
+    clearErrors: (key: string) => void;
     errors: Partial<Record<keyof ProfileFormData, string>>;
     data: Record<string, any>;
     reset: () => void;
@@ -20,6 +21,7 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
     user,
     isEditable,
     setData,
+    clearErrors,
     errors,
     data,
     reset,
@@ -226,9 +228,10 @@ export const UserInfoForm: React.FC<UserInfoFormProps> = ({
                                     placeholder={placeholder}
                                     maxWidthClass="max-w-lg"
                                     value={data[id] || ""}
-                                    onChange={(e) =>
-                                        setData(id, e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                        clearErrors(id);
+                                        setData(id, e.target.value);
+                                    }}
                                     variant={isEditable ? "bordered" : "flat"}
                                     errorMessage={errors[id]}
                                     isReadOnly={!isEditable}

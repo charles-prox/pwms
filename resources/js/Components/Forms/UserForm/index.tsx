@@ -14,6 +14,7 @@ interface UserFormProps {
     mode: FormMode;
     user?: UserType;
     onSubmitSuccess?: () => void;
+    onSubmitError?: () => void;
     formRef?: RefObject<HTMLFormElement>;
     submitRoute?: string; // fallback for inertia post route
 }
@@ -22,12 +23,13 @@ export const UserForm: React.FC<UserFormProps> = ({
     mode,
     user,
     onSubmitSuccess,
+    onSubmitError,
     formRef,
     submitRoute,
 }) => {
     const { showAlert } = useModalAlert();
 
-    const { data, setData, post, errors, reset, processing } =
+    const { data, clearErrors, setData, post, errors, reset, processing } =
         useForm<ProfileFormData>({
             hris_id: "",
             user_id: "",
@@ -40,6 +42,7 @@ export const UserForm: React.FC<UserFormProps> = ({
             employment_status: "",
             office_id: "",
             account_status: "",
+            role: "",
             photo: null,
         });
 
@@ -48,33 +51,32 @@ export const UserForm: React.FC<UserFormProps> = ({
 
         const routeName =
             submitRoute ??
-            (mode === "create" ? "users.store" : "account.profile.update");
+            (mode === "create"
+                ? "users.store"
+                : mode === "edit"
+                ? "users.update"
+                : "account.profile.update");
 
-        post(route(routeName), {
+        const payload = {
             preserveState: true,
             preserveScroll: true,
             only: ["response"],
             onSuccess: () => {
-                reset();
+                mode === "create" && reset();
                 showAlert({
                     type: "success",
-                    title:
-                        mode === "create" ? "User Created" : "Profile Updated",
+                    title: mode === "create" ? "User Created" : "User Updated",
                     message:
                         mode === "create"
                             ? "The new user has been added successfully."
-                            : "Your profile changes have been saved successfully!",
+                            : "The user has been updated successfully.",
                     autoClose: true,
                 });
 
-                if (onSubmitSuccess) {
-                    onSubmitSuccess();
-                }
+                if (onSubmitSuccess) onSubmitSuccess();
             },
             onError: () => {
-                if (onSubmitSuccess) {
-                    onSubmitSuccess();
-                }
+                if (onSubmitError) onSubmitError();
                 showAlert({
                     type: "error",
                     title: "Error",
@@ -82,7 +84,13 @@ export const UserForm: React.FC<UserFormProps> = ({
                     autoClose: true,
                 });
             },
-        });
+        };
+
+        if (mode === "edit") {
+            post(route(routeName, user?.id), payload);
+        } else {
+            post(route(routeName), payload);
+        }
     };
 
     const isEditable = mode !== "view";
@@ -100,7 +108,8 @@ export const UserForm: React.FC<UserFormProps> = ({
             contact_no: user.contact_no || "",
             employment_status: user.employment_status || "",
             office_id: String(user.office_id ?? ""),
-            account_status: user.account_status || "",
+            account_status: user.account_status,
+            role: user.roles[0],
             photo: null,
         });
     }, [user]);
@@ -127,6 +136,7 @@ export const UserForm: React.FC<UserFormProps> = ({
                         user={user}
                         isEditable={isEditable}
                         setData={setData}
+                        clearErrors={clearErrors}
                         data={data}
                         reset={reset}
                         errors={errors}
@@ -137,6 +147,7 @@ export const UserForm: React.FC<UserFormProps> = ({
                     <ContactInfoForm
                         isEditable={isEditable}
                         setData={setData}
+                        clearErrors={clearErrors}
                         data={data}
                         errors={errors}
                     />
@@ -146,12 +157,17 @@ export const UserForm: React.FC<UserFormProps> = ({
                     <EmploymentDetailsForm
                         isEditable={isEditable}
                         setData={setData}
+                        clearErrors={clearErrors}
                         data={data}
                         errors={errors}
                     />
 
                     {isEditable && (
-                        <Button type="submit" color="success">
+                        <Button
+                            type="submit"
+                            color="success"
+                            isLoading={processing}
+                        >
                             {mode === "create" ? "Create User" : "Save Changes"}
                         </Button>
                     )}

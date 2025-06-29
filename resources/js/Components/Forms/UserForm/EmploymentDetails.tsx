@@ -3,7 +3,6 @@ import Select from "@/Components/Select";
 import useFetch from "@/Hooks/useFetch";
 import { employmentStatus } from "@/Utils/constants";
 import { toTitleCase } from "@/Utils/helpers";
-// import { employmentStatus } from "@/Utils/constants";
 import { Office, ProfileFormData, Role, Position } from "@/Utils/types";
 import { Card, CardBody, Skeleton, Switch } from "@heroui/react";
 import { usePage } from "@inertiajs/react";
@@ -13,6 +12,7 @@ interface EmploymentDetailsFormProps {
     data: Record<string, any>;
     errors: Partial<Record<keyof ProfileFormData, string>>;
     setData: (field: string, value: string | number) => void;
+    clearErrors: (field: string) => void;
     isEditable: boolean;
 }
 
@@ -20,6 +20,7 @@ export const EmploymentDetailsForm: React.FC<EmploymentDetailsFormProps> = ({
     data,
     errors,
     setData,
+    clearErrors,
     isEditable,
 }) => {
     const {
@@ -54,9 +55,10 @@ export const EmploymentDetailsForm: React.FC<EmploymentDetailsFormProps> = ({
                                 labelPlacement="outside"
                                 placeholder="e.g. 30731022"
                                 value={data.hris_id}
-                                onChange={(e) =>
-                                    setData("hris_id", e.target.value)
-                                }
+                                onChange={(e) => {
+                                    clearErrors("hris_id");
+                                    setData("hris_id", e.target.value);
+                                }}
                                 errorMessage={errors.hris_id}
                                 variant={isEditable ? "bordered" : "flat"}
                                 maxWidthClass="max-w-lg"
@@ -78,6 +80,7 @@ export const EmploymentDetailsForm: React.FC<EmploymentDetailsFormProps> = ({
                                     labelField="name"
                                     menuTrigger="input"
                                     onSelectionChange={(key: string) => {
+                                        clearErrors("office_id");
                                         setData("office_id", key);
                                     }}
                                     isClearable={false}
@@ -103,9 +106,10 @@ export const EmploymentDetailsForm: React.FC<EmploymentDetailsFormProps> = ({
                                     labelField="name"
                                     menuTrigger="input"
                                     selectedKeys={data.position}
-                                    onSelectionChange={(key) =>
-                                        setData("position", key)
-                                    }
+                                    onSelectionChange={(key) => {
+                                        clearErrors("position");
+                                        setData("position", key);
+                                    }}
                                     isClearable={false}
                                     errorMessage={
                                         errors?.position || positionsError
@@ -128,16 +132,9 @@ export const EmploymentDetailsForm: React.FC<EmploymentDetailsFormProps> = ({
                                 keyField="value"
                                 labelField="label"
                                 menuTrigger="input"
-                                selectedKeys={
-                                    employmentStatus.some(
-                                        (item) =>
-                                            item.value ===
-                                            data.employment_status
-                                    )
-                                        ? data.employment_status
-                                        : ""
-                                }
+                                selectedKeys={data.employment_status}
                                 onSelectionChange={(key: string) => {
+                                    clearErrors("employment_status");
                                     setData("employment_status", key);
                                 }}
                                 isClearable={false}
@@ -147,7 +144,7 @@ export const EmploymentDetailsForm: React.FC<EmploymentDetailsFormProps> = ({
                                 isReadOnly={!isEditable}
                             />
 
-                            {roles && roles.length > 0 && (
+                            {!!roles && (
                                 <>
                                     <Select
                                         autocomplete
@@ -160,12 +157,13 @@ export const EmploymentDetailsForm: React.FC<EmploymentDetailsFormProps> = ({
                                         labelField="name"
                                         menuTrigger="input"
                                         selectedKeys={data.role}
-                                        onSelectionChange={(key) =>
-                                            setData("role", key)
-                                        }
+                                        onSelectionChange={(key) => {
+                                            clearErrors("role");
+                                            setData("role", key);
+                                        }}
                                         maxWidthClass="max-w-lg"
                                         isRequired
-                                        errorMessage={errors?.roles}
+                                        errorMessage={errors?.role}
                                         isReadOnly={!isEditable}
                                     />
                                     <div>
@@ -179,22 +177,21 @@ export const EmploymentDetailsForm: React.FC<EmploymentDetailsFormProps> = ({
                                             isSelected={
                                                 data.account_status === "active"
                                             }
-                                            onValueChange={(isSelected) =>
+                                            onValueChange={(isSelected) => {
+                                                console.log(isSelected);
+
                                                 setData(
                                                     "account_status",
                                                     isSelected
                                                         ? "active"
                                                         : "inactive"
-                                                )
-                                            }
+                                                );
+                                            }}
                                             classNames={{
                                                 label: "text-sm",
                                             }}
                                         >
-                                            {toTitleCase(
-                                                data.account_status ||
-                                                    "Inactive"
-                                            )}
+                                            {toTitleCase(data.account_status)}
                                         </Switch>
                                     </div>
                                 </>

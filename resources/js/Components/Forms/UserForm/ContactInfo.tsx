@@ -7,6 +7,7 @@ interface ContactInfoFormProps {
     data: Record<string, any>;
     errors: Partial<Record<keyof ProfileFormData, string>>;
     setData: (field: keyof ProfileFormData, value: string) => void;
+    clearErrors: (key: string) => void;
     isEditable: boolean;
 }
 
@@ -14,6 +15,7 @@ export const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
     data,
     errors,
     setData,
+    clearErrors,
     isEditable,
 }) => {
     return (
@@ -37,9 +39,10 @@ export const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
                                 placeholder="e.g. juan.delacruz@example.com"
                                 maxWidthClass="max-w-lg"
                                 value={data.email}
-                                onChange={(e) =>
-                                    setData("email", e.target.value)
-                                }
+                                onChange={(e) => {
+                                    clearErrors("email");
+                                    setData("email", e.target.value);
+                                }}
                                 variant={isEditable ? "bordered" : "flat"}
                                 errorMessage={errors.email}
                                 isReadOnly={!isEditable}
@@ -53,9 +56,10 @@ export const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
                                 placeholder="e.g. 09171234567"
                                 maxWidthClass="max-w-lg"
                                 value={data.contact_no}
-                                onChange={(e) =>
-                                    setData("contact_no", e.target.value)
-                                }
+                                onChange={(e) => {
+                                    clearErrors("contact_no");
+                                    setData("contact_no", e.target.value);
+                                }}
                                 variant={isEditable ? "bordered" : "flat"}
                                 errorMessage={errors.contact_no}
                                 isReadOnly={!isEditable}

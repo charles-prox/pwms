@@ -45,6 +45,7 @@ Route::middleware([
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
     Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
+    Route::post('/users/{user}/edit', [UserController::class, 'update'])->name('users.update');
 });
 
 

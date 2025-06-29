@@ -129,6 +129,7 @@ export interface ProfileFormData {
     office_id: string;
     account_status: string;
     photo: File | null;
+    role?: string | string[]; // can be a single role or multiple roles
     [key: string]: any;
 }
 
@@ -280,7 +281,7 @@ export interface UserType {
     pro_code?: string | null; // not in migration, but in $fillable
     employment_status: string;
     office_id?: number | null;
-    account_status?: string; // default: 'active'
+    account_status: string; // default: 'active'
     email_verified_at?: string | null;
     password: string;
     remember_token?: string | null;
@@ -290,7 +291,7 @@ export interface UserType {
     full_name: string; // accessor (computed via getFullNameAttribute)
     created_at: string;
     updated_at: string;
-    role: string;
+    roles: string | string[];
 
     // Relationships
     office?: Office | null;

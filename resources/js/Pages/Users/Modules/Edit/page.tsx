@@ -1,12 +1,13 @@
 "use client";
 
-import { Breadcrumbs, BreadcrumbItem, Button, Spacer } from "@heroui/react";
-import { Head, router } from "@inertiajs/react";
+import { Breadcrumbs, BreadcrumbItem, Button, UserProps } from "@heroui/react";
+import { Head, router, usePage } from "@inertiajs/react";
 import { useRef, useState } from "react";
 import Icon from "@/Components/Icon";
 import { UserForm } from "@/Components/Forms/UserForm";
+import { UserType } from "@/Utils/types";
 
-const UserCreate = () => {
+const UserEdit = ({ defaultValues }: { defaultValues: UserType }) => {
     const formRef = useRef<HTMLFormElement>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -17,12 +18,11 @@ const UserCreate = () => {
 
     const handleSuccess = () => {
         setIsSubmitting(false);
-        router.visit(route("users.index"));
     };
 
     return (
         <>
-            <Head title="Users" />
+            <Head title={`Edit User`} />
 
             <Breadcrumbs
                 className="mb-3"
@@ -30,16 +30,15 @@ const UserCreate = () => {
             >
                 <BreadcrumbItem key="/">Dashboard</BreadcrumbItem>
                 <BreadcrumbItem key="/users">Users</BreadcrumbItem>
-                <BreadcrumbItem isCurrent>Add New</BreadcrumbItem>
+                <BreadcrumbItem isCurrent>Edit</BreadcrumbItem>
             </Breadcrumbs>
 
             <div className="flex flex-col gap-10">
                 <div className="flex justify-between">
                     <div>
-                        <h1 className="text-xl font-bold">Add New User</h1>
+                        <h1 className="text-xl font-bold">Edit User</h1>
                         <p className="text-sm text-default-500">
-                            Set up user accounts, assign roles, and manage user
-                            information.
+                            Update user information, roles, and access details.
                         </p>
                     </div>
 
@@ -49,19 +48,19 @@ const UserCreate = () => {
                         isLoading={isSubmitting}
                         onPress={handleSubmit}
                     >
-                        Confirm
+                        Save Changes
                     </Button>
                 </div>
 
                 <UserForm
-                    mode="create"
+                    mode="edit"
                     formRef={formRef}
+                    user={defaultValues}
                     onSubmitSuccess={handleSuccess}
-                    onSubmitError={() => setIsSubmitting(false)}
                 />
             </div>
         </>
     );
 };
 
-export default UserCreate;
+export default UserEdit;

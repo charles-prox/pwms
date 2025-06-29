@@ -2,6 +2,7 @@ import ActionButtons from "@/Components/ActionButtons";
 import { Column } from "@/Layouts/BaseListView";
 import { UserType } from "@/Utils/types";
 import { User } from "@heroui/react";
+import { router } from "@inertiajs/react";
 
 export const columns: Column<UserType>[] = [
     {
@@ -48,7 +49,7 @@ export const columns: Column<UserType>[] = [
                 <ActionButtons
                     onView={() => {}}
                     onDelete={() => {}}
-                    onEdit={() => {}}
+                    onEdit={() => router.visit(route("users.edit", user.id))}
                 />
             );
         },

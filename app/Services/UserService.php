@@ -40,4 +40,34 @@ class UserService
 
         return $user;
     }
+
+    public function update(User $user, array $data): User
+    {
+        // Update basic attributes
+        $user->update([
+            'hris_id'           => $data['hris_id'],
+            'user_id'           => $data['user_id'],
+            'first_name'        => $data['first_name'],
+            'middle_name'       => $data['middle_name'] ?? null,
+            'last_name'         => $data['last_name'],
+            'email'             => $data['email'],
+            'position_id'       => $data['position'],
+            'contact_no'        => $data['contact_no'] ?? null,
+            'employment_status' => $data['employment_status'],
+            'office_id'         => $data['office_id'],
+            'account_status'    => $data['account_status'],
+        ]);
+
+        // Update role
+        if (isset($data['role'])) {
+            $user->syncRoles([$data['role']]);
+        }
+
+        // Replace profile photo if a new one is uploaded
+        if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
+            $user->updateProfilePhoto($data['photo']);
+        }
+
+        return $user;
+    }
 }
