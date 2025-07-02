@@ -1,8 +1,5 @@
 import React from "react";
 import {
-    BoxDispose,
-    BoxReturn,
-    BoxSearch,
     BoxStore,
     DashboardIcon,
     LocationIcon,
@@ -13,6 +10,7 @@ import {
     UsersIcon,
 } from "../icons";
 import { NavItem } from "@/Utils/types";
+import Icon from "@/Components/Icon";
 
 // Define the items array with the NavItem type
 export const items: NavItem[] = [
@@ -30,38 +28,17 @@ export const items: NavItem[] = [
         icon: (size) => <BoxStore width={size} height={size} />,
         url: "/request",
     },
-    // {
-    //     type: "link",
-    //     key: "storage",
-    //     label: "Request Storage",
-    //     icon: (size) => <BoxStore width={size} height={size} />,
-    //     url: "/request/storage",
-    // },
-    // {
-    //     type: "link",
-    //     key: "withdrawal",
-    //     label: "Request Withdrawal",
-    //     icon: (size) => <BoxSearch width={size} height={size} />,
-    //     url: "/request/withdrawal",
-    // },
-    // {
-    //     type: "link",
-    //     key: "return",
-    //     label: "Request Return",
-    //     icon: (size) => <BoxReturn width={size} height={size} />,
-    //     url: "/request/return",
-    // },
-    // {
-    //     type: "link",
-    //     key: "disposal",
-    //     label: "Request Disposal",
-    //     icon: (size) => <BoxDispose width={size} height={size} />,
-    //     url: "/request/disposal",
-    // },
     {
         type: "title",
         key: "admin-tools",
         label: "Admin Tools",
+    },
+    {
+        type: "link",
+        key: "manage-requests",
+        label: "Manage Requests",
+        icon: (size) => <Icon name="manage-files" size={size} />,
+        url: "/manage-requests",
     },
     {
         type: "link",

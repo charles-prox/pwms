@@ -40,6 +40,9 @@ Route::middleware([
     Route::delete('/request/{form_number}', [RequestsController::class, 'destroy']);
     Route::post('/request/upload-pdf', [RequestsController::class, 'uploadPdf']);
     Route::get('/requests/generate-box-code/{office}', [RequestsController::class, 'generateBoxCode']);
+    Route::get('/manage-requests', [RequestsController::class, 'manageRequests'])->name('requests.manage');
+    Route::patch('/requests/{request}/status', [RequestsController::class, 'updateStatus'])
+        ->name('requests.update-status');
 
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');

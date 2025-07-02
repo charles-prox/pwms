@@ -240,7 +240,7 @@ type Box = {
 
 export type RequestType = "storage" | "withdrawal" | "return" | "disposal";
 
-type Request = {
+export type RequestProps = {
     type: RequestType;
     form_number: string;
     boxes: Box[];
@@ -248,7 +248,7 @@ type Request = {
 };
 
 export interface FormDetails {
-    request: Request;
+    request: RequestProps;
     creator_office_head: Officer;
     gsu_head: Officer;
     msd_head: Officer;
@@ -295,7 +295,7 @@ export interface UserType {
 
     // Relationships
     office?: Office | null;
-    requests?: Request[];
+    requests?: RequestProps[];
     position?: Position | null;
 }
 

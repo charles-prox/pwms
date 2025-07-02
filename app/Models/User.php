@@ -24,6 +24,12 @@ class User extends Authenticatable
     use SoftDeletes;
 
     /**
+     * @method bool hasRole(string|array $roles)
+     * @method bool hasAnyRole(string|array $roles)
+     * @method bool hasAllRoles(array $roles)
+     */
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>

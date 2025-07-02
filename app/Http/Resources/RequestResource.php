@@ -38,6 +38,13 @@ class RequestResource extends JsonResource
                     ];
                 });
             }),
+            'office' => $this->whenLoaded('office', function () {
+                return [
+                    'id' => $this->office->id,
+                    'name' => $this->office->name,
+                ];
+            }),
+
         ];
     }
 }

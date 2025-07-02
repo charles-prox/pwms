@@ -15,6 +15,14 @@ use Illuminate\Support\Facades\DB;
 
 class RequestStorageService
 {
+    /**
+     * Save request data including boxes and documents.
+     *
+     * @param Request $request
+     * @param string $form_number
+     * @param string $status
+     * @return void
+     */
     public function saveRequestData(Request $request, string $form_number, string $status = 'draft')
     {
         $user = Auth::user();
@@ -83,7 +91,12 @@ class RequestStorageService
             }
         });
     }
-
+    /**
+     * Get request details along with boxes and officers.
+     *
+     * @param int $requestId
+     * @return array
+     */
     public function getRequestDetailsWithBoxesAndOfficers($requestId)
     {
         $request = RequestModel::with([
@@ -135,16 +148,21 @@ class RequestStorageService
         ];
     }
 
-    public static function generateBoxCode(Office $office): string
+    /**
+     * Generate a unique box code for the given office.
+     *
+     * @param Office $office
+     * @return string
+     */
+    public function generateBoxCode(Office $office, int $addedInFrontend = 0): string
     {
-        $year = Carbon::now()->year;
-
-        // Count existing boxes for this office and year
-        $series = Box::where('office_id', $office->id)
+        $year = now()->year;
+        $latestCount = Box::where('office_id', $office->id)
             ->whereYear('created_at', $year)
-            ->count() + 1;
+            ->count();
 
-        // Example: GSU-003-2025
+        $series = $latestCount + $addedInFrontend + 1;
+
         return sprintf('%s-%03d-%d', strtoupper($office->acronym), $series, $year);
     }
 }

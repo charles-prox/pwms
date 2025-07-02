@@ -23,10 +23,11 @@ const RequestTitle: React.FC<RequestStatusProps> = ({
     return (
         <div className="flex justify-between">
             <div className="flex gap-6 items-start">
-                <div>
-                    <h2 className="text-2xl font-semibold">
-                        Request No.: {title}
+                <div className="flex gap-2">
+                    <h2 className="text-2xl font-semibold text-default-600">
+                        Request No.:
                     </h2>
+                    <h2 className="text-2xl font-semibold ">{title}</h2>
                 </div>
                 <div className="p-1">
                     <Chip color="secondary">{status}</Chip>

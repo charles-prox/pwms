@@ -139,12 +139,13 @@ class RequestsController extends Controller
         return response()->json(['message' => 'PDF saved successfully.']);
     }
 
-    public function generateBoxCode(Office $office)
+    public function generateBoxCode(HttpRequest $request, Office $office)
     {
-        return response()->json(['box_code' => $this->requestStorageService->generateBoxCode($office)]);
+        $existing = (int) $request->get('existingCount', 0);
+        return response()->json(['box_code' => $this->requestStorageService->generateBoxCode($office, $existing)]);
     }
 
-    public function approve(HttpRequest $request, string $id)
+    public function approve(string $id)
     {
         $requestModel = RequestModel::findOrFail($id);
         $this->authorize('approve', $requestModel);
@@ -152,5 +153,58 @@ class RequestsController extends Controller
         $this->requestApprovalService->approve($requestModel);
 
         return response()->json(['message' => 'Request approved']);
+    }
+
+    public function manageRequests()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        // Allow only super-admin and regional-record-custodian
+        if (!$user->hasAnyRole(['super-admin', 'regional-record-custodian'])) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        $requests = RequestModel::with(['creator', 'office'])
+            ->where('status', 'pending')
+            ->where('is_draft', '!=', true)
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return Inertia::render('ManageRequests', [
+            'pendingRequests' => RequestResource::collection($requests)->toArray(request()),
+        ]);
+    }
+
+    public function updateStatus(HttpRequest $request, RequestModel $requestModel)
+    {
+        // Authorization: Allow only super-admin or RRC
+        if (!Auth::user()->hasAnyRole(['super-admin', 'regional-record-custodian'])) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        $validated = $request->validate([
+            'status' => 'required|string|in:approved,rejected',
+            'remarks' => 'nullable|string|max:1000',
+        ]);
+
+        // Update the request record
+        $requestModel->update([
+            'status' => $validated['status'],
+            'updated_by' => Auth::id(),
+        ]);
+
+        // Optional: Create a status log if your system tracks history
+        $requestModel->statusLogs()->create([
+            'status' => $validated['status'],
+            'remarks' => $validated['remarks'],
+            'updated_by' => Auth::id(),
+        ]);
+
+        return response()->json([
+            'message' => 'Request status updated successfully.',
+        ]);
     }
 }

@@ -29,6 +29,7 @@ interface ManageBoxDialogProps {
 
 const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
     const {
+        boxes,
         boxData,
         setBoxData,
         errors,
@@ -87,8 +88,12 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
                     onPress={async () => {
                         try {
                             const boxCode = await fetchGeneratedBoxCode(
-                                form.office_id
+                                form.office_id,
+                                boxes.length
                             );
+
+                            console.log("Generated Box Code:", boxCode);
+
                             onBoxCodeChange(simulateInputEvent(boxCode));
                         } catch (error) {
                             console.error(error);
