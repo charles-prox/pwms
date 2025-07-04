@@ -17,6 +17,7 @@ import {
 import NewBoxForm from "@/Components/Forms/NewBoxForm";
 import RequestCreator from "./components/RequestCreator";
 import WithdrawalForm from "@/Components/Forms/WithdrawalForm";
+import { withdrawalColumns } from "./config/withdrawalColumns";
 
 interface RequestsViewProps {
     form: FormProp;
@@ -25,10 +26,21 @@ interface RequestsViewProps {
 const RequestDetails = ({ form }: RequestsViewProps) => {
     const { boxes } = useBoxForm();
 
+    const getColumns = () => {
+        switch (form.request_type) {
+            case "Storage":
+                return storageColumns;
+            case "Withdrawal":
+                return withdrawalColumns;
+            default:
+                return storageColumns; // Fallback
+        }
+    };
+
     if (form.is_draft) {
         return (
             <BaseListView<BoxFormState>
-                columns={storageColumns}
+                columns={getColumns()}
                 data={boxes}
                 loading={!!!boxes}
                 emptyContent={
@@ -46,7 +58,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
                         showFilters={false}
                         showSearch={false}
                         totalRows={boxes.length}
-                        columns={storageColumns}
+                        columns={getColumns()}
                         createButton={
                             <div className="flex items-center gap-2">
                                 {form.request_type === "Storage" && (

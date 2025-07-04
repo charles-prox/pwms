@@ -2,7 +2,7 @@ import { Column } from "@/Layouts/BaseListView";
 import { BoxFormState } from "@/Utils/types";
 import BoxDetailsPopover from "../components/BoxDetailsPopover";
 
-export const storageColumns: Column<BoxFormState>[] = [
+export const withdrawalColumns: Column<BoxFormState>[] = [
     { label: "BOX CODE", key: "box_code" },
     { label: "LOCATION", key: "location" },
     { label: "Remarks", key: "remarks" },
