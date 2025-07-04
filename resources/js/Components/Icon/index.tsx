@@ -9,12 +9,16 @@ const modules = import.meta.glob("./svg/*.svg", {
 interface IconProps extends React.SVGProps<SVGSVGElement> {
     name: string; // icon name corresponds to the SVG filename without extension
     size?: number | string;
+    height?: number | string; // Optional, SVGs can have different aspect ratios
+    width?: number | string; // Optional, SVGs can have different aspect ratios
     className?: string;
 }
 
 export const Icon: React.FC<IconProps> = ({
     name,
     size = 24,
+    width,
+    height,
     className,
     ...rest
 }) => {
@@ -44,8 +48,8 @@ export const Icon: React.FC<IconProps> = ({
 
     return (
         <SvgIcon
-            width={size}
-            height={size}
+            width={width || size}
+            height={height || size}
             fill="currentColor"
             className={className}
             {...rest}

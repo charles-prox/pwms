@@ -6,7 +6,7 @@ import { useBoxForm } from "@/Contexts/BoxFormContext";
 import { BoxFormState, FormProp } from "@/Utils/types";
 
 // Placeholder components for the non-draft layout
-import { columns } from "./config/columns";
+import { storageColumns } from "./config/storageColumns";
 import {
     RequestBoxes,
     RequestStatus,
@@ -16,6 +16,7 @@ import {
 } from "./components";
 import NewBoxForm from "@/Components/Forms/NewBoxForm";
 import RequestCreator from "./components/RequestCreator";
+import WithdrawalForm from "@/Components/Forms/WithdrawalForm";
 
 interface RequestsViewProps {
     form: FormProp;
@@ -27,7 +28,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
     if (form.is_draft) {
         return (
             <BaseListView<BoxFormState>
-                columns={columns}
+                columns={storageColumns}
                 data={boxes}
                 loading={!!!boxes}
                 emptyContent={
@@ -45,10 +46,15 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
                         showFilters={false}
                         showSearch={false}
                         totalRows={boxes.length}
-                        columns={columns}
+                        columns={storageColumns}
                         createButton={
                             <div className="flex items-center gap-2">
-                                <NewBoxForm />
+                                {form.request_type === "Storage" && (
+                                    <NewBoxForm />
+                                )}
+                                {form.request_type === "Withdrawal" && (
+                                    <WithdrawalForm />
+                                )}
                                 <SaveButton />
                             </div>
                         }
@@ -72,7 +78,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
             {/* Middle row: Request Details */}
             <div className="flex flex-col col-span-1 xl:col-span-2 gap-4">
                 <RequestSummary items={boxes.length} form={form} />
-                <RequestBoxes boxes={boxes} createdBy={form.creator} />
+                <RequestBoxes boxes={boxes} />
             </div>
 
             <div className="flex flex-col gap-4 col-span-1 xl:col-span-1">

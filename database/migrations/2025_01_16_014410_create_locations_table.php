@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('current_boxes')->default(0); // Track occupied boxes
             $table->bigInteger('office_id')->nullable(); // Office assignment
             $table->foreign('office_id')->references('id')->on('offices')->onDelete('cascade');
-            $table->timestamps();
+            // $table->timestamps();
         });
 
 

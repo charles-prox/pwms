@@ -9,7 +9,8 @@ use App\Models\Office;
 use App\Models\Request as RequestModel;
 use App\Services\Requests\RequestFactoryService;
 use App\Services\Requests\RequestStorageService;
-use App\Services\Requests\RequestApprovalService;
+use App\Services\Requests\RequestStatusMessageService;
+use App\Services\Requests\RequestStatusService;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,6 @@ class RequestsController extends Controller
     public function __construct(
         protected RequestStorageService $requestStorageService,
         protected RequestFactoryService $requestFactoryService,
-        protected RequestApprovalService $requestApprovalService
     ) {}
 
     public function createBlankRequest(string $type)
@@ -51,7 +51,7 @@ class RequestsController extends Controller
         }
 
         $boxes = BoxResource::collection(
-            Box::with(['documents.rds', 'office'])
+            Box::with(['documents.rds', 'office', 'boxLocation.location'])
                 ->where('request_id', $request->id)
                 ->get()
         )->toArray(request());
@@ -145,66 +145,72 @@ class RequestsController extends Controller
         return response()->json(['box_code' => $this->requestStorageService->generateBoxCode($office, $existing)]);
     }
 
-    public function approve(string $id)
-    {
-        $requestModel = RequestModel::findOrFail($id);
-        $this->authorize('approve', $requestModel);
-
-        $this->requestApprovalService->approve($requestModel);
-
-        return response()->json(['message' => 'Request approved']);
-    }
-
     public function manageRequests()
     {
+        /** @var \App\Models\User|\Spatie\Permission\Traits\HasRoles $user */
         $user = Auth::user();
 
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        // Allow only super-admin and regional-record-custodian
-        if (!$user->hasAnyRole(['super-admin', 'regional-record-custodian'])) {
+
+        // Allow only super-admin and regional-document-custodian
+        if (!$user->hasAnyRole(['super-admin', 'regional-document-custodian'])) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
-        $requests = RequestModel::with(['creator', 'office'])
-            ->where('status', 'pending')
+        // Build query based on role
+        $query = RequestModel::with(['creator', 'office', 'boxes'])
             ->where('is_draft', '!=', true)
-            ->orderBy('updated_at', 'desc')
-            ->get();
+            ->orderBy('updated_at', 'desc');
+
+        if ($user->hasRole('regional-document-custodian')) {
+            $query->where('status', 'pending');
+        }
+
+        $requests = $query->get();
 
         return Inertia::render('ManageRequests', [
             'pendingRequests' => RequestResource::collection($requests)->toArray(request()),
         ]);
     }
 
-    public function updateStatus(HttpRequest $request, RequestModel $requestModel)
+
+
+    public function updateStatus(HttpRequest $request, RequestStatusService $service)
     {
-        // Authorization: Allow only super-admin or RRC
-        if (!Auth::user()->hasAnyRole(['super-admin', 'regional-record-custodian'])) {
-            return response()->json(['error' => 'Forbidden'], 403);
+        try {
+            $service->authorizeUser();
+
+            $validated = $service->validateRequest($request);
+            $requestModel = RequestModel::findOrFail($validated['id']);
+
+            if ($validated['status'] === 'approved') {
+                $service->handleApprovedUpload($request, $requestModel);
+            }
+
+            if ($validated['status'] === 'completed') {
+                $service->assignBoxLocations($validated['boxes']);
+            }
+
+            $remarks = $validated['remarks'] ??
+                RequestStatusMessageService::getDefaultRemark(
+                    $validated['status'],
+                    $requestModel->request_type
+                );
+
+            $requestModel->logStatus(
+                $validated['status'],
+                Auth::id(),
+                $remarks,
+            );
+
+            return $this->manageRequests();
+        } catch (\Throwable $e) {
+            // Log the error for debugging
+            return back()->withErrors([
+                'updateStatus' => 'Something went wrong while updating the status. ' . $e->getMessage(),
+            ]);
         }
-
-        $validated = $request->validate([
-            'status' => 'required|string|in:approved,rejected',
-            'remarks' => 'nullable|string|max:1000',
-        ]);
-
-        // Update the request record
-        $requestModel->update([
-            'status' => $validated['status'],
-            'updated_by' => Auth::id(),
-        ]);
-
-        // Optional: Create a status log if your system tracks history
-        $requestModel->statusLogs()->create([
-            'status' => $validated['status'],
-            'remarks' => $validated['remarks'],
-            'updated_by' => Auth::id(),
-        ]);
-
-        return response()->json([
-            'message' => 'Request status updated successfully.',
-        ]);
     }
 }

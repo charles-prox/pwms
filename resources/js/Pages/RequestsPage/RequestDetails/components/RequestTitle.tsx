@@ -30,7 +30,11 @@ const RequestTitle: React.FC<RequestStatusProps> = ({
                     <h2 className="text-2xl font-semibold ">{title}</h2>
                 </div>
                 <div className="p-1">
-                    <Chip color="secondary">{status}</Chip>
+                    <Chip
+                        color={status === "Completed" ? "success" : "secondary"}
+                    >
+                        {status}
+                    </Chip>
                 </div>
             </div>
             <div>

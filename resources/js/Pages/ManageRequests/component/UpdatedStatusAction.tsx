@@ -20,12 +20,14 @@ const statusOptions = [
 
 export default function UpdateStatusAction({ item }: { item: any }) {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-    const { data, setData, errors, clearErrors, reset, processing, patch } =
+    const { data, setData, errors, clearErrors, reset, processing, post } =
         useForm<{
+            id: number;
             status: string;
             remarks: string;
             approved_form?: File | null; // Optional, only required if status is "approved"
         }>({
+            id: item.id,
             status: "",
             remarks: "",
             approved_form: null,
@@ -33,9 +35,12 @@ export default function UpdateStatusAction({ item }: { item: any }) {
 
     const { showAlert } = useModalAlert(); // use your context here
 
-    const handleSubmit = () => {
-        patch(route("requests.update-status", item.id), {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        post(route("requests.update-status", item.id), {
             preserveScroll: true,
+            preserveState: true,
+            only: ["response"],
             onSuccess: () => {
                 showAlert({
                     type: "success",
@@ -117,7 +122,7 @@ export default function UpdateStatusAction({ item }: { item: any }) {
                                         {data.status === "approved" && (
                                             <Input
                                                 type="file"
-                                                accept=".pdf,.jpg,.jpeg,.png"
+                                                accept=".pdf"
                                                 isRequired
                                                 name="approved_form"
                                                 label="Upload Approved Form"

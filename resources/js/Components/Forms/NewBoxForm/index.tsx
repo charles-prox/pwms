@@ -19,13 +19,7 @@ import React from "react";
 import { fetchGeneratedBoxCode } from "@/Services/boxCodeService";
 import { simulateInputEvent } from "@/Utils/helpers";
 import { usePage } from "@inertiajs/react";
-import { FormProp } from "@/Utils/types";
-
-interface ManageBoxDialogProps {
-    isEditMode?: boolean;
-    editBoxId?: number;
-    triggerButton?: React.ReactNode;
-}
+import { FormProp, ManageBoxDialogProps } from "@/Utils/types";
 
 const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
     const {

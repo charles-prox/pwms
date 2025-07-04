@@ -77,6 +77,8 @@ export interface BoxFormState {
     disposal_date: BoxDate | null | "Permanent"; // e.g., { raw: '2025-12-31T23:59:59Z', formatted: 'December 31, 2025' } or "Permanent"
     office: { id: number; name: string } | null;
     box_details: BoxDetails[];
+    location?: string | null; // Location details for the box
+    [key: string]: any; // Allow additional properties
 }
 
 export interface BoxDetails {
@@ -92,7 +94,20 @@ export interface BoxDetails {
 // ========================
 // PROP TYPES
 // ========================
-export type FormProp = {
+export interface ManageBoxDialogProps {
+    isEditMode?: boolean;
+    editBoxId?: number;
+    triggerButton?: React.ReactNode;
+}
+
+export interface StatusLog {
+    date: string;
+    status: string;
+    remark?: string;
+    updatedBy?: string;
+}
+
+export interface FormProp {
     id: number;
     form_number: string;
     request_type: RequestType;
@@ -107,14 +122,9 @@ export type FormProp = {
     approved_at: string | null;
     creator: string;
     pdf_path: string | null; // nullable string for the PDF path
-    status_logs: {
-        date: string; // date string
-        status: string; // e.g., "Approved", "Pending", etc.
-        remark?: string; // optional remark
-        updatedBy?: string; // optional name of the user who updated the status
-    }[];
+    status_logs: StatusLog[];
     [key: string]: any; // Allow additional properties
-};
+}
 
 export interface ProfileFormData {
     hris_id: string;
@@ -218,7 +228,7 @@ type Creator = {
     office: Office;
 };
 
-type BoxDetail = {
+interface BoxDetail {
     id: number;
     document_code: string;
     document_title: string;
@@ -226,24 +236,14 @@ type BoxDetail = {
     retention_period: number | "Permanent";
     document_date: DocumentDate;
     disposal_date: DateFormatted | string; // sometimes it's "Permanent"
-};
+}
 
-type Box = {
-    id: number;
-    box_code: string;
-    priority_level: PriorityLevel;
-    remarks: string | null;
-    disposal_date: DateFormatted | string; // sometimes "Permanent"
-    office: Office;
-    box_details: BoxDetail[];
-};
-
-export type RequestType = "storage" | "withdrawal" | "return" | "disposal";
+export type RequestType = "Storage" | "Withdrawal" | "Return" | "Disposal";
 
 export type RequestProps = {
     type: RequestType;
     form_number: string;
-    boxes: Box[];
+    boxes: BoxFormState[];
     creator: UserType;
 };
 

@@ -4,13 +4,11 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\UpdateUserProfileController;
 use App\Http\Controllers\RegisterAdminController;
 use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\RDSController;
-use App\Http\Controllers\PositionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -41,8 +39,7 @@ Route::middleware([
     Route::post('/request/upload-pdf', [RequestsController::class, 'uploadPdf']);
     Route::get('/requests/generate-box-code/{office}', [RequestsController::class, 'generateBoxCode']);
     Route::get('/manage-requests', [RequestsController::class, 'manageRequests'])->name('requests.manage');
-    Route::patch('/requests/{request}/status', [RequestsController::class, 'updateStatus'])
-        ->name('requests.update-status');
+    Route::post('/manage-requests', [RequestsController::class, 'updateStatus'])->name('requests.update-status');
 
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
@@ -59,12 +56,3 @@ Route::get('/register', [RegisterAdminController::class, 'create'])
 Route::get('/login', [LoginController::class, 'create'])
     ->middleware(['guest'])
     ->name('login');
-
-Route::get('/offices', [OfficeController::class, 'index'])
-    ->name('offices');
-
-Route::get('/offices/{id}', [OfficeController::class, 'show'])
-    ->name('offices.show');
-
-Route::get('/positions', [PositionController::class, 'list'])
-    ->name('positions');

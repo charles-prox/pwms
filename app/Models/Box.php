@@ -39,8 +39,25 @@ class Box extends Model
     }
 
     // Optional: if you're using polymorphic locations
-    public function boxLocations()
+    public function boxLocation()
     {
-        return $this->morphMany(BoxLocation::class, 'boxable');
+        return $this->morphOne(BoxLocation::class, 'boxable');
+    }
+
+    public function getFormattedLocationAttribute(): ?string
+    {
+        if (!$this->relationLoaded('boxLocation') || !$this->boxLocation || !$this->boxLocation->location) {
+            return null;
+        }
+
+        $loc = $this->boxLocation->location;
+
+        $floor = strtoupper(substr($loc->floor, 0, 1)); // G or M
+        $rack = str_pad($loc->rack, 2, '0', STR_PAD_LEFT);
+        $bay = str_pad($loc->bay, 2, '0', STR_PAD_LEFT);
+        $level = str_pad($loc->level, 2, '0', STR_PAD_LEFT);
+        $position = str_pad($this->boxLocation->position, 2, '0', STR_PAD_LEFT);
+
+        return "{$floor}{$rack}-{$bay}{$level}-{$position}";
     }
 }

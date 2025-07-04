@@ -29,14 +29,17 @@ class RequestResource extends JsonResource
             'creator' => $fullName,
             'pdf_path' => url($this->pdf_path),
             'status_logs' => $this->whenLoaded('statusLogs', function () {
-                return $this->statusLogs->map(function ($log) {
-                    return [
-                        'status' => $log->status,
-                        'date' => optional($log->created_at)->format('M d, Y'),
-                        'remark' => $log->remarks,
-                        'updated_by' => optional($log->updatedBy)->full_name ?? null,
-                    ];
-                });
+                return $this->statusLogs
+                    ->sortBy('created_at') // oldest first, newest last
+                    ->values() // reindex the collection
+                    ->map(function ($log) {
+                        return [
+                            'status' => $log->status,
+                            'date' => optional($log->created_at)->format('M d, Y'),
+                            'remark' => $log->remarks,
+                            'updated_by' => optional($log->updatedBy)->full_name ?? null,
+                        ];
+                    });
             }),
             'office' => $this->whenLoaded('office', function () {
                 return [
@@ -44,7 +47,9 @@ class RequestResource extends JsonResource
                     'name' => $this->office->name,
                 ];
             }),
-
+            'boxes' => $this->whenLoaded('boxes', function () {
+                return BoxResource::collection($this->boxes)->toArray(request());
+            }),
         ];
     }
 }

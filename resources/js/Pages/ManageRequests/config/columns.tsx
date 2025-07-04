@@ -1,6 +1,7 @@
 import { Column } from "@/Layouts/BaseListView";
 import { UpdatePasswordForm } from "@/Pages/Account/Security/forms/UpdatePasswordForm";
 import UpdateStatusAction from "../component/UpdatedStatusAction";
+import CompleteRequestAction from "../component/CompleteRequestAction";
 
 export const columns: Column<Request>[] = [
     { label: "FORM NO.", key: "form_number", sortable: true },
@@ -18,6 +19,14 @@ export const columns: Column<Request>[] = [
     {
         label: "ACTIONS",
         key: "actions",
-        render: (item: any) => <UpdateStatusAction item={item} />,
+        render: (item: any) => {
+            console.log("Rendering actions for item:", item.status);
+
+            return item.status.toLowerCase() === "approved" ? (
+                <CompleteRequestAction item={item} />
+            ) : (
+                <UpdateStatusAction item={item} />
+            );
+        },
     },
 ];

@@ -5,10 +5,9 @@ import BoxLabelViewer from "./BoxLabelViewer";
 
 interface RequestBoxesProps {
     boxes: BoxFormState[];
-    createdBy?: string;
 }
 
-const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes, createdBy }) => {
+const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes }) => {
     if (!boxes || boxes.length === 0) {
         return <p className="text-gray-500">No boxes found.</p>;
     }
@@ -51,6 +50,17 @@ const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes, createdBy }) => {
                                 <BoxLabelViewer box={box} />
                             </div>
                         </div>
+
+                        {!!box.location && (
+                            <div className="flex gap-4 items-center">
+                                <p className="text-sm italic text-gray-500">
+                                    Location:
+                                </p>
+                                <p className="whitespace-pre-line text-sm italic text-gray-500">
+                                    {box.location}
+                                </p>
+                            </div>
+                        )}
 
                         {box.remarks && (
                             <>

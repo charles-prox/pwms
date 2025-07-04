@@ -15,13 +15,13 @@ const RequestStatus: React.FC<RequestStatusProps> = ({ statusLogs }) => {
     const getDotColor = (status: string) => {
         switch (status.toLowerCase()) {
             case "approved":
-                return "bg-success-500";
+                return "bg-success-200";
             case "completed":
                 return "bg-success-500";
             case "rejected":
                 return "bg-danger-500";
             case "pending":
-                return "bg-warning-300";
+                return "bg-warning-400";
             default:
                 return "bg-gray-300";
         }
@@ -30,13 +30,13 @@ const RequestStatus: React.FC<RequestStatusProps> = ({ statusLogs }) => {
     return (
         <Card className="p-3">
             <CardBody>
-                <p className="text-sm uppercase tracking-wide text-muted-foreground mb-4">
+                <p className="text-sm uppercase tracking-wide text-muted-foreground mb-4 ">
                     Status History:
                 </p>
                 <div className="max-w-full ">
                     <div className="grid mx-auto">
                         {statusLogs.map((log, idx) => (
-                            <div key={idx} className="flex">
+                            <div key={idx} className="flex mt-[-3px]">
                                 <div className="flex flex-col items-center mr-3">
                                     <div className="w-px h-1 opacity-0 " />
                                     <div>
@@ -46,7 +46,9 @@ const RequestStatus: React.FC<RequestStatusProps> = ({ statusLogs }) => {
                                             )}`}
                                         ></div>
                                     </div>
-                                    <div className="w-px h-full bg-gray-400" />
+                                    {log.status !== "completed" && (
+                                        <div className="w-px h-full bg-gray-400" />
+                                    )}
                                 </div>
                                 <div className="flex flex-col pb-6 pt-1 items-center ">
                                     <div>
@@ -58,6 +60,7 @@ const RequestStatus: React.FC<RequestStatusProps> = ({ statusLogs }) => {
                                             {log.updated_by &&
                                                 ` · by ${log.updated_by}`}
                                         </p>
+
                                         <p className="text-sm text-gray-500 pt-1">
                                             {log.remark}
                                         </p>

@@ -28,6 +28,7 @@ class BoxResource extends JsonResource
                 'name' => $this->office->name,
             ] : null,
             'box_details' => DocumentResource::collection($this->documents)->toArray(request()),
+            'location' => $this->formatted_location,
         ];
     }
 }
