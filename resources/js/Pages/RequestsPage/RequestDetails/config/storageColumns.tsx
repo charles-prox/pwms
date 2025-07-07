@@ -1,9 +1,9 @@
 import { Column } from "@/Layouts/BaseListView";
 import { BoxFormState } from "@/Utils/types";
 import { toTitleCase } from "@/Utils/helpers";
-import ActionButtons from "../components/ActionButtons";
 import BoxDetailsPopover from "../components/BoxDetailsPopover";
 import { Chip } from "@heroui/react";
+import { StorageActionButtons } from "../components";
 
 export const storageColumns: Column<BoxFormState>[] = [
     { label: "BOX CODE", key: "box_code" },
@@ -53,6 +53,6 @@ export const storageColumns: Column<BoxFormState>[] = [
     {
         label: "ACTIONS",
         key: "actions",
-        render: (item: BoxFormState) => <ActionButtons row={item} />,
+        render: (item: BoxFormState) => <StorageActionButtons row={item} />,
     },
 ];

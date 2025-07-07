@@ -1,4 +1,5 @@
-export { default as ActionButtons } from "./ActionButtons";
+export { default as StorageActionButtons } from "./StorageActionButtons";
+export { default as WithdrawalActionButtons } from "./WithdrawalActionButtons";
 export { default as RequestBoxes } from "./RequestBoxes";
 export { default as RequestPreview } from "./RequestPreview";
 export { default as RequestTitle } from "./RequestTitle";

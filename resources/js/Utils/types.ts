@@ -91,6 +91,10 @@ export interface BoxDetails {
     disposal_date: BoxDate | null | "Permanent"; // e.g., { raw: '2025-12-31T23:59:59Z', formatted: 'December 31, 2025' }
 }
 
+export interface SelectedWithdrawalBoxes extends BoxFormState {
+    withdrawalRemarks?: string;
+}
+
 // ========================
 // PROP TYPES
 // ========================

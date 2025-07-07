@@ -8,13 +8,16 @@ import {
 } from "@heroui/react";
 import Icon from "@/Components/Icon";
 import { router } from "@inertiajs/react";
-import { useBoxForm } from "@/Contexts/BoxFormContext";
-import NewBoxForm from "@/Components/Forms/NewBoxForm";
-import BoxLabelViewer from "./BoxLabelViewer";
 import { BoxFormState, FormProp } from "@/Utils/types";
+import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
+import WithdrawalBoxRemarks from "@/Components/Forms/WithdrawalBoxRemarks";
 
-export default function ActionButtons({ row }: { row: BoxFormState }) {
-    const { deleteBox } = useBoxForm();
+export default function WithdrawalActionButtons({
+    row,
+}: {
+    row: BoxFormState;
+}) {
+    const { removeBox } = useSelectedBoxes();
 
     const onEdit = (row: any) => {
         router.visit(`/request/${row.form_number}`);
@@ -23,31 +26,18 @@ export default function ActionButtons({ row }: { row: BoxFormState }) {
     return (
         <div className="relative flex justify-start items-center gap-2">
             <div className="hidden md:flex gap-0">
-                <NewBoxForm
-                    triggerButton={
-                        <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            color="primary"
-                        >
-                            <Icon name="edit-pen-2" size={20} />
-                        </Button>
-                    }
-                    editBoxId={row.id}
-                />
+                <WithdrawalBoxRemarks box={row} />
                 <Tooltip content="Delete">
                     <Button
                         isIconOnly
                         size="sm"
                         variant="light"
-                        onPress={() => deleteBox(row.id)}
+                        onPress={() => removeBox(row.id)}
                         color={"danger"}
                     >
                         <Icon name="trash" size={20} />
                     </Button>
                 </Tooltip>
-                <BoxLabelViewer box={row} trigger="button" />
             </div>
 
             <div className="block md:hidden">
@@ -63,7 +53,7 @@ export default function ActionButtons({ row }: { row: BoxFormState }) {
                         </DropdownItem>
                         <DropdownItem
                             key="delete"
-                            onPress={() => deleteBox(row.id)}
+                            onPress={() => removeBox(row.id)}
                         >
                             Delete
                         </DropdownItem>

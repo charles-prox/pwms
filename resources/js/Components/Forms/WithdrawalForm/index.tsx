@@ -14,26 +14,30 @@ import {
     ListboxItem,
     Divider,
 } from "@heroui/react";
-import { div } from "framer-motion/client";
 import React, { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
+import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
 
 export default function WithdrawalForm({
     editBoxId,
     triggerButton,
 }: ManageBoxDialogProps) {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const [isEditMode, setIsEditMode] = useState(false);
+    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedQuery] = useDebounce(searchQuery, 500);
     const [boxes, setBoxes] = useState<BoxFormState[]>([]);
     const [loading, setLoading] = useState(false);
     const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
 
-    const selectedValue = React.useMemo(
-        () => Array.from(selectedKeys).join(", "),
-        [selectedKeys]
-    );
+    const { bulkAddBoxes, selectedBoxes } = useSelectedBoxes();
+
+    const handleFinalizeSelection = () => {
+        const selectedBoxesToAdd = boxes.filter((box) =>
+            selectedKeys.has(box.box_code)
+        );
+        bulkAddBoxes(selectedBoxesToAdd);
+        onClose();
+    };
 
     useEffect(() => {
         if (!debouncedQuery) {
@@ -47,8 +51,6 @@ export default function WithdrawalForm({
                 const results: any = await searchBox.searchBoxes(
                     debouncedQuery
                 );
-                console.log("Search results:", results);
-
                 setBoxes(results.data);
             } catch (error) {
                 console.error("Search failed:", error);
@@ -60,23 +62,26 @@ export default function WithdrawalForm({
         fetchData();
     }, [debouncedQuery]);
 
+    // Pre-select already selected boxes when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            const preselected = selectedBoxes.map((box) => box.box_code);
+            setSelectedKeys(new Set(preselected));
+        }
+    }, [isOpen, selectedBoxes]);
+
     return (
         <>
             {triggerButton ? (
                 React.cloneElement(triggerButton as React.ReactElement, {
-                    onPress: () => {
-                        setIsEditMode(true);
-                        onOpen();
-                    },
+                    onPress: () => onOpen(),
                 })
             ) : (
                 <Button
                     className="hidden sm:flex"
                     color="primary"
                     endContent={<Icon name="plus" size={20} />}
-                    onPress={() => {
-                        onOpen();
-                    }}
+                    onPress={() => onOpen()}
                 >
                     Add Box
                 </Button>
@@ -119,15 +124,16 @@ export default function WithdrawalForm({
                                     <div className="flex flex-col gap-2">
                                         <div className="flex justify-between items-center">
                                             <p className="text-small text-default-500">
-                                                Selected value: {selectedValue}
+                                                Selected boxes:{" "}
+                                                {selectedKeys.size}
                                             </p>
                                             <Button
                                                 size="sm"
                                                 color="primary"
                                                 variant="light"
-                                                onPress={() => {
-                                                    setSelectedKeys(new Set());
-                                                }}
+                                                onPress={() =>
+                                                    setSelectedKeys(new Set())
+                                                }
                                             >
                                                 Clear Selection
                                             </Button>
@@ -140,70 +146,63 @@ export default function WithdrawalForm({
                                         ) : boxes.length > 0 ? (
                                             <div className="flex flex-col gap-2">
                                                 <Listbox
-                                                    disallowEmptySelection
-                                                    aria-label="Multiple selection example"
-                                                    selectedKeys={selectedKeys}
+                                                    aria-label="Box selection"
                                                     selectionMode="multiple"
                                                     variant="flat"
-                                                    onSelectionChange={(
-                                                        keys
-                                                    ) => {
+                                                    selectedKeys={selectedKeys}
+                                                    onSelectionChange={(keys) =>
                                                         setSelectedKeys(
                                                             new Set(
                                                                 keys as Set<string>
                                                             )
-                                                        );
-                                                    }}
-                                                    itemClasses={{
-                                                        title: "font-bold",
-                                                    }}
+                                                        )
+                                                    }
                                                 >
                                                     {boxes.map((box) => (
-                                                        <>
-                                                            <ListboxItem
-                                                                key={
-                                                                    box.box_code
-                                                                }
-                                                                startContent={
-                                                                    <Icon
-                                                                        name="box"
-                                                                        size={
-                                                                            50
-                                                                        }
-                                                                    />
-                                                                }
-                                                                description={
-                                                                    <div className="flex flex-col">
-                                                                        {box.remarks && (
-                                                                            <p className="text-default-700">
-                                                                                Remarks:{" "}
-                                                                                {
-                                                                                    box.remarks
+                                                        <ListboxItem
+                                                            key={box.box_code}
+                                                            startContent={
+                                                                <Icon
+                                                                    name="box"
+                                                                    size={50}
+                                                                />
+                                                            }
+                                                            description={
+                                                                <div className="flex flex-col">
+                                                                    {box.remarks && (
+                                                                        <p className="text-default-700">
+                                                                            Remarks:{" "}
+                                                                            {
+                                                                                box.remarks
+                                                                            }
+                                                                        </p>
+                                                                    )}
+                                                                    {box.box_details.map(
+                                                                        (
+                                                                            detail: BoxDetails,
+                                                                            idx: number
+                                                                        ) => (
+                                                                            <div
+                                                                                key={
+                                                                                    idx
                                                                                 }
-                                                                            </p>
-                                                                        )}
-                                                                        {box.box_details.map(
-                                                                            (
-                                                                                detail: BoxDetails
-                                                                            ) => (
-                                                                                <div>
-                                                                                    <p className="text-default-700">
-                                                                                        Documents:{" "}
-                                                                                    </p>
-                                                                                    <span className="text-default-500 pl-3">
-                                                                                        {
-                                                                                            detail.document_title
-                                                                                        }
-                                                                                    </span>
-                                                                                </div>
-                                                                            )
-                                                                        )}
-                                                                    </div>
-                                                                }
-                                                            >
-                                                                {box.box_code}
-                                                            </ListboxItem>
-                                                        </>
+                                                                            >
+                                                                                <p className="text-default-700">
+                                                                                    Documents:
+                                                                                </p>
+                                                                                <span className="text-default-500 pl-3">
+                                                                                    {
+                                                                                        detail.document_title
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                        )
+                                                                    )}
+                                                                </div>
+                                                            }
+                                                        >
+                                                            {box.box_code}
+                                                        </ListboxItem>
                                                     ))}
                                                 </Listbox>
                                             </div>
@@ -221,10 +220,13 @@ export default function WithdrawalForm({
                                     variant="light"
                                     onPress={onClose}
                                 >
-                                    Close
+                                    Cancel
                                 </Button>
-                                <Button color="primary" onPress={onClose}>
-                                    Action
+                                <Button
+                                    color="primary"
+                                    onPress={handleFinalizeSelection}
+                                >
+                                    Add
                                 </Button>
                             </ModalFooter>
                         </>

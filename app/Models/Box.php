@@ -60,4 +60,11 @@ class Box extends Model
 
         return "{$floor}{$rack}-{$bay}{$level}-{$position}";
     }
+
+    public function requests()
+    {
+        return $this->belongsToMany(Request::class, 'request_box')
+            ->withPivot('withdrawal_remarks', 'return_remarks', 'disposal_remarks')
+            ->withTimestamps();
+    }
 }

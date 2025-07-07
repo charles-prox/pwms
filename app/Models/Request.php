@@ -78,4 +78,11 @@ class Request extends Model
             'remarks' => $remarks,
         ]);
     }
+
+    public function boxesWithRequestRemarks()
+    {
+        return $this->belongsToMany(Box::class, 'request_box')
+            ->withPivot('withdrawal_remarks', 'return_remarks', 'disposal_remarks')
+            ->withTimestamps();
+    }
 }

@@ -18,13 +18,18 @@ import NewBoxForm from "@/Components/Forms/NewBoxForm";
 import RequestCreator from "./components/RequestCreator";
 import WithdrawalForm from "@/Components/Forms/WithdrawalForm";
 import { withdrawalColumns } from "./config/withdrawalColumns";
+import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
 
 interface RequestsViewProps {
     form: FormProp;
 }
 
 const RequestDetails = ({ form }: RequestsViewProps) => {
+    const { selectedBoxes } = useSelectedBoxes();
     const { boxes } = useBoxForm();
+
+    const displayedBoxes =
+        form.request_type === "Withdrawal" ? selectedBoxes : boxes;
 
     const getColumns = () => {
         switch (form.request_type) {
@@ -41,12 +46,12 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
         return (
             <BaseListView<BoxFormState>
                 columns={getColumns()}
-                data={boxes}
-                loading={!!!boxes}
+                data={displayedBoxes}
+                loading={false}
                 emptyContent={
                     <EmptyState
-                        title="This request is empty."
-                        description="You have yet to add boxes for this storage request yet."
+                        title="No boxes selected."
+                        description="You have not selected any boxes yet for this request."
                         icon="box-delivery-package"
                     />
                 }
@@ -57,7 +62,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
                         tableId="request-details-table"
                         showFilters={false}
                         showSearch={false}
-                        totalRows={boxes.length}
+                        totalRows={displayedBoxes.length}
                         columns={getColumns()}
                         createButton={
                             <div className="flex items-center gap-2">
@@ -70,7 +75,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
                                 <SaveButton />
                             </div>
                         }
-                        itemLabel="request"
+                        itemLabel="box"
                     />
                 }
             />

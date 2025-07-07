@@ -83,12 +83,14 @@ class RequestsController extends Controller
     public function saveDraft(HttpRequest $request, string $form_number)
     {
         try {
-            DB::transaction(fn() => $this->requestStorageService->saveRequestData($request, $form_number, 'draft'));
+            $this->requestFactoryService->saveRequest($request, $form_number, 'draft');
+
             return response()->json(['message' => 'Draft saved successfully']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to save draft', 'details' => $e->getMessage()], 500);
         }
     }
+
 
     public function submitRequest(HttpRequest $request, string $form_number)
     {

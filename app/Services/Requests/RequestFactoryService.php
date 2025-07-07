@@ -4,6 +4,8 @@ namespace App\Services\Requests;
 
 use App\Models\Request as RequestModel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Support\Facades\DB;
 
 class RequestFactoryService
 {
@@ -13,6 +15,18 @@ class RequestFactoryService
         'return'     => 'R',
         'disposal'   => 'D',
     ];
+
+    protected RequestStorageService $storageService;
+    protected RequestWithdrawalService $withdrawalService;
+
+    public function __construct(
+        RequestStorageService $storageService,
+        RequestWithdrawalService $withdrawalService
+    ) {
+        $this->storageService = $storageService;
+        $this->withdrawalService = $withdrawalService;
+    }
+
 
     /**
      * Create a new blank request of the given type for the authenticated user.
@@ -72,5 +86,18 @@ class RequestFactoryService
             'message' => 'Blank request created successfully',
             'form_no' => $formNumber,
         ];
+    }
+
+    public function saveRequest(HttpRequest $request, string $formNumber, string $status = 'draft'): void
+    {
+        DB::transaction(function () use ($request, $formNumber, $status) {
+            $form = RequestModel::where('form_number', $formNumber)->firstOrFail();
+
+            match ($form->request_type) {
+                'Storage' => $this->storageService->saveRequestData($request, $formNumber, $status),
+                'Withdrawal' => $this->withdrawalService->saveRequestData($request, $formNumber, $status),
+                default => throw new \Exception("Unsupported request type: {$form->request_type}"),
+            };
+        });
     }
 }

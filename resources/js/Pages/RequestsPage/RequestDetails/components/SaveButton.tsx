@@ -15,23 +15,23 @@ import { axiosInstance } from "@/Utils/axios";
 import Icon from "@/Components/Icon";
 import FormPreview from "@/Components/FormPreview";
 import { savePdfToBackend } from "@/Services/pdfService";
+import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
 
 const SaveButton = () => {
     const { showAlert } = useModalAlert();
     const { boxes } = useBoxForm();
-    const { form = null } = usePage<{
-        form?: FormProp;
-        // form_details: FormDetails;
-    }>().props;
+    const { selectedBoxes } = useSelectedBoxes();
+    const { form = null } = usePage<{ form?: FormProp }>().props;
+
+    const boxesToSave =
+        form?.request_type === "Withdrawal" ? selectedBoxes : boxes;
 
     const handleSaveAction = async (key: Key) => {
         if (key === "draft") {
             try {
                 const response = await axiosInstance.post(
                     `/request/${form?.form_number}/save-draft`,
-                    {
-                        boxes: boxes,
-                    }
+                    { boxes: boxesToSave }
                 );
                 router.reload();
                 showAlert({
@@ -56,9 +56,7 @@ const SaveButton = () => {
                 onConfirm: async () => {
                     router.post(
                         `/request/${form?.form_number}/print`,
-                        {
-                            boxes: boxes as any[],
-                        },
+                        { boxes: boxesToSave },
                         {
                             preserveState: true,
                             preserveScroll: true,
@@ -100,13 +98,14 @@ const SaveButton = () => {
             });
         }
     };
+
     return (
         <Dropdown>
             <DropdownTrigger>
                 <Button
-                    color={!boxes.length ? "default" : "secondary"}
+                    color={!boxesToSave.length ? "default" : "secondary"}
                     endContent={<Icon name="save" size={18} />}
-                    isDisabled={!boxes.length}
+                    isDisabled={!boxesToSave.length}
                 >
                     Save
                 </Button>
