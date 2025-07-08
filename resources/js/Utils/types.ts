@@ -92,7 +92,11 @@ export interface BoxDetails {
 }
 
 export interface SelectedWithdrawalBoxes extends BoxFormState {
-    withdrawalRemarks?: string;
+    request_remarks?: {
+        withdrawal?: string;
+        return?: string;
+        disposal?: string;
+    };
 }
 
 // ========================
@@ -265,7 +269,7 @@ export interface PDFDocumentProps {
     requestType: RequestType;
     formNumber?: string;
     preparedBy: { name: string; position: string };
-    office: Office;
+    office: Office; // can be an Office object or a string
     officeHead?: Officer;
     regionDC?: Officer;
     msdHead?: Officer;
@@ -298,7 +302,7 @@ export interface UserType {
     roles: string | string[];
 
     // Relationships
-    office?: Office | null;
+    office: Office;
     requests?: RequestProps[];
     position?: Position | null;
 }

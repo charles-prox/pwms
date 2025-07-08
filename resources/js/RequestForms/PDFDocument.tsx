@@ -5,19 +5,19 @@ import Signatories from "./Signatories";
 import { Office, Officer, PDFDocumentProps, RequestType } from "@/Utils/types";
 
 const requestHeaders: Record<RequestType, { title: string; formNo: string }> = {
-    storage: {
+    Storage: {
         title: "Request for Records Storage Form",
         formNo: "PHILHEALTH-QP-02-F01",
     },
-    withdrawal: {
+    Withdrawal: {
         title: "Request for Records Withdrawal Form",
         formNo: "PHILHEALTH-QP-02-F02",
     },
-    return: {
+    Return: {
         title: "Request for Return of Records Form",
         formNo: "PHILHEALTH-QP-02-F03",
     },
-    disposal: {
+    Disposal: {
         title: "Request for Records Disposal Form",
         formNo: "PHILHEALTH-QP-02-F04",
     },

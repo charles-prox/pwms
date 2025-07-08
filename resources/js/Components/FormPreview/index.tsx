@@ -15,12 +15,14 @@ function FormPreview({ form_details, previewMode }: FormPreviewProps) {
     // Use passed prop or fallback to Inertia page props
 
     const renderContent = () => {
+        console.log("Form Details:", form_details);
+
         switch (form_details.request?.type) {
-            case "withdrawal":
+            case "Withdrawal":
                 return <RequestForWithdrawal data={form_details} />;
-            case "return":
+            case "Return":
                 return <RequestForReturn data={form_details} />;
-            case "disposal":
+            case "Disposal":
                 return <RequestForDisposal data={form_details} />;
             default:
                 return (
@@ -45,7 +47,7 @@ function FormPreview({ form_details, previewMode }: FormPreviewProps) {
                           ". "
                         : " ") +
                     form_details.request.creator.last_name,
-                position: form_details.request.creator.position,
+                position: form_details.request.creator.position?.name || "",
             }}
             office={form_details.request.creator.office}
             officeHead={form_details.creator_office_head}

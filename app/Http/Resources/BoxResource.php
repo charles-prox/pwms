@@ -29,6 +29,11 @@ class BoxResource extends JsonResource
             ] : null,
             'box_details' => DocumentResource::collection($this->documents)->toArray(request()),
             'location' => $this->formatted_location,
+            'request_remarks' => [
+                'withdrawal' => $this->pivot->withdrawal_remarks ?? null,
+                'return' => $this->pivot->return_remarks ?? null,
+                'disposal' => $this->pivot->disposal_remarks ?? null,
+            ],
         ];
     }
 }

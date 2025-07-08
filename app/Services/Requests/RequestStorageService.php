@@ -91,62 +91,7 @@ class RequestStorageService
             }
         });
     }
-    /**
-     * Get request details along with boxes and officers.
-     *
-     * @param int $requestId
-     * @return array
-     */
-    public function getRequestDetailsWithBoxesAndOfficers($requestId)
-    {
-        $request = RequestModel::with([
-            'boxes.documents',
-            'creator.office'
-        ])->findOrFail($requestId);
 
-        $creator = $request->creator;
-        $creatorOffice = $creator->office;
-
-        // Get head of creator's office (with positions)
-        $creatorOfficeHead = Officer::with('positions')->whereHas('positions', function ($query) use ($creatorOffice) {
-            $query->where('name', 'like', '%Head%')
-                ->where('name', 'like', '%' . $creatorOffice->name . '%');
-        })->first();
-
-
-        // Get head of GSU with positions
-        $gsuOffice = Office::where('acronym', 'GSU')->first();
-        $gsuHead = $gsuOffice ? Officer::with('positions')->whereHas('positions', function ($query) use ($gsuOffice) {
-            $query->where('name', 'like', '%Head%')
-                ->where('name', 'like', '%' . $gsuOffice->name . '%');
-        })->first() : null;
-
-        // Get head of MSD with positions
-        $msdOffice = Office::where('acronym', 'OMSD')->first();
-        $msdHead = $msdOffice ? Officer::with('positions')->whereHas('positions', function ($query) use ($msdOffice) {
-            $query->where('name', 'like', '%Chief%')
-                ->where('name', 'like', '%' . $msdOffice->name . '%');
-        })->first() : null;
-
-        // Get RDC officer with positions
-        $rdcOfficer = Officer::with('positions')->whereHas('positions', function ($query) {
-            $query->where('code', 'rdc');
-        })->first();
-
-
-        return [
-            'request' => [
-                'type' => 'storage',
-                'form_number' => $request->form_number,
-                'boxes' => BoxResource::collection($request->boxes)->toArray(request()),
-                'creator' => $request->creator,
-            ],
-            'creator_office_head' => $creatorOfficeHead,
-            'gsu_head' => $gsuHead,
-            'msd_head' => $msdHead,
-            'rdc_officer' => $rdcOfficer,
-        ];
-    }
 
     /**
      * Generate a unique box code for the given office.

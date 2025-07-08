@@ -12,6 +12,7 @@ import Icon from "../../../Components/Icon";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import FormPreview from "../../../Components/FormPreview";
 import RequestDetails from "../RequestDetails";
+import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
 
 const PAGE_ID = "requests";
 
@@ -31,6 +32,7 @@ const RequestsPage = () => {
     }>().props;
     const url = usePage().url;
     const { setBoxes } = useBoxForm();
+    const { bulkAddBoxes } = useSelectedBoxes();
     const { getLayoutView } = useLayoutViewContext();
     const currentLayout = getLayoutView(PAGE_ID) ?? "list"; // Default to list
 
@@ -39,8 +41,16 @@ const RequestsPage = () => {
 
     // If saved boxes are present, sync them to local unsaved state
     React.useEffect(() => {
-        setBoxes(savedBoxes);
-        sessionStorage.setItem("boxes", JSON.stringify(savedBoxes)); // optional
+        if (
+            form?.request_type.toLowerCase() === "withdrawal" &&
+            savedBoxes.length
+        ) {
+            bulkAddBoxes(savedBoxes);
+            localStorage.setItem("selectedBoxes", JSON.stringify(savedBoxes)); // optional
+        } else {
+            setBoxes(savedBoxes); // For storage requests, or others
+            sessionStorage.setItem("boxes", JSON.stringify(savedBoxes)); // optional
+        }
     }, []);
 
     const renderContent = () => {

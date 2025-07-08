@@ -29,7 +29,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         getRdsDetailsById,
     } = useRdsData({ fetchAll: true });
     const [boxes, setBoxes] = useState<BoxFormState[]>(() => {
-        const storedBoxes = sessionStorage.getItem("boxes");
+        const storedBoxes = localStorage.getItem("boxes");
         return storedBoxes ? JSON.parse(storedBoxes) : [];
     });
 
@@ -112,7 +112,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         );
 
         setBoxes(updatedBoxes);
-        sessionStorage.setItem("boxes", JSON.stringify(updatedBoxes));
+        localStorage.setItem("boxes", JSON.stringify(updatedBoxes));
         resetBoxData();
 
         return false;
@@ -123,14 +123,14 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             const updatedBoxes = prevBoxes.filter(
                 (box) => box.id !== idToDelete
             );
-            sessionStorage.setItem("boxes", JSON.stringify(updatedBoxes));
+            localStorage.setItem("boxes", JSON.stringify(updatedBoxes));
             return updatedBoxes;
         });
     };
 
     const resetBoxes = () => {
         setBoxes([]);
-        sessionStorage.removeItem("boxes");
+        localStorage.removeItem("boxes");
     };
 
     const resetBoxData = () => {
@@ -563,7 +563,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         const updatedBoxes = [...boxes, updatedBoxData];
 
         setBoxes(updatedBoxes);
-        sessionStorage.setItem("boxes", JSON.stringify(updatedBoxes));
+        localStorage.setItem("boxes", JSON.stringify(updatedBoxes));
 
         resetBoxData();
     };

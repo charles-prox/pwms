@@ -19,11 +19,6 @@ interface Box {
     box_details: BoxDetail[];
 }
 
-interface FormData {
-    form_no: string;
-    details: Box[];
-}
-
 interface RequestForWithdrawalProps {
     data: any;
 }

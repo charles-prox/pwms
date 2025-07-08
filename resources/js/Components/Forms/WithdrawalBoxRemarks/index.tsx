@@ -22,7 +22,9 @@ export default function WithdrawalBoxRemarksModal({
     box,
 }: WithdrawalBoxRemarksModalProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const [remarks, setRemarks] = useState(box.withdrawalRemarks || "");
+    const [remarks, setRemarks] = useState(
+        box.request_remarks?.withdrawal || ""
+    );
     const { updateWithdrawalRemarks } = useSelectedBoxes();
 
     const handleSave = () => {

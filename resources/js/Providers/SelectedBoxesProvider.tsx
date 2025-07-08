@@ -21,14 +21,14 @@ export const SelectedBoxesProvider: React.FC<{ children: React.ReactNode }> = ({
                 console.warn("Failed to parse stored boxes.");
             }
         }
-        setIsLoaded(true); // ✅ Mark as loaded after reading
+        setIsLoaded(true);
     }, []);
 
     useEffect(() => {
         if (isLoaded) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(selectedBoxes));
         }
-    }, [selectedBoxes, isLoaded]); // ✅ Only save after loading
+    }, [selectedBoxes, isLoaded]);
 
     const toggleBoxSelection = (box: SelectedWithdrawalBoxes) => {
         setSelectedBoxes((prev) => {
@@ -58,13 +58,21 @@ export const SelectedBoxesProvider: React.FC<{ children: React.ReactNode }> = ({
     const updateWithdrawalRemarks = (boxId: number, remarks: string) => {
         setSelectedBoxes((prev) =>
             prev.map((box) =>
-                box.id === boxId ? { ...box, withdrawalRemarks: remarks } : box
+                box.id === boxId
+                    ? {
+                          ...box,
+                          request_remarks: {
+                              ...box.request_remarks,
+                              withdrawal: remarks,
+                          },
+                      }
+                    : box
             )
         );
     };
 
     if (!isLoaded) {
-        return null; // ✅ Don't render anything until localStorage is loaded
+        return null;
     }
 
     return (

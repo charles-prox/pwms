@@ -18,7 +18,7 @@ export const withdrawalColumns: Column<BoxFormState>[] = [
         key: "remarks",
         render: (item: BoxFormState) => (
             <p className="whitespace-pre-line">
-                {item.withdrawalRemarks ?? ""}
+                {item.request_remarks?.withdrawal ?? ""}
             </p>
         ),
     },

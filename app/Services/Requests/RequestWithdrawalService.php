@@ -22,7 +22,7 @@ class RequestWithdrawalService
         $pivotData = [];
         foreach ($boxes as $box) {
             $pivotData[$box['id']] = [
-                'withdrawal_remarks' => $box['withdrawalRemarks'] ?? null,
+                'withdrawal_remarks' => $box['request_remarks']['withdrawal'] ?? null,
             ];
         }
 

@@ -11,6 +11,7 @@ use App\Services\Requests\RequestFactoryService;
 use App\Services\Requests\RequestStorageService;
 use App\Services\Requests\RequestStatusMessageService;
 use App\Services\Requests\RequestStatusService;
+use App\Services\Requests\RequestBoxService;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,7 @@ class RequestsController extends Controller
     public function __construct(
         protected RequestStorageService $requestStorageService,
         protected RequestFactoryService $requestFactoryService,
+        protected RequestBoxService $requestBoxService
     ) {}
 
     public function createBlankRequest(string $type)
@@ -50,11 +52,7 @@ class RequestsController extends Controller
             return $this->getAllRequests();
         }
 
-        $boxes = BoxResource::collection(
-            Box::with(['documents.rds', 'office', 'boxLocation.location'])
-                ->where('request_id', $request->id)
-                ->get()
-        )->toArray(request());
+        $boxes = $this->requestBoxService->getBoxesForRequest($request);
 
         return Inertia::render('RequestsPage', [
             'form' => (new RequestResource($request))->toArray(request()),
@@ -95,18 +93,23 @@ class RequestsController extends Controller
     public function submitRequest(HttpRequest $request, string $form_number)
     {
         try {
-            DB::transaction(fn() => $this->requestStorageService->saveRequestData($request, $form_number, 'submitted'));
+
+            $this->requestFactoryService->saveRequest($request, $form_number, 'submitted');
+
+            $form = RequestModel::where('form_number', $form_number)->firstOrFail();
 
             return Inertia::render('RequestsPage', [
                 'show_form' => true,
-                'form_details' => $this->requestStorageService->getRequestDetailsWithBoxesAndOfficers(
-                    RequestModel::where('form_number', $form_number)->value('id')
-                ),
+                'form_details' => $this->requestFactoryService->getRequestDetailsWithBoxesAndOfficers($form->id),
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to submit request', 'details' => $e->getMessage()], 500);
+            return response()->json([
+                'error' => 'Failed to submit request',
+                'details' => $e->getMessage(),
+            ], 500);
         }
     }
+
 
     public function destroy(string $form_number)
     {
