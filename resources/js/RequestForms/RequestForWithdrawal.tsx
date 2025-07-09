@@ -3,24 +3,10 @@ import { View, Text, StyleSheet } from "@react-pdf/renderer";
 
 // Define the styles here or import from another file
 import { styles } from "./styles"; // Adjust path if needed
-
-// Type definitions
-interface BoxDetail {
-    rds_number?: string;
-    document_title?: string;
-    description?: string;
-}
-
-interface Box {
-    box_code: string;
-    remarks: string;
-    type: string;
-    location: string;
-    box_details: BoxDetail[];
-}
+import { BoxDetails, BoxFormState, FormDetails, Officer } from "@/Utils/types";
 
 interface RequestForWithdrawalProps {
-    data: any;
+    data: FormDetails;
 }
 
 // Get formatted date
@@ -29,6 +15,15 @@ const month = today.toLocaleString("default", { month: "long" });
 const day = String(today.getDate()).padStart(2, "0");
 const year = today.getFullYear();
 const formattedDate = `${month} ${day}, ${year}`;
+
+const formatName = (gsuHead: Officer) => {
+    const { first_name, middle_initial, last_name } = gsuHead;
+    return `${first_name} ${
+        middle_initial ? middle_initial + "." : ""
+    } ${last_name}`
+        .replace(/\s+/g, " ")
+        .trim();
+};
 
 // Component
 const RequestForWithdrawal: React.FC<RequestForWithdrawalProps> = ({
@@ -52,7 +47,7 @@ const RequestForWithdrawal: React.FC<RequestForWithdrawalProps> = ({
             <Text style={styles.rsfno}>
                 RWF No.:{" "}
                 <Text style={{ textDecoration: "underline" }}>
-                    {data.data.form_no}
+                    {data.request.form_number}
                 </Text>
             </Text>
 
@@ -62,7 +57,7 @@ const RequestForWithdrawal: React.FC<RequestForWithdrawalProps> = ({
                     <Text>TO:</Text>
                 </View>
                 <View style={{ width: "90%" }}>
-                    <Text>GLADYS A. ELTANAL</Text>
+                    <Text>{formatName(data.gsu_head)}</Text>
                 </View>
             </View>
 
@@ -86,48 +81,48 @@ const RequestForWithdrawal: React.FC<RequestForWithdrawalProps> = ({
             <View style={styles.flex}>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.leftBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "20%" },
+                        { width: "20%", padding: 3 },
                     ]}
                 >
                     <Text>Box Code</Text>
                 </View>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "45%" },
+                        { width: "50%", padding: 3 },
                     ]}
                 >
-                    <Text>Document Description</Text>
+                    <Text>Description</Text>
                 </View>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "18%" },
+                        { width: "30%", padding: 3 },
                     ]}
                 >
-                    <Text>Copy Type</Text>
-                </View>
-                <View
-                    style={[
-                        styles.border,
-                        styles.tableHeader,
-                        { width: "20%" },
-                    ]}
-                >
-                    <Text>Box Location</Text>
+                    <Text>Content</Text>
                 </View>
             </View>
 
             {/* Table Body */}
-            {data.data.details.map((box: any, index: number) => (
+            {data.request.boxes.map((box: BoxFormState, index: number) => (
                 <View key={index} style={styles.flex}>
                     <View
                         style={[
-                            styles.border,
+                            styles.rightBorder,
+                            styles.leftBorder,
+                            styles.bottomBorder,
                             styles.tableCell,
                             { width: "20%" },
                         ]}
@@ -136,36 +131,44 @@ const RequestForWithdrawal: React.FC<RequestForWithdrawalProps> = ({
                     </View>
                     <View
                         style={[
-                            styles.border,
+                            styles.rightBorder,
+                            styles.bottomBorder,
                             styles.tableCell,
-                            { width: "45%" },
+                            { width: "50%" },
                         ]}
                     >
+                        <Text style={{ paddingBottom: 2 }}>
+                            Box Location: {box.location}
+                        </Text>
                         <Text>{box.remarks}</Text>
                     </View>
+
                     <View
                         style={[
-                            styles.border,
+                            styles.rightBorder,
+                            styles.bottomBorder,
                             styles.tableCell,
-                            { width: "18%" },
+                            { width: "30%" },
                         ]}
                     >
-                        <Text>{box.type}</Text>
-                    </View>
-                    <View
-                        style={[
-                            styles.border,
-                            styles.tableCell,
-                            { width: "20%" },
-                        ]}
-                    >
-                        <Text>{box.location}</Text>
+                        <Text>
+                            {box.box_details.map((details: BoxDetails) => {
+                                return (
+                                    <Text
+                                        key={details.id}
+                                        style={{ paddingBottom: 2 }}
+                                    >
+                                        {details.document_title || "N/A"}
+                                    </Text>
+                                );
+                            })}
+                        </Text>
                     </View>
                 </View>
             ))}
 
             {/* Note */}
-            <Text style={{ fontSize: 10, padding: 5 }}>
+            <Text style={[styles.italicFont, { fontSize: 10, paddingTop: 5 }]}>
                 Note: The Records Section shall not be responsible for any loss
                 of the box's contents.
             </Text>

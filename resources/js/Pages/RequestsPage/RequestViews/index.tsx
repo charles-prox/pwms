@@ -60,7 +60,7 @@ const RequestsPage = () => {
             );
 
         if (hasFormAndBoxes) {
-            return <RequestDetails form={form} />;
+            return <RequestDetails boxes={savedBoxes} form={form} />;
         }
 
         if (hasRequests) {

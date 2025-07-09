@@ -1,13 +1,15 @@
-import { BoxFormState } from "@/Utils/types";
+import { BoxFormState, RequestType } from "@/Utils/types";
 import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
 import React from "react";
 import BoxLabelViewer from "./BoxLabelViewer";
+import BoxRemarksViewer from "./BoxRemarksViewer";
 
 interface RequestBoxesProps {
     boxes: BoxFormState[];
+    requestType: RequestType; // Optional prop to handle different request types
 }
 
-const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes }) => {
+const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes, requestType }) => {
     if (!boxes || boxes.length === 0) {
         return <p className="text-gray-500">No boxes found.</p>;
     }
@@ -47,11 +49,13 @@ const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes }) => {
                                         ? "Permanent"
                                         : box.disposal_date?.formatted ?? "N/A"}
                                 </p>
-                                <BoxLabelViewer box={box} />
+                                {requestType === "storage" && (
+                                    <BoxLabelViewer box={box} />
+                                )}
                             </div>
                         </div>
 
-                        {!!box.location && (
+                        {!!box.location && requestType === "storage" && (
                             <div className="flex gap-4 items-center">
                                 <p className="text-sm italic text-gray-500">
                                     Location:
@@ -62,16 +66,7 @@ const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes }) => {
                             </div>
                         )}
 
-                        {box.remarks && (
-                            <>
-                                <p className="mt-2 text-sm italic text-gray-500">
-                                    Remarks:
-                                </p>
-                                <p className="whitespace-pre-line text-sm italic text-gray-500">
-                                    {box.remarks}
-                                </p>
-                            </>
-                        )}
+                        <BoxRemarksViewer requestType={requestType} box={box} />
 
                         {/* Documents inside the box */}
                         {box.box_details.length > 0 && (

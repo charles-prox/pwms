@@ -22,11 +22,11 @@ import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
 
 interface RequestsViewProps {
     form: FormProp;
+    boxes: BoxFormState[];
 }
 
-const RequestDetails = ({ form }: RequestsViewProps) => {
+const RequestDetails = ({ form, boxes }: RequestsViewProps) => {
     const { selectedBoxes } = useSelectedBoxes();
-    const { boxes } = useBoxForm();
 
     const displayedBoxes =
         form.request_type === "withdrawal" ? selectedBoxes : boxes;
@@ -95,7 +95,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
             {/* Middle row: Request Details */}
             <div className="flex flex-col col-span-1 xl:col-span-2 gap-4">
                 <RequestSummary items={boxes.length} form={form} />
-                <RequestBoxes boxes={boxes} />
+                <RequestBoxes boxes={boxes} requestType={form.request_type} />
             </div>
 
             <div className="flex flex-col gap-4 col-span-1 xl:col-span-1">

@@ -13,6 +13,7 @@ class RequestWithdrawalService
 
         // Update status
         $form->status = $status;
+        $form->is_draft = $status === 'draft';
         $form->save();
 
         // Sync boxes with remarks (pivot data)

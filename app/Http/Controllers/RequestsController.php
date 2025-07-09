@@ -94,7 +94,7 @@ class RequestsController extends Controller
     {
         try {
 
-            $this->requestFactoryService->saveRequest($request, $form_number, 'submitted');
+            $this->requestFactoryService->saveRequest($request, $form_number, 'pending');
 
             $form = RequestModel::where('form_number', $form_number)->firstOrFail();
 
