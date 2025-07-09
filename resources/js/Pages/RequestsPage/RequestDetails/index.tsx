@@ -29,13 +29,13 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
     const { boxes } = useBoxForm();
 
     const displayedBoxes =
-        form.request_type === "Withdrawal" ? selectedBoxes : boxes;
+        form.request_type === "withdrawal" ? selectedBoxes : boxes;
 
     const getColumns = () => {
         switch (form.request_type) {
-            case "Storage":
+            case "storage":
                 return storageColumns;
-            case "Withdrawal":
+            case "withdrawal":
                 return withdrawalColumns;
             default:
                 return storageColumns; // Fallback
@@ -66,10 +66,10 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
                         columns={getColumns()}
                         createButton={
                             <div className="flex items-center gap-2">
-                                {form.request_type === "Storage" && (
+                                {form.request_type === "storage" && (
                                     <NewBoxForm />
                                 )}
-                                {form.request_type === "Withdrawal" && (
+                                {form.request_type === "withdrawal" && (
                                     <WithdrawalForm />
                                 )}
                                 <SaveButton />

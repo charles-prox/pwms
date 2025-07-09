@@ -19,7 +19,7 @@ class RequestSeeder extends Seeder
             return;
         }
 
-        $types = ['Storage', 'Withdrawal', 'Return', 'Disposal'];
+        $types = ['storage', 'withdrawal', 'return', 'disposal'];
         $formYear = now()->year;
 
         foreach ($types as $type) {

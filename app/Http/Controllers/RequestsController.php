@@ -186,10 +186,8 @@ class RequestsController extends Controller
     {
         try {
             $service->authorizeUser();
-
             $validated = $service->validateRequest($request);
             $requestModel = RequestModel::findOrFail($validated['id']);
-
             if ($validated['status'] === 'approved') {
                 $service->handleApprovedUpload($request, $requestModel);
             }

@@ -24,7 +24,7 @@ const SaveButton = () => {
     const { form = null } = usePage<{ form?: FormProp }>().props;
 
     const boxesToSave =
-        form?.request_type === "Withdrawal" ? selectedBoxes : boxes;
+        form?.request_type === "withdrawal" ? selectedBoxes : boxes;
 
     const handleSaveAction = async (key: Key) => {
         if (key === "draft") {

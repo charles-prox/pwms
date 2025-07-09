@@ -16,7 +16,7 @@ class RequestResource extends JsonResource
         return [
             'id' => $this->id,
             'form_number' => $this->form_number,
-            'request_type' => ucfirst($this->request_type),
+            'request_type' => $this->request_type,
             'status' => ucfirst($this->status),
             'is_draft' => $this->is_draft,
             'submitted_at' => optional($this->submitted_at)->format('m/d/Y'),

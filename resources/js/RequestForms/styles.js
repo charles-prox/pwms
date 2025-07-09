@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 12,
     },
-    itallicFont: {
+    italicFont: {
         fontFamily: "Georgia",
         fontStyle: "italic",
     },

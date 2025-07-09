@@ -2,22 +2,22 @@ import React, { ReactNode } from "react";
 import { Document, Page, View, Text, Image } from "@react-pdf/renderer";
 import { styles } from "./styles";
 import Signatories from "./Signatories";
-import { Office, Officer, PDFDocumentProps, RequestType } from "@/Utils/types";
+import { PDFDocumentProps, RequestType } from "@/Utils/types";
 
 const requestHeaders: Record<RequestType, { title: string; formNo: string }> = {
-    Storage: {
+    storage: {
         title: "Request for Records Storage Form",
         formNo: "PHILHEALTH-QP-02-F01",
     },
-    Withdrawal: {
+    withdrawal: {
         title: "Request for Records Withdrawal Form",
         formNo: "PHILHEALTH-QP-02-F02",
     },
-    Return: {
+    return: {
         title: "Request for Return of Records Form",
         formNo: "PHILHEALTH-QP-02-F03",
     },
-    Disposal: {
+    disposal: {
         title: "Request for Records Disposal Form",
         formNo: "PHILHEALTH-QP-02-F04",
     },

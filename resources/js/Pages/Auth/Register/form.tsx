@@ -12,7 +12,7 @@ const RegisterForm = () => {
         data: offices,
         loading: loadingOffices,
         error: officesError,
-    } = useFetch<any[]>(route("offices"));
+    } = useFetch<any[]>(route("offices.list"));
     const {
         data: positions,
         loading: loadingPositions,

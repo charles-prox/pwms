@@ -12,7 +12,7 @@ return new class extends Migration {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
             $table->string('form_number', 20)->unique()->comment('Format: S-2025-001, etc.');
-            $table->string('request_type', 20)->comment('Storage, Withdrawal, Return, Disposal');
+            $table->string('request_type', 20)->comment('storage, withdrawal, return, disposal');
 
             $table->string('status', 30)->default('draft')->comment('Current status'); // moved tracking to logs
             $table->boolean('is_draft')->default(true);

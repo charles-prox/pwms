@@ -11,7 +11,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/offices', [OfficeController::class, 'index'])
-    ->name('offices');
+    ->name('offices.list');
 
 Route::get('/offices/{id}', [OfficeController::class, 'show'])
     ->name('offices.show');

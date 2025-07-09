@@ -37,7 +37,8 @@ export default function UpdateStatusAction({ item }: { item: any }) {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        post(route("requests.update-status", item.id), {
+        post(route("requests.update-status"), {
+            forceFormData: true,
             preserveScroll: true,
             preserveState: true,
             only: ["response"],

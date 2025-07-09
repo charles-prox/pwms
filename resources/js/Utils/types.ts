@@ -246,7 +246,7 @@ interface BoxDetail {
     disposal_date: DateFormatted | string; // sometimes it's "Permanent"
 }
 
-export type RequestType = "Storage" | "Withdrawal" | "Return" | "Disposal";
+export type RequestType = "storage" | "withdrawal" | "return" | "disposal";
 
 export type RequestProps = {
     type: RequestType;

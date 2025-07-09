@@ -18,11 +18,11 @@ function FormPreview({ form_details, previewMode }: FormPreviewProps) {
         console.log("Form Details:", form_details);
 
         switch (form_details.request?.type) {
-            case "Withdrawal":
+            case "withdrawal":
                 return <RequestForWithdrawal data={form_details} />;
-            case "Return":
+            case "return":
                 return <RequestForReturn data={form_details} />;
-            case "Disposal":
+            case "disposal":
                 return <RequestForDisposal data={form_details} />;
             default:
                 return (
@@ -37,7 +37,7 @@ function FormPreview({ form_details, previewMode }: FormPreviewProps) {
     return (
         <PDFLayout
             previewMode={previewMode}
-            requestType={form_details.request.type || "storage"}
+            requestType={form_details.request?.type || "storage"}
             preparedBy={{
                 name:
                     form_details.request.creator.first_name +
