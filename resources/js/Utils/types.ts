@@ -131,6 +131,7 @@ export interface FormProp {
     creator: string;
     pdf_path: string | null; // nullable string for the PDF path
     status_logs: StatusLog[];
+    boxes: BoxFormState[]; // Array of BoxFormState
     [key: string]: any; // Allow additional properties
 }
 

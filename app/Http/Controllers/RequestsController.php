@@ -52,11 +52,8 @@ class RequestsController extends Controller
             return $this->getAllRequests();
         }
 
-        $boxes = $this->requestBoxService->getBoxesForRequest($request);
-
         return Inertia::render('RequestsPage', [
             'form' => (new RequestResource($request))->toArray(request()),
-            'boxes' => $boxes,
         ]);
     }
 
@@ -167,6 +164,7 @@ class RequestsController extends Controller
         // Build query based on role
         $query = RequestModel::with(['creator', 'office', 'boxes'])
             ->where('is_draft', '!=', true)
+            ->where('status', '!=', 'completed')
             ->orderBy('updated_at', 'desc');
 
         if ($user->hasRole('regional-document-custodian')) {

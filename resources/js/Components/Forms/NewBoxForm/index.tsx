@@ -83,7 +83,7 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
                         try {
                             const boxCode = await fetchGeneratedBoxCode(
                                 form.office_id,
-                                boxes.length
+                                boxes.length - 1
                             );
 
                             console.log("Generated Box Code:", boxCode);

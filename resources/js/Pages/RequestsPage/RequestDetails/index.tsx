@@ -22,11 +22,12 @@ import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
 
 interface RequestsViewProps {
     form: FormProp;
-    boxes: BoxFormState[];
+    // boxes: BoxFormState[];
 }
 
-const RequestDetails = ({ form, boxes }: RequestsViewProps) => {
+const RequestDetails = ({ form }: RequestsViewProps) => {
     const { selectedBoxes } = useSelectedBoxes();
+    const { boxes } = useBoxForm();
 
     const displayedBoxes =
         form.request_type === "withdrawal" ? selectedBoxes : boxes;

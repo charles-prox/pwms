@@ -1,4 +1,5 @@
 import useFetch from "@/Hooks/useFetch";
+import { toTitleCase } from "@/Utils/helpers";
 import { FormProp } from "@/Utils/types";
 import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
 import React from "react";
@@ -29,7 +30,9 @@ const RequestSummary: React.FC<RequestSummaryProps> = ({ form, items }) => {
                 </div>
                 <div className="flex gap-5">
                     <span className="w-28 text-default-600">Request Type:</span>
-                    <span className="font-medium">{form.request_type}</span>
+                    <span className="font-medium">
+                        {toTitleCase(form.request_type)}
+                    </span>
                 </div>
                 <div className="flex gap-5">
                     <span className="w-28 text-default-600">

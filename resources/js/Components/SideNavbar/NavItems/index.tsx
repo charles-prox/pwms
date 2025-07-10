@@ -57,9 +57,11 @@ const NavItems: React.FC<NavItemsProps> = ({
                             px-3
                         `}
                                 disabled={url === item.url}
-                                onPress={() =>
-                                    router.visit(item.url ? item.url : "")
-                                }
+                                onPress={() => {
+                                    console.log(`Navigating to ${item.url}`);
+
+                                    router.visit(item.url ? item.url : "");
+                                }}
                             >
                                 <p
                                     className={`

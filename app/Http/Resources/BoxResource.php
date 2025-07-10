@@ -29,10 +29,19 @@ class BoxResource extends JsonResource
             ] : null,
             'box_details' => DocumentResource::collection($this->documents)->toArray(request()),
             'location' => $this->formatted_location,
+
+            // Remarks from pivot table (creation and completion remarks)
             'request_remarks' => [
+                'storage' => $this->pivot->storage_remarks ?? null,
                 'withdrawal' => $this->pivot->withdrawal_remarks ?? null,
                 'return' => $this->pivot->return_remarks ?? null,
                 'disposal' => $this->pivot->disposal_remarks ?? null,
+            ],
+            'completion_remarks' => [
+                'storage' => $this->pivot->storage_completion_remarks ?? null,
+                'withdrawal' => $this->pivot->withdrawal_completion_remarks ?? null,
+                'return' => $this->pivot->return_completion_remarks ?? null,
+                'disposal' => $this->pivot->disposal_completion_remarks ?? null,
             ],
         ];
     }

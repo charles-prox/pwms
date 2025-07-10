@@ -35,7 +35,6 @@ class RequestStorageService
                     'updated_by' => $user->id,
                 ]);
             } else {
-
                 $requestData->update([
                     'status' => 'pending',
                     'submitted_at' => now(),
@@ -47,6 +46,8 @@ class RequestStorageService
                 $requestData->logStatus('pending', $user->id, 'Request submitted for review and approval.');
             }
 
+            $pivotData = [];
+
             foreach ($request->boxes as $boxData) {
                 $rawDisposalDate = is_array($boxData['disposal_date']) ? $boxData['disposal_date']['raw'] : $boxData['disposal_date'];
                 $isPermanentBox = strtolower($rawDisposalDate) === 'permanent';
@@ -54,7 +55,6 @@ class RequestStorageService
                 $box = Box::updateOrCreate(
                     ['box_code' => $boxData['box_code']],
                     [
-                        'remarks' => $boxData['remarks'],
                         'priority_level' => is_array($boxData['priority_level'])
                             ? $boxData['priority_level']['value']
                             : $boxData['priority_level'],
@@ -62,19 +62,23 @@ class RequestStorageService
                         'is_permanent' => $isPermanentBox,
                         'status' => $status,
                         'office_id' => $user->office_id,
-                        'request_id' => $requestData->id,
                     ]
                 );
 
+                // Prepare pivot data for remarks (STORAGE request type here)
+                $pivotData[$box->id] = [
+                    'storage_remarks' => $boxData['remarks'] ?? null,
+                ];
+
+                // Save documents inside box
                 foreach ($boxData['box_details'] as $doc) {
                     $rawDocDisposalDate = is_array($doc['disposal_date']) ? $doc['disposal_date']['raw'] : $doc['disposal_date'];
                     $isPermanentDoc = strtolower($rawDocDisposalDate) === 'permanent';
                     $docDateStart = $doc['document_date']['start']['raw'] ?? null;
                     $docDateEnd = $doc['document_date']['end']['raw'] ?? $docDateStart;
 
-                    Document::updateOrCreate(
+                    $box->documents()->updateOrCreate(
                         [
-                            'box_id' => $box->id,
                             'document_code' => $doc['document_code'],
                         ],
                         [
@@ -89,8 +93,12 @@ class RequestStorageService
                     );
                 }
             }
+
+            // Sync boxes with pivot remarks
+            $requestData->boxesWithRequestRemarks()->sync($pivotData);
         });
     }
+
 
 
     /**
@@ -105,9 +113,7 @@ class RequestStorageService
         $latestCount = Box::where('office_id', $office->id)
             ->whereYear('created_at', $year)
             ->count();
-
         $series = $latestCount + $addedInFrontend + 1;
-
         return sprintf('%s-%03d-%d', strtoupper($office->acronym), $series, $year);
     }
 }

@@ -13,12 +13,10 @@ class Box extends Model
 
     protected $fillable = [
         'box_code',
-        'remarks',
         'status',
         'office_id',
         'priority_level',
         'disposal_date',
-        'request_id', // Make sure this is fillable if creating/updating
         'is_permanent',
     ];
 
@@ -64,7 +62,16 @@ class Box extends Model
     public function requests()
     {
         return $this->belongsToMany(Request::class, 'request_box')
-            ->withPivot('withdrawal_remarks', 'return_remarks', 'disposal_remarks')
+            ->withPivot([
+                'storage_remarks',
+                'withdrawal_remarks',
+                'return_remarks',
+                'disposal_remarks',
+                'storage_completion_remarks',
+                'withdrawal_completion_remarks',
+                'return_completion_remarks',
+                'disposal_completion_remarks',
+            ])
             ->withTimestamps();
     }
 }

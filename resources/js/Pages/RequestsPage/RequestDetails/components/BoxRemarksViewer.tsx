@@ -18,7 +18,7 @@ const BoxRemarksViewer: React.FC<BoxRemarksViewerProps> = ({
             value = box.remarks ?? "";
             break;
         case "withdrawal":
-            label = "Description";
+            label = "Description/Remarks :";
             value = box.request_remarks?.withdrawal ?? "";
             break;
         case "return":
@@ -37,7 +37,7 @@ const BoxRemarksViewer: React.FC<BoxRemarksViewerProps> = ({
 
     return (
         <div>
-            <p className="mt-2 text-sm italic text-gray-500">{label}</p>
+            <p className="mt-2 text-sm italic ">{label}</p>
             <p className="whitespace-pre-line text-sm italic text-gray-500">
                 {value}
             </p>

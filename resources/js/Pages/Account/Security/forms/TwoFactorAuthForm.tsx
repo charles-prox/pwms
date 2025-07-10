@@ -6,7 +6,7 @@ import ConfirmPassword from "@/Components/ConfirmPassword";
 import { ConfirmTwoFactorAuthForm } from "./ConfirmTwoFactorAuthForm";
 
 export const TwoFactorAuthForm: React.FC = () => {
-    const { auth } = usePage<any>().props;
+    const { confirmsTwoFactorAuthentication } = usePage<any>().props;
     const [passwordConfirmed, setPasswordConfirmed] = useState<boolean>(false);
     const [recoveryCodes, setRecoveryCodes] = useState<any>([]);
     const [showRecoveryCodes, setShowRecoveryCodes] = useState<boolean>(false);
@@ -30,6 +30,13 @@ export const TwoFactorAuthForm: React.FC = () => {
         router.delete(route("two-factor.disable"), {
             onFinish: () => setProcessing(false),
         });
+        setShowRecoveryCodes(false);
+        setRecoveryCodes([]);
+        setPasswordConfirmed(false);
+        setOpenConfirmPasswordForm(false);
+        setOpenConfirmTwoFactorAuthForm(false);
+        setAction("");
+        setProcessing(false);
     };
 
     const regenerateRecoveryCodes = (): void => {
@@ -40,10 +47,10 @@ export const TwoFactorAuthForm: React.FC = () => {
     };
 
     useEffect(() => {
-        if (auth.user?.two_factor_enabled && showRecoveryCodes) {
+        if (confirmsTwoFactorAuthentication && showRecoveryCodes) {
             getRecoveryCodes();
         }
-    }, [auth, showRecoveryCodes]);
+    }, [confirmsTwoFactorAuthentication, showRecoveryCodes]);
 
     useEffect(() => {
         if (passwordConfirmed) {
@@ -79,7 +86,7 @@ export const TwoFactorAuthForm: React.FC = () => {
                         <CardBody className="p-0">
                             <div className="flex flex-col gap-5 p-8">
                                 <h3 className="text-md font-semibold">
-                                    {auth.user?.two_factor_enabled
+                                    {confirmsTwoFactorAuthentication
                                         ? "You have enabled two factor authentication."
                                         : "You have not enabled two factor authentication."}
                                 </h3>
@@ -123,8 +130,7 @@ export const TwoFactorAuthForm: React.FC = () => {
                                 )}
                             </div>
                             <div className="px-8 py-5 bg-slate-400/10 text-right">
-                                {auth.user?.two_factor_enabled &&
-                                auth.user?.two_factor_confirmed_at ? (
+                                {confirmsTwoFactorAuthentication ? (
                                     <div className="flex gap-3 justify-end">
                                         {showRecoveryCodes ? (
                                             <Button
@@ -186,12 +192,12 @@ export const TwoFactorAuthForm: React.FC = () => {
             <ConfirmTwoFactorAuthForm
                 isOpen={openConfirmTwoFactorAuthForm}
                 onClose={() => {
-                    setOpenConfirmTwoFactorAuthForm(false);
-                    setProcessing(false);
+                    disableTwoFactorAuthentication();
                 }}
                 onSuccess={() => {
                     setOpenConfirmTwoFactorAuthForm(false);
                     setPasswordConfirmed(false);
+                    setShowRecoveryCodes(true);
                 }}
             />
 
@@ -204,7 +210,6 @@ export const TwoFactorAuthForm: React.FC = () => {
                 onSuccess={(state: boolean) => {
                     setOpenConfirmPasswordForm(false);
                     setPasswordConfirmed(state);
-                    setShowRecoveryCodes(true);
                 }}
             />
         </React.Fragment>

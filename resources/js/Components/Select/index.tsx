@@ -135,7 +135,10 @@ const Select = <T extends object>({
                     }}
                 >
                     {Array.from(items ?? []).map((item: any) => (
-                        <SelectItem key={item[valueField || keyField]}>
+                        <SelectItem
+                            key={item[valueField || keyField]}
+                            textValue={item[labelField]}
+                        >
                             {item[labelField]}
                         </SelectItem>
                     ))}

@@ -21,6 +21,7 @@ export const columns: Column<Request>[] = [
         key: "actions",
         render: (item: any) => {
             console.log("Rendering actions for item:", item.status);
+            console.log("Item details:", item);
 
             return item.status.toLowerCase() === "approved" ? (
                 <CompleteRequestAction item={item} />

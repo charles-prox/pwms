@@ -27,7 +27,7 @@ export const EmploymentDetailsForm: React.FC<EmploymentDetailsFormProps> = ({
         data: offices,
         loading: loadingOffices,
         error: officesError,
-    } = useFetch<Office[]>(route("offices"));
+    } = useFetch<Office[]>(route("offices.list"));
     const {
         data: positions,
         loading: loadingPositions,

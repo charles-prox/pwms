@@ -20,13 +20,11 @@ const RequestsPage = () => {
     const {
         form = null,
         requests = [],
-        boxes: savedBoxes = [],
         show_form = false,
         form_details = null,
     } = usePage<{
         form?: FormProp;
         requests?: Request[];
-        boxes?: BoxFormState[];
         show_form?: boolean;
         form_details?: FormDetails;
     }>().props;
@@ -36,22 +34,24 @@ const RequestsPage = () => {
     const { getLayoutView } = useLayoutViewContext();
     const currentLayout = getLayoutView(PAGE_ID) ?? "list"; // Default to list
 
-    const hasFormAndBoxes = form && savedBoxes;
+    const hasFormAndBoxes = form && !!form.boxes;
     const hasRequests = !!requests;
 
     // If saved boxes are present, sync them to local unsaved state
     React.useEffect(() => {
-        if (
-            form?.request_type.toLowerCase() === "withdrawal" &&
-            savedBoxes.length
-        ) {
-            bulkAddBoxes(savedBoxes);
-            localStorage.setItem("selectedBoxes", JSON.stringify(savedBoxes)); // optional
-        } else {
-            setBoxes(savedBoxes); // For storage requests, or others
-            sessionStorage.setItem("boxes", JSON.stringify(savedBoxes)); // optional
+        if (form && form.boxes.length > 0) {
+            if (form.request_type.toLowerCase() === "withdrawal") {
+                bulkAddBoxes(form.boxes);
+                localStorage.setItem(
+                    "selectedBoxes",
+                    JSON.stringify(form.boxes)
+                ); // optional
+            } else {
+                setBoxes(form.boxes); // For storage requests, or others
+                localStorage.setItem("boxes", JSON.stringify(form.boxes)); // optional
+            }
         }
-    }, []);
+    }, [form]);
 
     const renderContent = () => {
         if (show_form && form_details)
@@ -60,7 +60,7 @@ const RequestsPage = () => {
             );
 
         if (hasFormAndBoxes) {
-            return <RequestDetails boxes={savedBoxes} form={form} />;
+            return <RequestDetails form={form} />;
         }
 
         if (hasRequests) {

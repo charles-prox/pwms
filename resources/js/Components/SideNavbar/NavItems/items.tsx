@@ -68,13 +68,13 @@ export const items: NavItem[] = [
         icon: (size) => <RdsIcon width={size} height={size} />,
         url: "/rds",
     },
-    {
-        type: "link",
-        key: "locations",
-        label: "Locations",
-        icon: (size) => <LocationIcon width={size} height={size} />,
-        url: "/location",
-    },
+    // {
+    //     type: "link",
+    //     key: "locations",
+    //     label: "Locations",
+    //     icon: (size) => <LocationIcon width={size} height={size} />,
+    //     url: "/location",
+    // },
     {
         type: "link",
         key: "storage-record-entry",

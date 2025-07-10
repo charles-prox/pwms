@@ -4,7 +4,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "lint": "eslint . --ext .ts,.tsx"
+        "lint": "eslint . --ext .ts,.tsx",
+        "make:page": "node scripts/create-page.cjs"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.7",
