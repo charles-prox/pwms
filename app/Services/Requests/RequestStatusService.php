@@ -34,6 +34,7 @@ class RequestStatusService
             'boxes.*.location.bay' => 'required|integer',
             'boxes.*.location.level' => 'required|integer',
             'boxes.*.location.position' => 'required|integer',
+            'boxes.*.remarks' => 'nullable|string',
         ]);
     }
 
@@ -48,36 +49,59 @@ class RequestStatusService
         }
     }
 
-    public function assignBoxLocations(array $boxes)
+    public function assignBoxLocations(array $boxes,  RequestModel $request)
     {
-        DB::transaction(function () use ($boxes) {
-            foreach ($boxes as $boxData) {
-                $box = Box::findOrFail($boxData['id']);
-                $locationData = $boxData['location'];
+        try {
+            DB::transaction(function () use ($boxes, $request) {
+                $pivotData = [];
+                foreach ($boxes as $boxData) {
+                    try {
+                        $box = Box::findOrFail($boxData['id']);
+                        $locationData = $boxData['location'];
+                        $location = Location::where([
+                            'floor' => $locationData['floor'],
+                            'rack' => $locationData['rack'],
+                            'bay' => $locationData['bay'],
+                            'level' => $locationData['level'],
+                        ])->firstOrFail();
 
-                $location = Location::where([
-                    'floor' => $locationData['floor'],
-                    'rack' => $locationData['rack'],
-                    'bay' => $locationData['bay'],
-                    'level' => $locationData['level'],
-                ])->firstOrFail();
+                        if ($location->current_boxes >= $location->total_positions * $location->capacity_per_position) {
+                            throw new \Exception("Location {$location->id} has reached full capacity.");
+                        }
 
-                if ($location->current_boxes >= $location->total_positions * $location->capacity_per_position) {
-                    throw new \Exception("Location {$location->id} has reached full capacity.");
+                        $box->boxLocation()->create([
+                            'location_id' => $location->id,
+                            'position' => $locationData['position'],
+                        ]);
+
+                        $location->increment('current_boxes');
+
+                        if (!$location->office_id) {
+                            $location->office_id = $box->office_id;
+                            $location->save();
+                        }
+
+                        $box->status = 'stored';
+                        $box->save();
+
+
+                        if (isset($boxData['remarks'])) {
+                            $pivotData[$box->id] = [
+                                'storage_completion_remarks' => $boxData['remarks'],
+                            ];
+                        }
+                    } catch (\Throwable $e) {
+                        throw new \Exception("Error in box ID {$boxData['id']}: " . $e->getMessage(), 0, $e);
+                    }
                 }
 
-                $box->boxLocations()->create([
-                    'location_id' => $location->id,
-                    'position' => $locationData['position'],
-                ]);
-
-                $location->increment('current_boxes');
-
-                if (!$location->office_id) {
-                    $location->office_id = $box->office_id;
-                    $location->save();
+                if (!empty($pivotData)) {
+                    $request->boxes()->syncWithoutDetaching($pivotData);
                 }
-            }
-        });
+            });
+        } catch (\Throwable $e) {
+            // You can use Laravel's logger instead of dd() in production
+            dd("Transaction failed:", $e->getMessage(), $e->getTraceAsString());
+        }
     }
 }

@@ -28,6 +28,6 @@ class RequestWithdrawalService
         }
 
         // Sync to pivot table (request_box)
-        $form->boxesWithRequestRemarks()->sync($pivotData);
+        $form->boxes()->sync($pivotData);
     }
 }

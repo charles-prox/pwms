@@ -73,12 +73,11 @@ export interface BoxFormState {
     id: number;
     box_code: string;
     priority_level: PriorityLevel | null;
-    remarks: string;
-    disposal_date: BoxDate | null | "Permanent"; // e.g., { raw: '2025-12-31T23:59:59Z', formatted: 'December 31, 2025' } or "Permanent"
+    disposal_date: BoxDate | "Permanent" | null;
     office: { id: number; name: string } | null;
     box_details: BoxDetails[];
-    location?: string | null; // Location details for the box
-    [key: string]: any; // Allow additional properties
+    location: string | null;
+    [key: string]: any; // For future extensions
 }
 
 export interface BoxDetails {
@@ -93,6 +92,13 @@ export interface BoxDetails {
 
 export interface SelectedWithdrawalBoxes extends BoxFormState {
     request_remarks?: {
+        storage?: string;
+        withdrawal?: string;
+        return?: string;
+        disposal?: string;
+    };
+    completion_remarks?: {
+        storage?: string;
         withdrawal?: string;
         return?: string;
         disposal?: string;

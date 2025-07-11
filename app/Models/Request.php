@@ -63,7 +63,7 @@ class Request extends Model
     }
 
     // Pivoted relationship for boxes with remarks
-    public function boxesWithRequestRemarks()
+    public function boxes()
     {
         return $this->belongsToMany(Box::class, 'request_box')
             ->withPivot([
@@ -81,7 +81,7 @@ class Request extends Model
 
     public function getBoxRemarks(Box $box, string $requestType, string $remarksType = 'creation'): ?string
     {
-        $pivot = $this->boxesWithRequestRemarks()->where('box_id', $box->id)->first()?->pivot;
+        $pivot = $this->boxes()->where('box_id', $box->id)->first()?->pivot;
 
         if (!$pivot) {
             return null;

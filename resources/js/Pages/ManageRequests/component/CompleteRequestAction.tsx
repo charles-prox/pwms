@@ -10,8 +10,10 @@ import {
     Input,
     Select,
     SelectItem,
+    Textarea,
 } from "@heroui/react";
 import { useForm } from "@inertiajs/react";
+import React from "react";
 
 interface BoxLocationData {
     floor: "mezzanine" | "ground" | "";
@@ -25,6 +27,7 @@ interface BoxData {
     id: number;
     box_code: string;
     location: BoxLocationData;
+    remarks?: string; // Optional, for additional notes
 }
 
 interface CompleteRequestFormData {
@@ -50,6 +53,16 @@ export default function CompleteRequestAction({
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
     const { showAlert } = useModalAlert(); // use your context here
 
+    const [expandedRemarks, setExpandedRemarks] = React.useState<number[]>([]);
+
+    const toggleRemarks = (index: number) => {
+        setExpandedRemarks((prev) =>
+            prev.includes(index)
+                ? prev.filter((i) => i !== index)
+                : [...prev, index]
+        );
+    };
+
     const { data, setData, errors, post, processing, reset } =
         useForm<CompleteRequestFormData>({
             id: item.id,
@@ -64,6 +77,7 @@ export default function CompleteRequestAction({
                     level: "",
                     position: "",
                 },
+                remarks: "",
             })),
         });
 
@@ -115,9 +129,21 @@ export default function CompleteRequestAction({
                                     key={box.id}
                                     className="border p-3 mb-4 rounded"
                                 >
-                                    <h4 className="font-bold mb-2">
-                                        Box Code: {box.box_code}
-                                    </h4>
+                                    <div className="flex flex-row justify-between items-center mb-2">
+                                        <h4 className="font-bold mb-2">
+                                            Box Code: {box.box_code}
+                                        </h4>
+                                        <button
+                                            type="button"
+                                            className="text-blue-500 hover:underline text-sm"
+                                            onClick={() => toggleRemarks(index)}
+                                        >
+                                            {expandedRemarks.includes(index)
+                                                ? "Hide Remarks"
+                                                : "+ Add Remarks"}
+                                        </button>
+                                    </div>
+
                                     <div className="flex gap-4">
                                         <Select
                                             label="Floor"
@@ -280,6 +306,31 @@ export default function CompleteRequestAction({
                                             isRequired
                                         />
                                     </div>
+
+                                    {expandedRemarks.includes(index) && (
+                                        <Textarea
+                                            label="Remarks"
+                                            labelPlacement="outside"
+                                            placeholder="Enter remarks (optional)"
+                                            value={box.remarks || ""}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "boxes",
+                                                    data.boxes.map((b, idx) =>
+                                                        idx === index
+                                                            ? {
+                                                                  ...b,
+                                                                  remarks:
+                                                                      e.target
+                                                                          .value,
+                                                              }
+                                                            : b
+                                                    )
+                                                )
+                                            }
+                                            className="mt-2"
+                                        />
+                                    )}
                                 </div>
                             ))}
                         </ModalBody>

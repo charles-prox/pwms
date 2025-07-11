@@ -95,7 +95,7 @@ class RequestStorageService
             }
 
             // Sync boxes with pivot remarks
-            $requestData->boxesWithRequestRemarks()->sync($pivotData);
+            $requestData->boxes()->sync($pivotData);
         });
     }
 
@@ -107,13 +107,26 @@ class RequestStorageService
      * @param Office $office
      * @return string
      */
-    public function generateBoxCode(Office $office, int $addedInFrontend = 0): string
+    public function generateBoxCode(Office $office, array $boxCodes): string
     {
         $year = now()->year;
-        $latestCount = Box::where('office_id', $office->id)
+        // Count boxes already saved in DB for this office & year
+        $existingOfficeBoxCount = Box::where('office_id', $office->id)
             ->whereYear('created_at', $year)
             ->count();
-        $series = $latestCount + $addedInFrontend + 1;
+
+        // Count how many of the draft box IDs already exist in DB (cross-request duplicates)
+        $existingDraftBoxCount = Box::whereIn('box_code', $boxCodes)->count();
+
+        // Total boxes in draft
+        $totalDraftCount = count($boxCodes);
+
+        // New boxes in draft (those not yet saved)
+        $newDraftBoxCount = $totalDraftCount - $existingDraftBoxCount;
+        // dd($existingOfficeBoxCount, $newDraftBoxCount, $existingDraftBoxCount);
+        // Series number: boxes already saved in office + new boxes in draft + 1 (for this new box)
+        $series = $existingOfficeBoxCount + $newDraftBoxCount + 1;
+
         return sprintf('%s-%03d-%d', strtoupper($office->acronym), $series, $year);
     }
 }

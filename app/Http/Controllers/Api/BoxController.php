@@ -27,9 +27,11 @@ class BoxController extends Controller
 
             $boxesQuery->where(function ($query) use ($search) {
                 $query->whereRaw('LOWER(box_code) LIKE ?', ["%{$search}%"])
-                    ->orWhereRaw('LOWER(remarks) LIKE ?', ["%{$search}%"])
                     ->orWhereHas('documents', function ($docQuery) use ($search) {
                         $docQuery->whereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
+                    })
+                    ->orWhereHas('requests', function ($reqQuery) use ($search) {
+                        $reqQuery->whereRaw('LOWER(request_box.storage_remarks) LIKE ?', ["%{$search}%"]);
                     });
             });
         }

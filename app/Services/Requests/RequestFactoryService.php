@@ -134,22 +134,11 @@ class RequestFactoryService
             $query->where('code', 'rdc');
         })->first();
 
-        // Get boxes depending on request type
-        $boxes = match (strtolower($request->request_type)) {
-            'storage' => BoxResource::collection(
-                Box::with(['documents.rds', 'office', 'boxLocation.location'])
-                    ->where('request_id', $request->id)
-                    ->get()
-            )->toArray(request()),
-
-            'withdrawal' => BoxResource::collection(
-                $request->boxesWithRequestRemarks()
-                    ->with(['documents.rds', 'office', 'boxLocation.location'])
-                    ->get()
-            )->toArray(request()),
-
-            default => [],
-        };
+        $boxes = BoxResource::collection(
+            $request->boxes()
+                ->with(['documents.rds', 'office', 'boxLocation.location'])
+                ->get()
+        )->toArray(request());
 
         return [
             'request' => [

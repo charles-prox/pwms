@@ -11,7 +11,7 @@ import {
     Textarea,
     Input,
 } from "@heroui/react";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 
 const statusOptions = [
     { label: "Approved", value: "approved" },
@@ -51,6 +51,7 @@ export default function UpdateStatusAction({ item }: { item: any }) {
                 });
                 reset();
                 onClose();
+                router.reload(); // Reload the page to reflect changes
             },
             onError: () => {
                 showAlert({

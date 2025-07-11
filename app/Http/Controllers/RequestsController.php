@@ -44,7 +44,14 @@ class RequestsController extends Controller
 
     public function getFormDetails(string $form_no)
     {
-        $request = RequestModel::with(['statusLogs.updatedBy'])
+        $request = RequestModel::with([
+            'statusLogs.updatedBy',
+            'boxes.documents.rds',
+            'boxes.office',
+            'boxes.boxLocation.location',
+            'creator',
+            'office',
+        ])
             ->where('form_number', $form_no)
             ->first();
 
@@ -143,8 +150,8 @@ class RequestsController extends Controller
 
     public function generateBoxCode(HttpRequest $request, Office $office)
     {
-        $existing = (int) $request->get('existingCount', 0);
-        return response()->json(['box_code' => $this->requestStorageService->generateBoxCode($office, $existing)]);
+        $boxCodes = $request->input('boxCodes', []);
+        return response()->json(['box_code' => $this->requestStorageService->generateBoxCode($office, $boxCodes)]);
     }
 
     public function manageRequests()
@@ -191,7 +198,7 @@ class RequestsController extends Controller
             }
 
             if ($validated['status'] === 'completed') {
-                $service->assignBoxLocations($validated['boxes']);
+                $service->assignBoxLocations($validated['boxes'], $requestModel);
             }
 
             $remarks = $validated['remarks'] ??
@@ -199,7 +206,6 @@ class RequestsController extends Controller
                     $validated['status'],
                     $requestModel->request_type
                 );
-
             $requestModel->logStatus(
                 $validated['status'],
                 Auth::id(),

@@ -18,7 +18,7 @@ class RequestBoxService
             )->toArray(request()),
 
             'withdrawal' => BoxResource::collection(
-                $request->boxesWithRequestRemarks()
+                $request->boxes()
                     ->with(['documents.rds', 'office', 'boxLocation.location'])
                     ->get()
             )->toArray(request()),

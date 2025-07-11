@@ -47,8 +47,8 @@ class RequestResource extends JsonResource
                     'name' => $this->office->name,
                 ];
             }),
-            'boxes' => $this->whenLoaded('boxesWithRequestRemarks', function () {
-                return array_values(BoxResource::collection($this->boxesWithRequestRemarks)->toArray(request()));
+            'boxes' => $this->whenLoaded('boxes', function () {
+                return array_values(BoxResource::collection($this->boxes)->toArray(request()));
             }, []),
         ];
     }

@@ -11,13 +11,13 @@ import { axiosInstance } from "@/Utils/axios";
  */
 export async function fetchGeneratedBoxCode(
     officeId: number,
-    existingCount: number = 0
+    boxCodes: string[]
 ): Promise<string> {
     try {
         const response = await axiosInstance.get(
             `/requests/generate-box-code/${officeId}`,
             {
-                params: { existingCount },
+                params: { boxCodes },
             }
         );
         return response.data.box_code;

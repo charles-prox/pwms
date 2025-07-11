@@ -3,7 +3,12 @@ import { View, Text, StyleSheet } from "@react-pdf/renderer";
 
 // Define the styles here or import from another file
 import { styles } from "./styles"; // Adjust path if needed
-import { BoxDetails, BoxFormState, FormDetails, Officer } from "@/Utils/types";
+import {
+    BoxDetails,
+    FormDetails,
+    Officer,
+    SelectedWithdrawalBoxes,
+} from "@/Utils/types";
 
 interface RequestForWithdrawalProps {
     data: FormDetails;
@@ -116,56 +121,62 @@ const RequestForWithdrawal: React.FC<RequestForWithdrawalProps> = ({
             </View>
 
             {/* Table Body */}
-            {data.request.boxes.map((box: BoxFormState, index: number) => (
-                <View key={index} style={styles.flex}>
-                    <View
-                        style={[
-                            styles.rightBorder,
-                            styles.leftBorder,
-                            styles.bottomBorder,
-                            styles.tableCell,
-                            { width: "20%" },
-                        ]}
-                    >
-                        <Text>{box.box_code}</Text>
-                    </View>
-                    <View
-                        style={[
-                            styles.rightBorder,
-                            styles.bottomBorder,
-                            styles.tableCell,
-                            { width: "50%" },
-                        ]}
-                    >
-                        <Text style={{ paddingBottom: 2 }}>
-                            Box Location: {box.location}
-                        </Text>
-                        <Text>{box.remarks}</Text>
-                    </View>
+            {data.request.boxes.map(
+                (box: SelectedWithdrawalBoxes, index: number) => (
+                    <View key={index} style={styles.flex}>
+                        <View
+                            style={[
+                                styles.rightBorder,
+                                styles.leftBorder,
+                                styles.bottomBorder,
+                                styles.tableCell,
+                                { width: "20%" },
+                            ]}
+                        >
+                            <Text>{box.box_code}</Text>
+                        </View>
+                        <View
+                            style={[
+                                styles.rightBorder,
+                                styles.bottomBorder,
+                                styles.tableCell,
+                                { width: "50%" },
+                            ]}
+                        >
+                            <Text style={{ paddingBottom: 2 }}>
+                                Box Location: {box.location}
+                            </Text>
+                            <Text>
+                                {box.request_remarks
+                                    ? box.request_remarks[data.request.type]
+                                    : "---"}
+                            </Text>
+                        </View>
 
-                    <View
-                        style={[
-                            styles.rightBorder,
-                            styles.bottomBorder,
-                            styles.tableCell,
-                            { width: "30%" },
-                        ]}
-                    >
-                        <Text>
-                            {box.box_details.map((details: BoxDetails) => {
-                                return (
-                                    <Text
-                                        key={details.id}
-                                        style={{ paddingBottom: 2 }}
-                                    >
-                                        {details.document_title || "N/A"}
-                                    </Text>
-                                );
-                            })}
-                        </Text>
+                        <View
+                            style={[
+                                styles.rightBorder,
+                                styles.bottomBorder,
+                                styles.tableCell,
+                                { width: "30%" },
+                            ]}
+                        >
+                            <Text>
+                                {box.box_details.map((details: BoxDetails) => {
+                                    return (
+                                        <Text
+                                            key={details.id}
+                                            style={{ paddingBottom: 2 }}
+                                        >
+                                            {details.document_title || "N/A"}
+                                        </Text>
+                                    );
+                                })}
+                            </Text>
+                        </View>
                     </View>
-                </View>
-            ))}
+                )
+            )}
 
             {/* Note */}
             <Text style={[styles.italicFont, { fontSize: 10, paddingTop: 5 }]}>

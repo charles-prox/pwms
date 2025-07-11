@@ -1,7 +1,7 @@
 import React from "react";
 import { Head, router, usePage } from "@inertiajs/react";
 import PageLayoutViewController from "@/Components/PageLayoutViewController";
-import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
+import { Breadcrumbs, BreadcrumbItem, Button } from "@heroui/react";
 import { BoxFormState, FormDetails, FormProp } from "@/Utils/types";
 import { useLayoutViewContext } from "@/Contexts/LayoutViewContext";
 import {
@@ -85,10 +85,16 @@ const RequestsPage = () => {
                 <BreadcrumbItem isCurrent={url === "/request"} key="/request">
                     Requests
                 </BreadcrumbItem>
-                {url !== "/request" && (
+                {url.includes("print") ? (
                     <BreadcrumbItem isCurrent={url !== "/request"}>
-                        Details
+                        Print
                     </BreadcrumbItem>
+                ) : (
+                    url !== "/request" && (
+                        <BreadcrumbItem isCurrent={url !== "/request"}>
+                            Details
+                        </BreadcrumbItem>
+                    )
                 )}
             </Breadcrumbs>
             <div className="flex flex-col gap-5">
@@ -104,6 +110,27 @@ const RequestsPage = () => {
                                     Easily Create and Track Requests
                                 </p>
                             </>
+                        ) : url.includes("print") ? (
+                            <div className="flex flex-row items-end gap-2">
+                                <div className=" flex-grow">
+                                    <h1 className="text-xl font-bold">
+                                        Print Request Form
+                                    </h1>
+                                    <p className="text-sm text-gray-500">
+                                        Print 3 copies—one for the regional
+                                        document custodian, one for the
+                                        requesting office, and one for warehouse
+                                        personnel.
+                                    </p>
+                                </div>
+                                <Button
+                                    size="md"
+                                    color="primary"
+                                    onPress={() => router.visit("/request")}
+                                >
+                                    Done
+                                </Button>
+                            </div>
                         ) : (
                             <>
                                 <h1 className="text-xl font-bold">

@@ -9,14 +9,21 @@ import { axiosInstance } from "@/Utils/axios";
 import { router } from "@inertiajs/react";
 import Icon from "@/Components/Icon";
 import { useModalAlert } from "@/Contexts/ModalAlertContext";
+import { useBoxForm } from "@/Contexts/BoxFormContext";
+import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
 
 export default function App() {
     const { showAlert } = useModalAlert();
+    const { resetBoxes } = useBoxForm();
+    const { clearSelections } = useSelectedBoxes();
     const onCreateRequest = async (type: Key) => {
         try {
+            resetBoxes(); // Clear any existing boxes in the context
+            clearSelections(); // Clear any selected boxes in the context
             const response = await axiosInstance.post(
                 `/request/create/${type}`
             );
+
             const form_no = response.data.form_no;
 
             console.log("Request created!", response.data);
