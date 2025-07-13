@@ -1,7 +1,7 @@
 import { Column } from "@/Layouts/BaseListView";
 import { UpdatePasswordForm } from "@/Pages/Account/Security/forms/UpdatePasswordForm";
 import UpdateStatusAction from "../component/UpdatedStatusAction";
-import CompleteRequestAction from "../component/CompleteRequestAction";
+import CompleteRequestAction from "../component/CompleteStorageRequestAction";
 
 export const columns: Column<Request>[] = [
     { label: "FORM NO.", key: "form_number", sortable: true },

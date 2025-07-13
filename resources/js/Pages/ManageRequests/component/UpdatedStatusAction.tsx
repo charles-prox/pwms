@@ -11,7 +11,7 @@ import {
     Textarea,
     Input,
 } from "@heroui/react";
-import { router, useForm } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 
 const statusOptions = [
     { label: "Approved", value: "approved" },
@@ -37,11 +37,12 @@ export default function UpdateStatusAction({ item }: { item: any }) {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         post(route("requests.update-status"), {
             forceFormData: true,
             preserveScroll: true,
             preserveState: true,
-            only: ["response"],
+            only: ["response", "errors"],
             onSuccess: () => {
                 showAlert({
                     type: "success",
@@ -53,7 +54,9 @@ export default function UpdateStatusAction({ item }: { item: any }) {
                 onClose();
                 router.reload(); // Reload the page to reflect changes
             },
-            onError: () => {
+            onError: (errors) => {
+                console.log("errors: " + errors);
+
                 showAlert({
                     type: "error",
                     title: "Update Failed",
@@ -172,10 +175,7 @@ export default function UpdateStatusAction({ item }: { item: any }) {
                                             isRequired={
                                                 data.status === "rejected"
                                             }
-                                            isInvalid={
-                                                data.status === "rejected" &&
-                                                !data.remarks
-                                            }
+                                            isInvalid={!!errors.remarks}
                                             classNames={{
                                                 label: "font-bold",
                                             }}

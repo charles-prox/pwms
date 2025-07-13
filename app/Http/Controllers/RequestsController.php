@@ -12,9 +12,9 @@ use App\Services\Requests\RequestStorageService;
 use App\Services\Requests\RequestStatusMessageService;
 use App\Services\Requests\RequestStatusService;
 use App\Services\Requests\RequestBoxService;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class RequestsController extends Controller
@@ -189,6 +189,10 @@ class RequestsController extends Controller
 
     public function updateStatus(HttpRequest $request, RequestStatusService $service)
     {
+        if (!isset($request['remarks']) || is_null($request['remarks'])) {
+            $request->merge(['remarks' => ""]);
+        }
+
         try {
             $service->authorizeUser();
             $validated = $service->validateRequest($request);
@@ -198,7 +202,13 @@ class RequestsController extends Controller
             }
 
             if ($validated['status'] === 'completed') {
-                $service->assignBoxLocations($validated['boxes'], $requestModel);
+                if ($requestModel->request_type === 'storage') {
+                    $service->assignBoxLocations($validated['boxes'], $requestModel);
+                }
+
+                if ($requestModel->request_type === 'withdrawal') {
+                    $service->confirmBoxWithdrawals($validated['boxes'], $requestModel);
+                }
             }
 
             $remarks = $validated['remarks'] ??
@@ -213,11 +223,20 @@ class RequestsController extends Controller
             );
 
             return $this->manageRequests();
+        } catch (ValidationException $e) {
+            // Return validation errors to Inertia
+            // dd($e);
+            // Handle other exceptions (log them or return a generic error)
+
+            return Inertia::render('ManageRequests', [
+                'errors' => $e->errors(),
+            ])->toResponse(request())
+                ->setStatusCode(422);
         } catch (\Throwable $e) {
-            // Log the error for debugging
+            // Handle other exceptions (log them or return a generic error)
             return back()->withErrors([
-                'updateStatus' => 'Something went wrong while updating the status. ' . $e->getMessage(),
-            ]);
+                'updateStatus' => 'Something went wrong: ' . $e->getMessage(),
+            ])->withInput();
         }
     }
 }

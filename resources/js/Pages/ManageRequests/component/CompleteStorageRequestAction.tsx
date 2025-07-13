@@ -47,7 +47,7 @@ interface CompleteRequestActionProps {
     };
 }
 
-export default function CompleteRequestAction({
+export default function CompleteStorageRequestAction({
     item,
 }: CompleteRequestActionProps) {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();

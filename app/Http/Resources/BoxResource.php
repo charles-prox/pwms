@@ -16,7 +16,7 @@ class BoxResource extends JsonResource
                 'value' => $this->priority_level,
                 'label' => ucfirst($this->priority_level),
             ] : null,
-            'remarks' => $this->remarks,
+            'remarks' =>  $this->pivot->storage_remarks ?? null,
             'disposal_date' => $this->is_permanent
                 ? 'Permanent'
                 : [

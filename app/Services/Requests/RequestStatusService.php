@@ -29,11 +29,11 @@ class RequestStatusService
             'approved_form' => 'required_if:status,approved|file|mimes:pdf|max:5120',
             'boxes' => 'required_if:status,completed|array',
             'boxes.*.id' => 'required|exists:boxes,id',
-            'boxes.*.location.floor' => 'required|string|in:mezzanine,ground',
-            'boxes.*.location.rack' => 'required|integer',
-            'boxes.*.location.bay' => 'required|integer',
-            'boxes.*.location.level' => 'required|integer',
-            'boxes.*.location.position' => 'required|integer',
+            'boxes.*.location.floor' => 'required_if:request_type,storage|string|in:mezzanine,ground',
+            'boxes.*.location.rack' => 'required_if:request_type,storage|integer',
+            'boxes.*.location.bay' => 'required_if:request_type,storage|integer',
+            'boxes.*.location.level' => 'required_if:request_type,storage|integer',
+            'boxes.*.location.position' => 'required_if:request_type,storage|integer',
             'boxes.*.remarks' => 'nullable|string',
         ]);
     }
@@ -103,5 +103,19 @@ class RequestStatusService
             // You can use Laravel's logger instead of dd() in production
             dd("Transaction failed:", $e->getMessage(), $e->getTraceAsString());
         }
+    }
+
+    public function confirmBoxWithdrawals(array $boxes, RequestModel $request)
+    {
+        foreach ($boxes as $boxData) {
+            $box = Box::findOrFail($boxData['id']);
+
+            $box->withdrawal_status = $boxData['status'];
+            $box->withdrawal_remarks = $boxData['remarks'] ?? null;
+            $box->withdrawn_at = now();
+            $box->save();
+        }
+
+        // optional: update request status to finalized or completed again
     }
 }

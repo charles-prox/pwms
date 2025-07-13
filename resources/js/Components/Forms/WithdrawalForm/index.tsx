@@ -177,6 +177,9 @@ export default function WithdrawalForm({
                                                                             }
                                                                         </p>
                                                                     )}
+                                                                    <p className="text-default-700">
+                                                                        Documents:
+                                                                    </p>
                                                                     {box.box_details.map(
                                                                         (
                                                                             detail: BoxDetails,
@@ -187,13 +190,11 @@ export default function WithdrawalForm({
                                                                                     idx
                                                                                 }
                                                                             >
-                                                                                <p className="text-default-700">
-                                                                                    Documents:
-                                                                                </p>
                                                                                 <span className="text-default-500 pl-3">
-                                                                                    {
-                                                                                        detail.document_title
-                                                                                    }
+                                                                                    {idx +
+                                                                                        1 +
+                                                                                        ". " +
+                                                                                        detail.document_title}
                                                                                 </span>
                                                                             </div>
                                                                         )

@@ -72,11 +72,11 @@ export interface PriorityLevel {
 export interface BoxFormState {
     id: number;
     box_code: string;
+    remarks?: string | null;
     priority_level: PriorityLevel | null;
     disposal_date: BoxDate | "Permanent" | null;
     office: { id: number; name: string } | null;
     box_details: BoxDetails[];
-    location: string | null;
     [key: string]: any; // For future extensions
 }
 
@@ -103,6 +103,7 @@ export interface SelectedWithdrawalBoxes extends BoxFormState {
         return?: string;
         disposal?: string;
     };
+    location?: string | null;
 }
 
 // ========================
