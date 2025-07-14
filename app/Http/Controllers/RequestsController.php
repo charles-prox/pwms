@@ -192,7 +192,7 @@ class RequestsController extends Controller
         if (!isset($request['remarks']) || is_null($request['remarks'])) {
             $request->merge(['remarks' => ""]);
         }
-
+        dd($request);
         try {
             $service->authorizeUser();
             $validated = $service->validateRequest($request);

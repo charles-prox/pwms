@@ -161,7 +161,7 @@ const RequestForWithdrawal: React.FC<RequestForWithdrawalProps> = ({
                                 { width: "30%" },
                             ]}
                         >
-                            <Text>
+                            <View>
                                 {box.box_details.map((details: BoxDetails) => {
                                     return (
                                         <Text
@@ -172,7 +172,7 @@ const RequestForWithdrawal: React.FC<RequestForWithdrawalProps> = ({
                                         </Text>
                                     );
                                 })}
-                            </Text>
+                            </View>
                         </View>
                     </View>
                 )

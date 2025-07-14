@@ -1,7 +1,7 @@
 import { Column } from "@/Layouts/BaseListView";
-import { UpdatePasswordForm } from "@/Pages/Account/Security/forms/UpdatePasswordForm";
 import UpdateStatusAction from "../component/UpdatedStatusAction";
-import CompleteRequestAction from "../component/CompleteStorageRequestAction";
+import CompleteStorageRequestAction from "../component/CompleteStorageRequestAction";
+import CompleteWithdrawalRequestAction from "../component/CompleteWithdrawalRequestAction";
 
 export const columns: Column<Request>[] = [
     { label: "FORM NO.", key: "form_number", sortable: true },
@@ -24,7 +24,17 @@ export const columns: Column<Request>[] = [
             console.log("Item details:", item);
 
             return item.status.toLowerCase() === "approved" ? (
-                <CompleteRequestAction item={item} />
+                item.request_type === "storage" ? (
+                    <CompleteStorageRequestAction item={item} />
+                ) : item.request_type === "withdrawal" ? (
+                    <CompleteWithdrawalRequestAction
+                        requestId={item.id}
+                        boxes={item.boxes.map((b: any) => ({
+                            id: b.id,
+                            box_code: b.box_code,
+                        }))}
+                    />
+                ) : null
             ) : (
                 <UpdateStatusAction item={item} />
             );
