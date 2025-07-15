@@ -43,18 +43,16 @@ const CompleteWithdrawalRequestAction: React.FC<
     CompleteWithdrawalRequestActionProps
 > = ({ requestId, boxes }) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const { showAlert } = useModalAlert(); // use your context here
+    const { showAlert } = useModalAlert();
 
     const { data, setData, post, processing, reset } = useForm({
-        request_id: requestId,
+        id: requestId,
         status: "completed",
         boxes: boxes.map((box) => ({
             id: box.id,
             status: "withdrawn",
-            remarks: {
-                value: "",
-                label: "",
-            },
+            remarks: "", // this will be sent to backend
+            remarksObj: { value: "", label: "" }, // UI only
         })),
     });
 
@@ -65,9 +63,10 @@ const CompleteWithdrawalRequestAction: React.FC<
         const updated = [...data.boxes];
         updated[index].status = value as "withdrawn" | "withdrawal_failed";
 
-        // Clear remarks if status is set to withdrawn
+        // Reset remarks if back to withdrawn
         if (value === "withdrawn") {
-            updated[index].remarks = { value: "", label: "" };
+            updated[index].remarksObj = { value: "", label: "" };
+            updated[index].remarks = "";
         }
 
         setData("boxes", updated);
@@ -83,14 +82,16 @@ const CompleteWithdrawalRequestAction: React.FC<
                 : remarksValues.find((r) => r.value === value)?.label || "";
 
         const updated = [...data.boxes];
-        updated[index].remarks = { value, label };
+        updated[index].remarksObj = { value, label };
+        updated[index].remarks = label; // sync plain remarks string
 
         setData("boxes", updated);
     };
 
     const handleRemarksTextChange = (index: number, value: string) => {
         const updated = [...data.boxes];
-        updated[index].remarks.label = value;
+        updated[index].remarksObj.label = value;
+        updated[index].remarks = value; // keep remarks in sync
         setData("boxes", updated);
     };
 
@@ -181,7 +182,8 @@ const CompleteWithdrawalRequestAction: React.FC<
                                                             new Set([
                                                                 data.boxes[
                                                                     index
-                                                                ].remarks.value,
+                                                                ].remarksObj
+                                                                    .value,
                                                             ])
                                                         }
                                                         onSelectionChange={(
@@ -213,8 +215,9 @@ const CompleteWithdrawalRequestAction: React.FC<
                                                         )}
                                                     </Select>
 
-                                                    {data.boxes[index].remarks
-                                                        .value === "others" && (
+                                                    {data.boxes[index]
+                                                        .remarksObj.value ===
+                                                        "others" && (
                                                         <Textarea
                                                             label="Remarks"
                                                             labelPlacement="outside"
@@ -222,7 +225,8 @@ const CompleteWithdrawalRequestAction: React.FC<
                                                             value={
                                                                 data.boxes[
                                                                     index
-                                                                ].remarks.label
+                                                                ].remarksObj
+                                                                    .label
                                                             }
                                                             onChange={(e) =>
                                                                 handleRemarksTextChange(

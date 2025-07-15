@@ -34,6 +34,7 @@ class RequestStatusService
             'boxes.*.location.bay' => 'required_if:request_type,storage|integer',
             'boxes.*.location.level' => 'required_if:request_type,storage|integer',
             'boxes.*.location.position' => 'required_if:request_type,storage|integer',
+            'boxes.*.status' => 'nullable|string',
             'boxes.*.remarks' => 'nullable|string',
         ]);
     }
@@ -107,15 +108,25 @@ class RequestStatusService
 
     public function confirmBoxWithdrawals(array $boxes, RequestModel $request)
     {
-        foreach ($boxes as $boxData) {
-            $box = Box::findOrFail($boxData['id']);
+        // dd($boxes);
+        DB::transaction(function () use ($boxes, $request) {
+            foreach ($boxes as $boxData) {
+                $boxId = $boxData['id'];
+                $status = $boxData['status'];
+                $remarks = $boxData['remarks'] ?? null;
 
-            $box->withdrawal_status = $boxData['status'];
-            $box->withdrawal_remarks = $boxData['remarks'] ?? null;
-            $box->withdrawn_at = now();
-            $box->save();
-        }
+                // Update pivot table if remarks exist
+                if (!empty($remarks)) {
+                    $request->boxes()->updateExistingPivot($boxId, [
+                        'withdrawal_completion_remarks' => $remarks,
+                    ]);
+                }
 
-        // optional: update request status to finalized or completed again
+                // Optionally update box status if it's considered final
+                if ($status === 'withdrawn') {
+                    Box::where('id', $boxId)->update(['status' => 'withdrawn']);
+                }
+            }
+        });
     }
 }

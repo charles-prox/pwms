@@ -192,51 +192,51 @@ class RequestsController extends Controller
         if (!isset($request['remarks']) || is_null($request['remarks'])) {
             $request->merge(['remarks' => ""]);
         }
-        dd($request);
-        try {
-            $service->authorizeUser();
-            $validated = $service->validateRequest($request);
-            $requestModel = RequestModel::findOrFail($validated['id']);
-            if ($validated['status'] === 'approved') {
-                $service->handleApprovedUpload($request, $requestModel);
-            }
-
-            if ($validated['status'] === 'completed') {
-                if ($requestModel->request_type === 'storage') {
-                    $service->assignBoxLocations($validated['boxes'], $requestModel);
-                }
-
-                if ($requestModel->request_type === 'withdrawal') {
-                    $service->confirmBoxWithdrawals($validated['boxes'], $requestModel);
-                }
-            }
-
-            $remarks = $validated['remarks'] ??
-                RequestStatusMessageService::getDefaultRemark(
-                    $validated['status'],
-                    $requestModel->request_type
-                );
-            $requestModel->logStatus(
-                $validated['status'],
-                Auth::id(),
-                $remarks,
-            );
-
-            return $this->manageRequests();
-        } catch (ValidationException $e) {
-            // Return validation errors to Inertia
-            // dd($e);
-            // Handle other exceptions (log them or return a generic error)
-
-            return Inertia::render('ManageRequests', [
-                'errors' => $e->errors(),
-            ])->toResponse(request())
-                ->setStatusCode(422);
-        } catch (\Throwable $e) {
-            // Handle other exceptions (log them or return a generic error)
-            return back()->withErrors([
-                'updateStatus' => 'Something went wrong: ' . $e->getMessage(),
-            ])->withInput();
+        // try {
+        $service->authorizeUser();
+        $validated = $service->validateRequest($request);
+        $requestModel = RequestModel::findOrFail($validated['id']);
+        if ($validated['status'] === 'approved') {
+            $service->handleApprovedUpload($request, $requestModel);
         }
+
+        if ($validated['status'] === 'completed') {
+            if ($requestModel->request_type === 'storage') {
+                $service->assignBoxLocations($validated['boxes'], $requestModel);
+            }
+
+            if ($requestModel->request_type === 'withdrawal') {
+                $service->confirmBoxWithdrawals($validated['boxes'], $requestModel);
+            }
+        }
+
+        $remarks = $validated['remarks'] ??
+            RequestStatusMessageService::getDefaultRemark(
+                $validated['status'],
+                $requestModel->request_type
+            );
+        $requestModel->logStatus(
+            $validated['status'],
+            Auth::id(),
+            $remarks,
+        );
+
+        return $this->manageRequests();
+        // } catch (ValidationException $e) {
+        //     // Return validation errors to Inertia
+        //     dd($e);
+        //     // Handle other exceptions (log them or return a generic error)
+
+        //     return Inertia::render('ManageRequests', [
+        //         'errors' => $e->errors(),
+        //     ])->toResponse(request())
+        //         ->setStatusCode(422);
+        // } catch (\Throwable $e) {
+        //     // Handle other exceptions (log them or return a generic error)
+        //     dd($e);
+        //     return back()->withErrors([
+        //         'updateStatus' => 'Something went wrong: ' . $e->getMessage(),
+        //     ])->withInput();
+        // }
     }
 }
