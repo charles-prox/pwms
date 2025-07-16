@@ -23,7 +23,6 @@ class Request extends Model
         'approved_by',
         'created_at',
         'updated_at',
-        'completed_at',
         'approved_at',
         'pdf_path',
         'form_year',

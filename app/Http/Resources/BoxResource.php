@@ -9,6 +9,12 @@ class BoxResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        // Get the first associated request (usually there's only one for withdrawn boxes)
+        $requestModel = $this->requests->last();
+
+        // Get the first status log where status is 'completed'
+        $completedLog = $requestModel?->statusLogs->firstWhere('status', 'completed');
+
         return [
             'id' => $this->id,
             'box_code' => $this->box_code,
@@ -43,6 +49,14 @@ class BoxResource extends JsonResource
                 'return' => $this->pivot->return_completion_remarks ?? null,
                 'disposal' => $this->pivot->disposal_completion_remarks ?? null,
             ],
+
+            // ✅ Additional: Request and completed log info
+            'request_info' => $requestModel ? [
+                'form_number' => $requestModel->form_number,
+                'request_type' => $requestModel->request_type,
+                'status' => $requestModel->status,
+            ] : null,
+            'completed_at' => $completedLog?->created_at?->format('m/d/Y'),
         ];
     }
 }

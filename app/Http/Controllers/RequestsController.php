@@ -59,8 +59,24 @@ class RequestsController extends Controller
             return $this->getAllRequests();
         }
 
+        // Filter withdrawn boxes
+        $withdrawnBoxes = Box::with([
+            'documents.rds',
+            'office',
+            'boxLocation.location',
+            'requests' => function ($query) {
+                $query->with(['statusLogs' => function ($logQuery) {
+                    $logQuery->where('status', 'completed');
+                }]);
+            }
+        ])
+            ->where('status', 'withdrawn')
+            ->get();
+
+
         return Inertia::render('RequestsPage', [
             'form' => (new RequestResource($request))->toArray(request()),
+            'withdrawn_boxes' => BoxResource::collection($withdrawnBoxes)->toArray(request()),
         ]);
     }
 

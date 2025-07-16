@@ -7,6 +7,8 @@ import { BoxFormState, FormProp } from "@/Utils/types";
 
 // Placeholder components for the non-draft layout
 import { storageColumns } from "./config/storageColumns";
+import { returnColumns } from "./config/returnColumns";
+import { withdrawalColumns } from "./config/withdrawalColumns";
 import {
     RequestBoxes,
     RequestStatus,
@@ -17,20 +19,26 @@ import {
 import NewBoxForm from "@/Components/Forms/NewBoxForm";
 import RequestCreator from "./components/RequestCreator";
 import WithdrawalForm from "@/Components/Forms/WithdrawalForm";
-import { withdrawalColumns } from "./config/withdrawalColumns";
 import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
+import { usePage } from "@inertiajs/react";
 
 interface RequestsViewProps {
     form: FormProp;
-    // boxes: BoxFormState[];
 }
 
 const RequestDetails = ({ form }: RequestsViewProps) => {
     const { selectedBoxes } = useSelectedBoxes();
     const { boxes } = useBoxForm();
+    const { withdrawn_boxes } = usePage<{
+        withdrawn_boxes: BoxFormState[];
+    }>().props;
 
     const displayedBoxes =
-        form.request_type === "withdrawal" ? selectedBoxes : boxes;
+        form.request_type === "withdrawal"
+            ? selectedBoxes
+            : form.request_type === "return"
+            ? withdrawn_boxes
+            : boxes;
 
     const getColumns = () => {
         switch (form.request_type) {
@@ -38,6 +46,8 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
                 return storageColumns;
             case "withdrawal":
                 return withdrawalColumns;
+            case "return":
+                return returnColumns;
             default:
                 return storageColumns; // Fallback
         }
@@ -46,6 +56,10 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
     if (form.is_draft) {
         return (
             <BaseListView<BoxFormState>
+                isSelectable={
+                    form.request_type === "return" ||
+                    form.request_type === "disposal"
+                }
                 columns={getColumns()}
                 data={displayedBoxes}
                 loading={false}
@@ -95,8 +109,11 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
             </div>
             {/* Middle row: Request Details */}
             <div className="flex flex-col col-span-1 xl:col-span-2 gap-4">
-                <RequestSummary items={boxes.length} form={form} />
-                <RequestBoxes boxes={boxes} requestType={form.request_type} />
+                <RequestSummary items={displayedBoxes.length} form={form} />
+                <RequestBoxes
+                    boxes={displayedBoxes}
+                    requestType={form.request_type}
+                />
             </div>
 
             <div className="flex flex-col gap-4 col-span-1 xl:col-span-1">

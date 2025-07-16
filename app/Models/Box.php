@@ -74,4 +74,13 @@ class Box extends Model
             ])
             ->withTimestamps();
     }
+
+    public function getCompletedRequest(string $type)
+    {
+        return $this->requests()
+            ->when($type, fn($query) => $query->where('request_type', $type))
+            ->whereNotNull('completed_at')
+            ->orderByDesc('completed_at') // or use orderBy('completed_at') if you want the earliest
+            ->first();
+    }
 }

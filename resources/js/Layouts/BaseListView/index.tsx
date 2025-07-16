@@ -27,6 +27,7 @@ interface BaseListViewProps<T> {
     emptyContent?: React.ReactNode | string;
     topContent?: React.ReactNode;
     bottomContent?: React.ReactNode;
+    isSelectable?: boolean;
 }
 
 export default function BaseListView<T>({
@@ -36,6 +37,7 @@ export default function BaseListView<T>({
     emptyContent,
     topContent,
     bottomContent,
+    isSelectable = false,
 }: BaseListViewProps<T>) {
     if (loading) {
         return (
@@ -57,6 +59,7 @@ export default function BaseListView<T>({
                 loadingWrapper:
                     "absolute inset-0 bg-black/50 backdrop-blur-md z-50 rounded-lg",
             }}
+            selectionMode={isSelectable ? "multiple" : "none"}
         >
             <TableHeader>
                 {columns.map((col) => (
