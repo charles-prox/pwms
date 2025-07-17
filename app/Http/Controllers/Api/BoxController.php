@@ -15,6 +15,7 @@ class BoxController extends Controller
         $search = $request->query('search');
 
         $boxesQuery = Box::query()
+            ->where('status', 'stored')
             ->whereHas('boxLocation') // Only boxes with a location
             ->with([
                 'boxLocation.location',

@@ -114,7 +114,12 @@ const SaveButton = () => {
                 aria-label="Save Actions"
                 onAction={(key) => handleSaveAction(key)}
             >
-                <DropdownItem key="draft">Save as Draft</DropdownItem>
+                {!(
+                    form?.request_type === "return" ||
+                    form?.request_type === "disposal"
+                ) ? (
+                    <DropdownItem key="draft">Save as Draft</DropdownItem>
+                ) : null}
                 <DropdownItem key="print">Save and Print</DropdownItem>
             </DropdownMenu>
         </Dropdown>

@@ -60,7 +60,7 @@ class RequestStorageService
                             : $boxData['priority_level'],
                         'disposal_date' => $isPermanentBox ? null : $rawDisposalDate,
                         'is_permanent' => $isPermanentBox,
-                        'status' => $status,
+                        'status' => $status . ' storage',
                         'office_id' => $user->office_id,
                     ]
                 );

@@ -24,7 +24,7 @@ const RequestsPage = () => {
         form_details = null,
     } = usePage<{
         form?: FormProp;
-        requests?: Request[];
+        requests?: FormProp[];
         show_form?: boolean;
         form_details?: FormDetails;
     }>().props;

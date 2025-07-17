@@ -3,6 +3,12 @@ import { View, Text } from "@react-pdf/renderer";
 
 // Import shared styles
 import { styles } from "./styles"; // Adjust the import path as needed
+import {
+    BoxDetails,
+    RequestType,
+    SelectedWithdrawalBoxes,
+} from "@/Utils/types";
+import { formatName } from "@/Utils/helpers";
 
 // Type definitions
 interface Box {
@@ -48,7 +54,7 @@ const RequestForReturn: React.FC<RequestForReturnProps> = ({ data }) => {
             <Text style={styles.rsfno}>
                 RRF No.:{" "}
                 <Text style={{ textDecoration: "underline" }}>
-                    {data.data.form_no}
+                    {data.request.form_number}
                 </Text>
             </Text>
 
@@ -58,7 +64,7 @@ const RequestForReturn: React.FC<RequestForReturnProps> = ({ data }) => {
                     <Text>TO:</Text>
                 </View>
                 <View style={{ width: "90%" }}>
-                    <Text>GLADYS A. ELTANAL</Text>
+                    <Text>{formatName(data.gsu_head)}</Text>
                 </View>
             </View>
             <View style={styles.flex}>
@@ -81,83 +87,120 @@ const RequestForReturn: React.FC<RequestForReturnProps> = ({ data }) => {
             <View style={styles.flex}>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.leftBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "20%" },
+                        { width: "20%", padding: 3 },
                     ]}
                 >
                     <Text>Box Code</Text>
                 </View>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "45%" },
+                        { width: "20%", padding: 3 },
                     ]}
                 >
-                    <Text>Document Description</Text>
+                    <Text>RWF Ref. No</Text>
                 </View>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "18%" },
+                        { width: "40%", padding: 3 },
                     ]}
                 >
-                    <Text>Copy Type</Text>
+                    <Text>Description</Text>
                 </View>
                 <View
                     style={[
-                        styles.border,
+                        styles.topBorder,
+                        styles.rightBorder,
+                        styles.bottomBorder,
                         styles.tableHeader,
-                        { width: "20%" },
+                        { width: "20%", padding: 3 },
                     ]}
                 >
-                    <Text>Box Location</Text>
+                    <Text>Content</Text>
                 </View>
             </View>
 
             {/* Table Body */}
-            {data.data.details.map((box: any, index: number) => (
-                <View style={styles.flex} key={`row-${index}`}>
-                    <View
-                        style={[
-                            styles.border,
-                            styles.tableCell,
-                            { width: "20%" },
-                        ]}
-                    >
-                        <Text>{box.box_code}</Text>
+            {data.request.boxes.map(
+                (box: SelectedWithdrawalBoxes, index: number) => (
+                    <View key={index} style={styles.flex}>
+                        <View
+                            style={[
+                                styles.rightBorder,
+                                styles.leftBorder,
+                                styles.bottomBorder,
+                                styles.tableCell,
+                                { width: "20%" },
+                            ]}
+                        >
+                            <Text>{box.box_code}</Text>
+                        </View>
+                        <View
+                            style={[
+                                styles.rightBorder,
+                                styles.bottomBorder,
+                                styles.tableCell,
+                                { width: "20%" },
+                            ]}
+                        >
+                            <Text>{box.withdrawal_request.form_number}</Text>
+                        </View>
+                        <View
+                            style={[
+                                styles.rightBorder,
+                                styles.bottomBorder,
+                                styles.tableCell,
+                                { width: "40%" },
+                            ]}
+                        >
+                            <Text style={{ paddingBottom: 2 }}>
+                                Box Location: {box.location}
+                            </Text>
+                            <Text>
+                                {box.request_remarks
+                                    ? box.request_remarks[
+                                          data.request.type as RequestType
+                                      ]
+                                    : "---"}
+                            </Text>
+                        </View>
+
+                        <View
+                            style={[
+                                styles.rightBorder,
+                                styles.bottomBorder,
+                                styles.tableCell,
+                                { width: "20%" },
+                            ]}
+                        >
+                            <View>
+                                {box.box_details.map((details: BoxDetails) => {
+                                    return (
+                                        <Text
+                                            key={details.id}
+                                            style={{ paddingBottom: 2 }}
+                                        >
+                                            {details.document_title || "N/A"}
+                                        </Text>
+                                    );
+                                })}
+                            </View>
+                        </View>
                     </View>
-                    <View
-                        style={[
-                            styles.border,
-                            styles.tableCell,
-                            { width: "45%" },
-                        ]}
-                    >
-                        <Text>{box.remarks}</Text>
-                    </View>
-                    <View
-                        style={[
-                            styles.border,
-                            styles.tableCell,
-                            { width: "18%" },
-                        ]}
-                    >
-                        <Text>{box.copy_type}</Text>
-                    </View>
-                    <View
-                        style={[
-                            styles.border,
-                            styles.tableCell,
-                            { width: "20%" },
-                        ]}
-                    >
-                        <Text>{box.location}</Text>
-                    </View>
-                </View>
-            ))}
+                )
+            )}
 
             {/* Footer Note */}
             <Text style={{ fontSize: 10, padding: 5 }}>

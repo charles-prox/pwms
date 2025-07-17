@@ -1,3 +1,5 @@
+import { Officer } from "./types";
+
 export const asset = (path: string): string => `/${path}`;
 export const url = (path: string): string => `/storage/${path}`;
 export const toTitleCase = (str: string): string => {
@@ -25,4 +27,13 @@ export const simulateInputEvent = (
     return {
         target: { value } as HTMLInputElement,
     } as React.ChangeEvent<HTMLInputElement>;
+};
+
+export const formatName = (gsuHead: Officer) => {
+    const { first_name, middle_initial, last_name } = gsuHead;
+    return `${first_name} ${
+        middle_initial ? middle_initial + "." : ""
+    } ${last_name}`
+        .replace(/\s+/g, " ")
+        .trim();
 };

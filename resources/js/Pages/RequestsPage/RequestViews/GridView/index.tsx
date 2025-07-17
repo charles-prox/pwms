@@ -1,10 +1,11 @@
 import Icon from "@/Components/Icon";
 import BaseGridView from "@/Layouts/BaseGridView";
+import { FormProp } from "@/Utils/types";
 import { Button } from "@heroui/react";
 import React from "react";
 
 interface RequestsGridViewProps {
-    data: Request[];
+    data: FormProp[];
     loading?: boolean;
 }
 const RequestsGridView = ({ data, loading = false }: RequestsGridViewProps) => {

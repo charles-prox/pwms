@@ -73,7 +73,7 @@ class RequestsController extends Controller
             ->where('status', 'withdrawn')
             ->get();
 
-
+        // dd(BoxResource::collection($withdrawnBoxes)->toArray(request()));
         return Inertia::render('RequestsPage', [
             'form' => (new RequestResource($request))->toArray(request()),
             'withdrawn_boxes' => BoxResource::collection($withdrawnBoxes)->toArray(request()),
@@ -117,12 +117,13 @@ class RequestsController extends Controller
             $this->requestFactoryService->saveRequest($request, $form_number, 'pending');
 
             $form = RequestModel::where('form_number', $form_number)->firstOrFail();
-
+            // dd($this->requestFactoryService->getRequestDetailsWithBoxesAndOfficers($form->id));
             return Inertia::render('RequestsPage', [
                 'show_form' => true,
                 'form_details' => $this->requestFactoryService->getRequestDetailsWithBoxesAndOfficers($form->id),
             ]);
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return response()->json([
                 'error' => 'Failed to submit request',
                 'details' => $e->getMessage(),
@@ -208,51 +209,51 @@ class RequestsController extends Controller
         if (!isset($request['remarks']) || is_null($request['remarks'])) {
             $request->merge(['remarks' => ""]);
         }
-        // try {
-        $service->authorizeUser();
-        $validated = $service->validateRequest($request);
-        $requestModel = RequestModel::findOrFail($validated['id']);
-        if ($validated['status'] === 'approved') {
-            $service->handleApprovedUpload($request, $requestModel);
-        }
-
-        if ($validated['status'] === 'completed') {
-            if ($requestModel->request_type === 'storage') {
-                $service->assignBoxLocations($validated['boxes'], $requestModel);
+        try {
+            $service->authorizeUser();
+            $validated = $service->validateRequest($request);
+            $requestModel = RequestModel::findOrFail($validated['id']);
+            if ($validated['status'] === 'approved') {
+                $service->handleApprovedUpload($request, $requestModel);
             }
 
-            if ($requestModel->request_type === 'withdrawal') {
-                $service->confirmBoxWithdrawals($validated['boxes'], $requestModel);
-            }
-        }
+            if ($validated['status'] === 'completed') {
+                if ($requestModel->request_type === 'storage') {
+                    $service->assignBoxLocations($validated['boxes'], $requestModel);
+                }
 
-        $remarks = $validated['remarks'] ??
-            RequestStatusMessageService::getDefaultRemark(
+                if ($requestModel->request_type === 'withdrawal') {
+                    $service->confirmBoxWithdrawals($validated['boxes'], $requestModel);
+                }
+            }
+
+            $remarks = $validated['remarks'] ??
+                RequestStatusMessageService::getDefaultRemark(
+                    $validated['status'],
+                    $requestModel->request_type
+                );
+            $requestModel->logStatus(
                 $validated['status'],
-                $requestModel->request_type
+                Auth::id(),
+                $remarks,
             );
-        $requestModel->logStatus(
-            $validated['status'],
-            Auth::id(),
-            $remarks,
-        );
 
-        return $this->manageRequests();
-        // } catch (ValidationException $e) {
-        //     // Return validation errors to Inertia
-        //     dd($e);
-        //     // Handle other exceptions (log them or return a generic error)
+            return $this->manageRequests();
+        } catch (ValidationException $e) {
+            // Return validation errors to Inertia
+            dd($e);
+            // Handle other exceptions (log them or return a generic error)
 
-        //     return Inertia::render('ManageRequests', [
-        //         'errors' => $e->errors(),
-        //     ])->toResponse(request())
-        //         ->setStatusCode(422);
-        // } catch (\Throwable $e) {
-        //     // Handle other exceptions (log them or return a generic error)
-        //     dd($e);
-        //     return back()->withErrors([
-        //         'updateStatus' => 'Something went wrong: ' . $e->getMessage(),
-        //     ])->withInput();
-        // }
+            return Inertia::render('ManageRequests', [
+                'errors' => $e->errors(),
+            ])->toResponse(request())
+                ->setStatusCode(422);
+        } catch (\Throwable $e) {
+            // Handle other exceptions (log them or return a generic error)
+            dd($e);
+            return back()->withErrors([
+                'updateStatus' => 'Something went wrong: ' . $e->getMessage(),
+            ])->withInput();
+        }
     }
 }

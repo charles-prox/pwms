@@ -9,6 +9,7 @@ import {
     Officer,
     SelectedWithdrawalBoxes,
 } from "@/Utils/types";
+import { formatName } from "@/Utils/helpers";
 
 interface RequestForWithdrawalProps {
     data: FormDetails;
@@ -20,15 +21,6 @@ const month = today.toLocaleString("default", { month: "long" });
 const day = String(today.getDate()).padStart(2, "0");
 const year = today.getFullYear();
 const formattedDate = `${month} ${day}, ${year}`;
-
-const formatName = (gsuHead: Officer) => {
-    const { first_name, middle_initial, last_name } = gsuHead;
-    return `${first_name} ${
-        middle_initial ? middle_initial + "." : ""
-    } ${last_name}`
-        .replace(/\s+/g, " ")
-        .trim();
-};
 
 // Component
 const RequestForWithdrawal: React.FC<RequestForWithdrawalProps> = ({

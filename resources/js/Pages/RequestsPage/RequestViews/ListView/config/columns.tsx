@@ -1,7 +1,8 @@
 import { Column } from "@/Layouts/BaseListView";
 import ActionButtons from "../components/ActionButtons";
+import { FormProp } from "@/Utils/types";
 
-export const columns: Column<Request>[] = [
+export const columns: Column<FormProp>[] = [
     { label: "FORM NO.", key: "form_number", sortable: true },
     { label: "CREATED BY", key: "creator", sortable: true },
     { label: "DATE CREATED", key: "created_at", sortable: true },

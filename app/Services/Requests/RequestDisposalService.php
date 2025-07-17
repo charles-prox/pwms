@@ -3,12 +3,12 @@
 namespace App\Services\Requests;
 
 use App\Models\Request as RequestModel;
-use App\Models\Box;
 use Illuminate\Http\Request as HttpRequest;
+use App\Models\Box;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-class RequestWithdrawalService
+class RequestDisposalService
 {
     public function saveRequestData(HttpRequest $request, string $formNumber, string $status = 'draft'): void
     {
@@ -28,12 +28,12 @@ class RequestWithdrawalService
             foreach ($boxes as $boxData) {
                 // Update the existing box's status
                 Box::where('id', $boxData['id'])->update([
-                    'status' => $status . ' withdrawal',
+                    'status' => $status . ' disposal',
                 ]);
 
                 // Collect pivot remarks (for withdrawal)
                 $pivotData[$boxData['id']] = [
-                    'withdrawal_remarks' => $boxData['request_remarks']['withdrawal'] ?? null,
+                    'disposal_remarks' => $boxData['request_remarks']['disposal'] ?? null,
                 ];
             }
 

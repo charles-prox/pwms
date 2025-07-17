@@ -28,7 +28,7 @@ interface RequestsViewProps {
 
 const RequestDetails = ({ form }: RequestsViewProps) => {
     const { selectedBoxes } = useSelectedBoxes();
-    const { boxes } = useBoxForm();
+    const { boxes, setBoxes } = useBoxForm();
     const { withdrawn_boxes } = usePage<{
         withdrawn_boxes: BoxFormState[];
     }>().props;
@@ -60,6 +60,11 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
                     form.request_type === "return" ||
                     form.request_type === "disposal"
                 }
+                onSelectedItemsChange={(selected) => {
+                    console.log(selected);
+
+                    setBoxes(selected); // or update based on your state logic
+                }}
                 columns={getColumns()}
                 data={displayedBoxes}
                 loading={false}

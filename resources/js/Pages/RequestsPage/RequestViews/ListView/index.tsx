@@ -1,12 +1,13 @@
 import React from "react";
 import { columns } from "./config/columns";
 import BaseListView from "@/Layouts/BaseListView";
+import { FormProp } from "@/Utils/types";
+import EmptyState from "@/Components/EmptyState";
 import TableToolbar from "@/Components/TableToolbar";
 import AddNewButton from "./components/AddNewButton";
-import EmptyState from "@/Components/EmptyState";
 
 interface RequestsListViewProps {
-    data: Request[];
+    data: FormProp[];
     loading?: boolean;
 }
 export default function RequestsListView({
@@ -14,7 +15,7 @@ export default function RequestsListView({
     loading = false,
 }: RequestsListViewProps) {
     return (
-        <BaseListView<Request>
+        <BaseListView<FormProp>
             columns={columns}
             data={data}
             loading={loading}
