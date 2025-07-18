@@ -57,6 +57,7 @@ class BoxResource extends JsonResource
                 'status' => $requestModel->status,
             ] : null,
             'completed_at' => $completedLog?->created_at?->format('m/d/Y'),
+            'withdrawal_request' => $this->withdrawal_request ?? null,
         ];
     }
 }

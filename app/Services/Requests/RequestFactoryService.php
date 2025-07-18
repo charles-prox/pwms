@@ -6,12 +6,8 @@ use App\Models\Request as RequestModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\DB;
-use App\Models\Box;
 use App\Models\Officer;
 use App\Models\Office;
-use App\Http\Resources\BoxResource;
-use App\Models\RequestStatusLog;
-use Illuminate\Support\Carbon;
 
 class RequestFactoryService
 {
@@ -145,41 +141,11 @@ class RequestFactoryService
         })->first();
 
 
-        if (strtolower($request->request_type) === 'return') {
-            $boxes = $request->boxes()
-                ->with(['documents.rds', 'office', 'boxLocation.location'])
-                ->get();
+        $boxes = $request->boxes()
+            ->with(['documents.rds', 'office', 'boxLocation.location'])
+            ->get();
 
-            $boxes = $boxes->map(function ($box) use ($request) {
-                $withdrawalLog = RequestStatusLog::where('status', 'completed')
-                    ->whereHas('request', function ($q) use ($box) {
-                        $q->where('request_type', 'withdrawal')
-                            ->whereHas('boxes', function ($q2) use ($box) {
-                                $q2->where('boxes.id', $box->id);
-                            });
-                    })
-                    ->with('request:id,form_number')
-                    ->orderByDesc('created_at')
-                    ->first();
-
-                $box->withdrawal_request = $withdrawalLog && $withdrawalLog->request ? [
-                    'request_id' => $withdrawalLog->request_id,
-                    'form_number' => $withdrawalLog->request->form_number,
-                    'completed_at' => $withdrawalLog->created_at
-                        ? Carbon::parse($withdrawalLog->created_at)->format('m/d/Y')
-                        : null,
-                ] : null;
-
-                return new BoxResource($box);
-            })->toArray(request());
-        } else {
-            $boxes = BoxResource::collection(
-                $request->boxes()
-                    ->with(['documents.rds', 'office', 'boxLocation.location'])
-                    ->get()
-            )->toArray(request());
-        }
-
+        $boxes = $this->returnService->attachWithdrawalRequest($boxes, $request);
 
         return [
             'request' => [

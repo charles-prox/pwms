@@ -114,9 +114,9 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
             </div>
             {/* Middle row: Request Details */}
             <div className="flex flex-col col-span-1 xl:col-span-2 gap-4">
-                <RequestSummary items={displayedBoxes.length} form={form} />
+                <RequestSummary items={form.boxes.length} form={form} />
                 <RequestBoxes
-                    boxes={displayedBoxes}
+                    boxes={form.boxes}
                     requestType={form.request_type}
                 />
             </div>

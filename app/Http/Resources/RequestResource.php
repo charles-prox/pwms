@@ -4,9 +4,18 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Services\Requests\RequestReturnService;
 
 class RequestResource extends JsonResource
 {
+    protected RequestReturnService $returnService;
+
+    public function __construct($resource, RequestReturnService $returnService)
+    {
+        parent::__construct($resource);
+        $this->returnService = $returnService;
+    }
+
     public function toArray(Request $request): array
     {
         $creator = $this->creator;
@@ -48,7 +57,8 @@ class RequestResource extends JsonResource
                 ];
             }),
             'boxes' => $this->whenLoaded('boxes', function () {
-                return array_values(BoxResource::collection($this->boxes)->toArray(request()));
+                $boxesWithWithdrawal = $this->returnService->attachWithdrawalRequest($this->boxes);
+                return array_values($boxesWithWithdrawal);
             }, []),
         ];
     }

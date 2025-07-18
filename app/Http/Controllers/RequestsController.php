@@ -58,7 +58,7 @@ class RequestsController extends Controller
         if (!$request) {
             return $this->getAllRequests();
         }
-
+        dd($request);
         // Filter withdrawn boxes
         $withdrawnBoxes = Box::with([
             'documents.rds',
@@ -75,7 +75,7 @@ class RequestsController extends Controller
 
         // dd(BoxResource::collection($withdrawnBoxes)->toArray(request()));
         return Inertia::render('RequestsPage', [
-            'form' => (new RequestResource($request))->toArray(request()),
+            'form' => (new RequestResource($request,))->toArray(request()),
             'withdrawn_boxes' => BoxResource::collection($withdrawnBoxes)->toArray(request()),
         ]);
     }
@@ -117,13 +117,11 @@ class RequestsController extends Controller
             $this->requestFactoryService->saveRequest($request, $form_number, 'pending');
 
             $form = RequestModel::where('form_number', $form_number)->firstOrFail();
-            // dd($this->requestFactoryService->getRequestDetailsWithBoxesAndOfficers($form->id));
             return Inertia::render('RequestsPage', [
                 'show_form' => true,
                 'form_details' => $this->requestFactoryService->getRequestDetailsWithBoxesAndOfficers($form->id),
             ]);
         } catch (\Exception $e) {
-            dd($e->getMessage());
             return response()->json([
                 'error' => 'Failed to submit request',
                 'details' => $e->getMessage(),

@@ -7,6 +7,9 @@ use Illuminate\Http\Request as HttpRequest;
 use App\Models\Box;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
+use App\Models\RequestStatusLog;
+use App\Http\Resources\BoxResource;
 
 class RequestReturnService
 {
@@ -39,5 +42,39 @@ class RequestReturnService
             // Sync to pivot table (request_box)
             $form->boxes()->syncWithoutDetaching($pivotData);
         });
+    }
+
+    /**
+     * Attach the latest completed withdrawal request to each box.
+     *
+     * @param \Illuminate\Support\Collection|Box[] $boxes
+     * @return \Illuminate\Support\Collection
+     */
+    public function attachWithdrawalRequest($boxes)
+    {
+        $boxes = $boxes->map(function ($box) {
+            $withdrawalLog = RequestStatusLog::where('status', 'completed')
+                ->whereHas('request', function ($q) use ($box) {
+                    $q->where('request_type', 'withdrawal')
+                        ->whereHas('boxes', function ($q2) use ($box) {
+                            $q2->where('boxes.id', $box->id);
+                        });
+                })
+                ->with('request:id,form_number')
+                ->orderByDesc('created_at')
+                ->first();
+
+            $box->withdrawal_request = $withdrawalLog && $withdrawalLog->request ? [
+                'request_id' => $withdrawalLog->request_id,
+                'form_number' => $withdrawalLog->request->form_number,
+                'completed_at' => $withdrawalLog->created_at
+                    ? Carbon::parse($withdrawalLog->created_at)->format('m/d/Y')
+                    : null,
+            ] : null;
+
+            return (new BoxResource($box))->toArray(request());
+        });
+
+        return $boxes;
     }
 }
