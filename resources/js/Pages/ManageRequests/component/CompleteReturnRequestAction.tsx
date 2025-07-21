@@ -22,25 +22,27 @@ interface Box {
     box_code: string;
 }
 
-interface CompleteWithdrawalRequestActionProps {
+interface CompleteReturnRequestActionActionProps {
     requestId: number;
     boxes: Box[];
 }
 
 const statusValues = [
-    { label: "Withdrawn", value: "withdrawn" },
-    { label: "Withdrawal Failed", value: "withdrawal_failed" },
+    { label: "Returned", value: "returned" },
+    { label: "Return Failed", value: "return_failed" },
 ];
 
 const remarksValues = [
-    { label: "Box not found", value: "box_not_found" },
-    { label: "Documents inside box are missing", value: "missing_documents" },
-    { label: "Box is damaged or unreadable", value: "box_damaged" },
+    { label: "Returned box not in the request", value: "box_not_in_request" },
+    {
+        label: "Contents of the box do not match records",
+        value: "content_mismatch",
+    },
     { label: "Others", value: "others" },
 ];
 
-const CompleteWithdrawalRequestAction: React.FC<
-    CompleteWithdrawalRequestActionProps
+const CompleteReturnRequestActionAction: React.FC<
+    CompleteReturnRequestActionActionProps
 > = ({ requestId, boxes }) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const { showAlert } = useModalAlert();
@@ -50,7 +52,7 @@ const CompleteWithdrawalRequestAction: React.FC<
         status: "completed",
         boxes: boxes.map((box) => ({
             id: box.id,
-            status: "withdrawn",
+            status: "returned",
             remarks: "", // this will be sent to backend
             remarksObj: { value: "", label: "" }, // UI only
         })),
@@ -61,10 +63,10 @@ const CompleteWithdrawalRequestAction: React.FC<
 
         const value = String(key);
         const updated = [...data.boxes];
-        updated[index].status = value as "withdrawn" | "withdrawal_failed";
+        updated[index].status = value as "returned" | "return_failed";
 
         // Reset remarks if back to withdrawn
-        if (value === "withdrawn") {
+        if (value === "returned") {
             updated[index].remarksObj = { value: "", label: "" };
             updated[index].remarks = "";
         }
@@ -132,7 +134,7 @@ const CompleteWithdrawalRequestAction: React.FC<
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader>Complete Withdrawal</ModalHeader>
+                            <ModalHeader>Complete Return</ModalHeader>
                             <ModalBody>
                                 {boxes.map((box, index) => (
                                     <Card key={box.id} className="mb-3">
@@ -172,7 +174,7 @@ const CompleteWithdrawalRequestAction: React.FC<
                                             <Spacer y={2} />
 
                                             {data.boxes[index].status ===
-                                                "withdrawal_failed" && (
+                                                "return_failed" && (
                                                 <>
                                                     <Select
                                                         label="Reason"
@@ -269,4 +271,4 @@ const CompleteWithdrawalRequestAction: React.FC<
     );
 };
 
-export default CompleteWithdrawalRequestAction;
+export default CompleteReturnRequestActionAction;

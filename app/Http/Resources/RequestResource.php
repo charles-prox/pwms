@@ -8,12 +8,19 @@ use App\Services\Requests\RequestReturnService;
 
 class RequestResource extends JsonResource
 {
-    protected RequestReturnService $returnService;
+    protected ?RequestReturnService $returnService = null;
 
-    public function __construct($resource, RequestReturnService $returnService)
+    // Keep default constructor
+    public function __construct($resource)
     {
         parent::__construct($resource);
-        $this->returnService = $returnService;
+    }
+
+    // Set the service manually via method
+    public function withReturnService(RequestReturnService $service): static
+    {
+        $this->returnService = $service;
+        return $this;
     }
 
     public function toArray(Request $request): array
@@ -39,8 +46,8 @@ class RequestResource extends JsonResource
             'pdf_path' => url($this->pdf_path),
             'status_logs' => $this->whenLoaded('statusLogs', function () {
                 return $this->statusLogs
-                    ->sortBy('created_at') // oldest first, newest last
-                    ->values() // reindex the collection
+                    ->sortBy('created_at')
+                    ->values()
                     ->map(function ($log) {
                         return [
                             'status' => $log->status,
@@ -57,8 +64,10 @@ class RequestResource extends JsonResource
                 ];
             }),
             'boxes' => $this->whenLoaded('boxes', function () {
+                if (!$this->returnService) return [];
+
                 $boxesWithWithdrawal = $this->returnService->attachWithdrawalRequest($this->boxes);
-                return array_values($boxesWithWithdrawal);
+                return $boxesWithWithdrawal->values()->all();
             }, []),
         ];
     }

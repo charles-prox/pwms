@@ -106,27 +106,79 @@ class RequestStatusService
         }
     }
 
-    public function confirmBoxWithdrawals(array $boxes, RequestModel $request)
+    public function confirmBoxWithdrawals(array $boxes, RequestModel $request): string
     {
-        // dd($boxes);
-        DB::transaction(function () use ($boxes, $request) {
+        return DB::transaction(function () use ($boxes, $request) {
+            $withdrawnCount = 0;
+            $total = count($boxes);
+
             foreach ($boxes as $boxData) {
                 $boxId = $boxData['id'];
                 $status = $boxData['status'];
                 $remarks = $boxData['remarks'] ?? null;
 
-                // Update pivot table if remarks exist
                 if (!empty($remarks)) {
                     $request->boxes()->updateExistingPivot($boxId, [
                         'withdrawal_completion_remarks' => $remarks,
                     ]);
                 }
 
-                // Optionally update box status if it's considered final
                 if ($status === 'withdrawn') {
                     Box::where('id', $boxId)->update(['status' => 'withdrawn']);
+                    $withdrawnCount++;
+                } else {
+                    Box::where('id', $boxId)->update(['status' => 'withdrawal_failed']);
                 }
             }
+
+            // Final status based on result
+            $finalStatus = match (true) {
+                $withdrawnCount === $total => 'completed',
+                $withdrawnCount > 0 => 'partially_completed',
+                default => 'failed',
+            };
+
+            $request->update(['status' => $finalStatus]);
+
+            return $finalStatus;
+        });
+    }
+
+    public function confirmBoxReturn(array $boxes, RequestModel $request): string
+    {
+        return DB::transaction(function () use ($boxes, $request) {
+            $withdrawnCount = 0;
+            $total = count($boxes);
+
+            foreach ($boxes as $boxData) {
+                $boxId = $boxData['id'];
+                $status = $boxData['status'];
+                $remarks = $boxData['remarks'] ?? null;
+
+                if (!empty($remarks)) {
+                    $request->boxes()->updateExistingPivot($boxId, [
+                        'return_completion_remarks' => $remarks,
+                    ]);
+                }
+
+                if ($status === 'returned') {
+                    Box::where('id', $boxId)->update(['status' => 'stored']);
+                    $withdrawnCount++;
+                } else {
+                    Box::where('id', $boxId)->update(['status' => 'return_failed']);
+                }
+            }
+
+            // Final status based on result
+            $finalStatus = match (true) {
+                $withdrawnCount === $total => 'completed',
+                $withdrawnCount > 0 => 'partially_completed',
+                default => 'failed',
+            };
+
+            $request->update(['status' => $finalStatus]);
+
+            return $finalStatus;
         });
     }
 }

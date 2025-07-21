@@ -18,6 +18,8 @@ const RequestStatus: React.FC<RequestStatusProps> = ({ statusLogs }) => {
                 return "bg-success-200";
             case "completed":
                 return "bg-success-500";
+            case "partially_completed":
+                return "bg-success-500";
             case "rejected":
                 return "bg-danger-500";
             case "pending":
@@ -46,7 +48,7 @@ const RequestStatus: React.FC<RequestStatusProps> = ({ statusLogs }) => {
                                             )}`}
                                         ></div>
                                     </div>
-                                    {log.status !== "completed" && (
+                                    {!log.status.includes("completed") && (
                                         <div className="w-px h-full bg-gray-400" />
                                     )}
                                 </div>

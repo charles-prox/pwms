@@ -9,6 +9,7 @@ use App\Models\Office;
 use App\Models\Request as RequestModel;
 use App\Services\Requests\RequestFactoryService;
 use App\Services\Requests\RequestStorageService;
+use App\Services\Requests\RequestReturnService;
 use App\Services\Requests\RequestStatusMessageService;
 use App\Services\Requests\RequestStatusService;
 use App\Services\Requests\RequestBoxService;
@@ -22,6 +23,7 @@ class RequestsController extends Controller
     public function __construct(
         protected RequestStorageService $requestStorageService,
         protected RequestFactoryService $requestFactoryService,
+        protected RequestReturnService $requestReturnService,
         protected RequestBoxService $requestBoxService
     ) {}
 
@@ -58,7 +60,7 @@ class RequestsController extends Controller
         if (!$request) {
             return $this->getAllRequests();
         }
-        dd($request);
+
         // Filter withdrawn boxes
         $withdrawnBoxes = Box::with([
             'documents.rds',
@@ -73,12 +75,14 @@ class RequestsController extends Controller
             ->where('status', 'withdrawn')
             ->get();
 
-        // dd(BoxResource::collection($withdrawnBoxes)->toArray(request()));
         return Inertia::render('RequestsPage', [
-            'form' => (new RequestResource($request,))->toArray(request()),
+            'form' => (new RequestResource($request))
+                ->withReturnService($this->requestReturnService)
+                ->toArray(request()),
             'withdrawn_boxes' => BoxResource::collection($withdrawnBoxes)->toArray(request()),
         ]);
     }
+
 
     public function getAllRequests()
     {
@@ -88,13 +92,19 @@ class RequestsController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $requests = RequestModel::with('creator')
+        $requests = RequestModel::with(['creator', 'boxes', 'office', 'statusLogs']) // preload relations to prevent N+1
             ->where('office_id', $user->office_id)
             ->orderBy('updated_at', 'desc')
             ->get();
 
+        $requestsTransformed = $requests->map(function ($request) {
+            return (new RequestResource($request))
+                ->withReturnService($this->requestReturnService)
+                ->toArray(request());
+        });
+
         return Inertia::render('RequestsPage', [
-            'requests' => RequestResource::collection($requests)->toArray(request()),
+            'requests' => $requestsTransformed,
         ]);
     }
 
@@ -184,9 +194,9 @@ class RequestsController extends Controller
         }
 
         // Build query based on role
-        $query = RequestModel::with(['creator', 'office', 'boxes'])
+        $query = RequestModel::with(['creator', 'office', 'boxes', 'statusLogs']) // preload all used relations
             ->where('is_draft', '!=', true)
-            ->where('status', '!=', 'completed')
+            ->where('status', 'not like', '%completed')
             ->orderBy('updated_at', 'desc');
 
         if ($user->hasRole('regional-document-custodian')) {
@@ -195,11 +205,16 @@ class RequestsController extends Controller
 
         $requests = $query->get();
 
+        $requestsTransformed = $requests->map(function ($request) {
+            return (new RequestResource($request))
+                ->withReturnService($this->requestReturnService)
+                ->toArray(request());
+        });
+
         return Inertia::render('ManageRequests', [
-            'pendingRequests' => RequestResource::collection($requests)->toArray(request()),
+            'pendingRequests' => $requestsTransformed,
         ]);
     }
-
 
 
     public function updateStatus(HttpRequest $request, RequestStatusService $service)
@@ -215,23 +230,32 @@ class RequestsController extends Controller
                 $service->handleApprovedUpload($request, $requestModel);
             }
 
+            $statusToLog = $validated['status'];
+
             if ($validated['status'] === 'completed') {
                 if ($requestModel->request_type === 'storage') {
                     $service->assignBoxLocations($validated['boxes'], $requestModel);
                 }
 
                 if ($requestModel->request_type === 'withdrawal') {
-                    $service->confirmBoxWithdrawals($validated['boxes'], $requestModel);
+                    // Get actual completion status from the service
+                    $statusToLog = $service->confirmBoxWithdrawals($validated['boxes'], $requestModel);
+                }
+
+                if ($requestModel->request_type === 'return') {
+                    // Get actual completion status from the service
+                    $statusToLog = $service->confirmBoxReturn($validated['boxes'], $requestModel);
                 }
             }
 
             $remarks = $validated['remarks'] ??
                 RequestStatusMessageService::getDefaultRemark(
-                    $validated['status'],
+                    $statusToLog,
                     $requestModel->request_type
                 );
+
             $requestModel->logStatus(
-                $validated['status'],
+                $statusToLog,
                 Auth::id(),
                 $remarks,
             );

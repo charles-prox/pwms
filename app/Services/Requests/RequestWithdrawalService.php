@@ -21,7 +21,7 @@ class RequestWithdrawalService
                 'is_draft' => $status === 'draft',
                 'updated_by' => $user->id,
             ]);
-
+            $form->logStatus('pending', $user->id, 'Request submitted for review and approval.');
             $boxes = $request->input('boxes', []);
             $pivotData = [];
 

@@ -24,6 +24,7 @@ class RequestReturnService
                 'is_draft' => $status === 'draft',
                 'updated_by' => $user->id,
             ]);
+            $form->logStatus('pending', $user->id, 'Request submitted for review and approval.');
 
             $boxes = $request->input('boxes', []);
             $pivotData = [];
@@ -53,7 +54,7 @@ class RequestReturnService
     public function attachWithdrawalRequest($boxes)
     {
         $boxes = $boxes->map(function ($box) {
-            $withdrawalLog = RequestStatusLog::where('status', 'completed')
+            $withdrawalLog = RequestStatusLog::where('status', 'like', '%completed')
                 ->whereHas('request', function ($q) use ($box) {
                     $q->where('request_type', 'withdrawal')
                         ->whereHas('boxes', function ($q2) use ($box) {
@@ -63,6 +64,7 @@ class RequestReturnService
                 ->with('request:id,form_number')
                 ->orderByDesc('created_at')
                 ->first();
+            // dd($withdrawalLog->toArray());
 
             $box->withdrawal_request = $withdrawalLog && $withdrawalLog->request ? [
                 'request_id' => $withdrawalLog->request_id,
