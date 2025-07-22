@@ -108,7 +108,7 @@ export default function CompleteStorageRequestAction({
     return (
         <>
             <Button size="sm" color="primary" onPress={onOpen}>
-                Complete Request
+                Complete
             </Button>
             <Modal
                 isOpen={isOpen}

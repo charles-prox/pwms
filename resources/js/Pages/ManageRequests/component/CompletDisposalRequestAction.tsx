@@ -22,27 +22,26 @@ interface Box {
     box_code: string;
 }
 
-interface CompleteReturnRequestActionActionProps {
+interface CompleteDisposalRequestActionProps {
     requestId: number;
     boxes: Box[];
 }
 
 const statusValues = [
-    { label: "Returned", value: "returned" },
-    { label: "Return Failed", value: "return_failed" },
+    { label: "Disposed", value: "disposed" },
+    { label: "Disposal Failed", value: "disposal_failed" },
 ];
 
 const remarksValues = [
-    { label: "Returned box not in the request", value: "box_not_in_request" },
-    {
-        label: "Contents of the box do not match records",
-        value: "content_mismatch",
-    },
+    { label: "Box not found", value: "box_not_found" },
+    { label: "Documents are missing", value: "missing_documents" },
+    { label: "Box is damaged beyond disposal standards", value: "box_damaged" },
+    { label: "Legal/Compliance hold", value: "legal_hold" },
     { label: "Others", value: "others" },
 ];
 
-const CompleteReturnRequestActionAction: React.FC<
-    CompleteReturnRequestActionActionProps
+const CompleteDisposalRequestAction: React.FC<
+    CompleteDisposalRequestActionProps
 > = ({ requestId, boxes }) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const { showAlert } = useModalAlert();
@@ -52,9 +51,9 @@ const CompleteReturnRequestActionAction: React.FC<
         status: "completed",
         boxes: boxes.map((box) => ({
             id: box.id,
-            status: "returned",
-            remarks: "", // this will be sent to backend
-            remarksObj: { value: "", label: "" }, // UI only
+            status: "disposed",
+            remarks: "",
+            remarksObj: { value: "", label: "" },
         })),
     });
 
@@ -63,10 +62,9 @@ const CompleteReturnRequestActionAction: React.FC<
 
         const value = String(key);
         const updated = [...data.boxes];
-        updated[index].status = value as "returned" | "return_failed";
+        updated[index].status = value as "disposed" | "disposal_failed";
 
-        // Reset remarks if back to withdrawn
-        if (value === "returned") {
+        if (value === "disposed") {
             updated[index].remarksObj = { value: "", label: "" };
             updated[index].remarks = "";
         }
@@ -85,7 +83,7 @@ const CompleteReturnRequestActionAction: React.FC<
 
         const updated = [...data.boxes];
         updated[index].remarksObj = { value, label };
-        updated[index].remarks = label; // sync plain remarks string
+        updated[index].remarks = label;
 
         setData("boxes", updated);
     };
@@ -93,7 +91,7 @@ const CompleteReturnRequestActionAction: React.FC<
     const handleRemarksTextChange = (index: number, value: string) => {
         const updated = [...data.boxes];
         updated[index].remarksObj.label = value;
-        updated[index].remarks = value; // keep remarks in sync
+        updated[index].remarks = value;
         setData("boxes", updated);
     };
 
@@ -134,7 +132,7 @@ const CompleteReturnRequestActionAction: React.FC<
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader>Complete Return</ModalHeader>
+                            <ModalHeader>Complete Disposal</ModalHeader>
                             <ModalBody>
                                 {boxes.map((box, index) => (
                                     <Card key={box.id} className="mb-3">
@@ -174,7 +172,7 @@ const CompleteReturnRequestActionAction: React.FC<
                                             <Spacer y={2} />
 
                                             {data.boxes[index].status ===
-                                                "return_failed" && (
+                                                "disposal_failed" && (
                                                 <>
                                                     <Select
                                                         label="Reason"
@@ -271,4 +269,4 @@ const CompleteReturnRequestActionAction: React.FC<
     );
 };
 
-export default CompleteReturnRequestActionAction;
+export default CompleteDisposalRequestAction;
