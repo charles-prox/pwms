@@ -7,6 +7,7 @@ import {
     CardHeader,
     Divider,
     Input,
+    Spacer,
     Spinner,
 } from "@heroui/react";
 import { Head, router } from "@inertiajs/react";
@@ -30,9 +31,6 @@ export default function TwoFactorPrompt() {
             setQrSvg(res.data.qr_svg);
             setSecret(res.data.secret);
             setStep("qr");
-
-            const codesRes = await axiosInstance.get(route("two-factor.codes"));
-            setRecoveryCodes(codesRes.data);
         } catch (err: any) {
             if (err.response?.status === 409) {
                 setStep("enabled");
@@ -113,8 +111,9 @@ export default function TwoFactorPrompt() {
                             Secret Key:{" "}
                             <span className="font-mono">{secret}</span>
                         </p>
-
                         <Divider />
+
+                        <Spacer y={8} />
 
                         <Input
                             label="Authenticator Code"
