@@ -3,13 +3,7 @@ import UpdateStatusAction from "../component/UpdatedStatusAction";
 import CompleteStorageRequestAction from "../component/CompleteStorageRequestAction";
 import CompleteWithdrawalRequestAction from "../component/CompleteWithdrawalRequestAction";
 import CompleteReturnRequestAction from "../component/CompleteReturnRequestAction";
-<<<<<<< HEAD
-import CompleteDisposalRequestAction from "../component/CompletDisposalRequestAction";
-import { FormProp } from "@/Utils/types";
-import DisposalStatusUpdateAction from "../component/DisposalStatusUpdateAction";
 import { toTitleCase } from "@/Utils/helpers";
-=======
->>>>>>> parent of 5617aff (Continue with disposal process)
 
 export const columns: Column<Request>[] = [
     { label: "FORM NO.", key: "form_number", sortable: true },
