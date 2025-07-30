@@ -6,7 +6,6 @@ import CompleteReturnRequestAction from "../component/CompleteReturnRequestActio
 import CompleteDisposalRequestAction from "../component/CompletDisposalRequestAction";
 import { FormProp } from "@/Utils/types";
 import DisposalStatusUpdateAction from "../component/DisposalStatusUpdateAction";
-import { toTitleCase } from "@/Utils/helpers";
 
 export const columns: Column<FormProp>[] = [
     { label: "FORM NO.", key: "form_number", sortable: true },
@@ -20,12 +19,7 @@ export const columns: Column<FormProp>[] = [
     { label: "DATE CREATED", key: "created_at", sortable: true },
     // { label: "LAST MODIFIED", key: "updated_at", sortable: true },
     { label: "TYPE OF REQUEST", key: "request_type", sortable: true },
-    {
-        label: "STATUS",
-        key: "status",
-        sortable: true,
-        render: (item: any) => toTitleCase(item.status),
-    },
+    { label: "STATUS", key: "status", sortable: true },
     {
         label: "ACTIONS",
         key: "actions",
@@ -33,7 +27,7 @@ export const columns: Column<FormProp>[] = [
             console.log("Rendering actions for item:", item.status);
             console.log("Item details:", item);
 
-            return item.status.toLowerCase() !== "completed" ? (
+            return item.status.toLowerCase() === "approved" ? (
                 item.request_type === "storage" ? (
                     <CompleteStorageRequestAction item={item} />
                 ) : item.request_type === "withdrawal" ? (

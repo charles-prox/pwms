@@ -70,12 +70,12 @@ const AppNavbar: React.FC = () => {
     const { post } = useForm();
     const { theme, toggleTheme } = useTheme();
 
-    const submit = () =>
-        // e: React.MouseEvent<HTMLLIElement, globalThis.MouseEvent>
-        {
-            // e.preventDefault();
-            post(route("logout"), { replace: true });
-        };
+    const submit = (
+        e: React.MouseEvent<HTMLLIElement, globalThis.MouseEvent>
+    ) => {
+        e.preventDefault();
+        post(route("logout"), { replace: true });
+    };
 
     return useMemo(
         () => (
@@ -167,7 +167,7 @@ const AppNavbar: React.FC = () => {
                                     </DropdownItem>
                                     <DropdownItem
                                         key="logout"
-                                        onPress={(e: any) => submit()}
+                                        onPress={(e: any) => submit(e)}
                                         startContent={<LogoutIcon />}
                                     >
                                         Log out

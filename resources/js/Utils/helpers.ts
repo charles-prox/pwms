@@ -1,4 +1,4 @@
-import { Officer, UserType } from "./types";
+import { Officer } from "./types";
 
 export const asset = (path: string): string => `/${path}`;
 export const url = (path: string): string => `/storage/${path}`;
@@ -38,38 +38,3 @@ export const formatName = (gsuHead: Officer) => {
         .replace(/\s+/g, " ")
         .trim();
 };
-
-import { NavItem } from "@/Utils/types";
-
-export function filterNavItems(items: NavItem[], user: UserType): NavItem[] {
-    const userRoles = Array.isArray(user.roles)
-        ? user.roles
-        : [user.roles ?? ""];
-    const userPermissions = Array.isArray(user.permissions)
-        ? user.permissions
-        : [user.permissions ?? ""];
-
-    return items.filter((item) => {
-        // If no restrictions, always show
-        if (!item.roles && !item.permissions) return true;
-
-        // Role check
-        if (item.roles) {
-            const hasRole = userRoles.some((role) =>
-                item.roles!.includes(role)
-            );
-            if (hasRole) return true;
-        }
-
-        // Permission check
-        if (item.permissions) {
-            const hasPermission = userPermissions.some((perm) =>
-                item.permissions!.includes(perm)
-            );
-            if (hasPermission) return true;
-        }
-
-        // Show title if no restrictions OR user has access
-        return item.type === "title" && !item.roles && !item.permissions;
-    });
-}

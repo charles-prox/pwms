@@ -25,7 +25,7 @@ createInertiaApp({
             page.default.layout =
                 page.default.layout ||
                 ((page: React.ReactNode) => {
-                    return name.includes("Auth") || name.includes("Errors") ? (
+                    return name.includes("Auth") ? (
                         <AuthLayout>{page}</AuthLayout>
                     ) : (
                         <AppLayout>{page}</AppLayout>

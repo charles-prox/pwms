@@ -19,8 +19,6 @@ export type NavItem = {
     label: string;
     url?: string;
     icon?: (size: number | string) => JSX.Element;
-    roles?: string[]; // <-- Optional: restrict by roles
-    permissions?: string[]; // <-- Optional: restrict by permissions
 };
 
 // ========================
@@ -310,7 +308,6 @@ export interface UserType {
     created_at: string;
     updated_at: string;
     roles: string | string[];
-    permissions?: string[];
 
     // Relationships
     office: Office;

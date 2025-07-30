@@ -1,7 +1,7 @@
 import { Head } from "@inertiajs/react";
 import { Spacer } from "@heroui/react";
 import React from "react";
-import { TwoFactorAuthForm } from "../../Auth/TwoFactorPrompt/TwoFactorAuthForm";
+import { TwoFactorAuthForm } from "./forms/TwoFactorAuthForm";
 import { UpdatePasswordForm } from "./forms/UpdatePasswordForm";
 import { LogoutOtherBrowserSessions } from "./forms/LogoutOtherBrowserSessions";
 
@@ -19,7 +19,7 @@ const Security: React.FC = () => {
                 </div>
                 <Spacer y={1} />
                 <UpdatePasswordForm />
-                {/* <TwoFactorAuthForm /> */}
+                <TwoFactorAuthForm />
                 <LogoutOtherBrowserSessions />
             </div>
         </React.Fragment>

@@ -18,7 +18,6 @@ Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
-    'twofactor',
 ])->group(function () {
 
     Route::prefix('account')->name('account.')->group(function () {
@@ -39,19 +38,14 @@ Route::middleware([
     Route::delete('/request/{form_number}', [RequestsController::class, 'destroy']);
     Route::post('/request/upload-pdf', [RequestsController::class, 'uploadPdf']);
     Route::get('/requests/generate-box-code/{office}', [RequestsController::class, 'generateBoxCode']);
+    Route::get('/manage-requests', [RequestsController::class, 'manageRequests'])->name('requests.manage');
+    Route::post('/manage-requests', [RequestsController::class, 'updateStatus'])->name('requests.update-status');
 
-    Route::middleware(['role:super-admin|regional-document-custodian'])->group(function () {
-        Route::get('/manage-requests', [RequestsController::class, 'manageRequests'])->name('requests.manage');
-        Route::post('/manage-requests', [RequestsController::class, 'updateStatus'])->name('requests.update-status');
-    });
-
-    Route::middleware(['role:super-admin'])->group(function () {
-        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
-        Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
-        Route::post('/users/{user}/edit', [UserController::class, 'update'])->name('users.update');
-    });
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
+    Route::post('/users/{user}/edit', [UserController::class, 'update'])->name('users.update');
 });
 
 
@@ -62,7 +56,3 @@ Route::get('/register', [RegisterAdminController::class, 'create'])
 Route::get('/login', [LoginController::class, 'create'])
     ->middleware(['guest'])
     ->name('login');
-
-Route::get('/two-factor/prompt', function () {
-    return Inertia::render('Auth/TwoFactorPrompt');
-})->name('two-factor.prompt');
