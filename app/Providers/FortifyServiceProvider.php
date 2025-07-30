@@ -19,6 +19,8 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\LoginResponse;
 use App\Http\Responses\LoginResponse as CustomLoginResponse;
+use App\Http\Middleware\AdminCheck;
+use Illuminate\Support\Facades\Route;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -35,6 +37,12 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Route::middleware(['web', AdminCheck::class])->group(function () {
+        //     Route::post('/login', [\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class, 'store']);
+        //     Route::get('/register', [\Laravel\Fortify\Http\Controllers\RegisteredUserController::class, 'create']);
+        //     // Route::post('/register', [\Laravel\Fortify\Http\Controllers\RegisteredUserController::class, 'store']);
+        // });
+
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
@@ -46,7 +54,7 @@ class FortifyServiceProvider extends ServiceProvider
 
                 // Step 2: Add your custom check
                 EnsureAccountIsActive::class,
-                RedirectIf2FANotEnabled::class,
+                // RedirectIf2FANotEnabled::class,
 
                 // Step 3: Continue Jetstream's normal flow
                 RedirectIfTwoFactorAuthenticatable::class,

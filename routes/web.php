@@ -55,13 +55,13 @@ Route::middleware([
 });
 
 
-Route::get('/register', [RegisterAdminController::class, 'create'])
-    ->middleware(['guest'])
-    ->name('register');
+// Route::get('/register', [RegisterAdminController::class, 'create'])
+//     ->middleware(['guest'])
+//     ->name('register');
 
-Route::get('/login', [LoginController::class, 'create'])
-    ->middleware(['guest'])
-    ->name('login');
+// Route::get('/login', [LoginController::class, 'create'])
+//     ->middleware(['guest'])
+//     ->name('login');
 
 Route::get('/two-factor/prompt', function () {
     return Inertia::render('Auth/TwoFactorPrompt');
