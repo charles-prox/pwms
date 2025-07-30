@@ -21,7 +21,6 @@ import RequestCreator from "./components/RequestCreator";
 import WithdrawalForm from "@/Components/Forms/WithdrawalForm";
 import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
 import { usePage } from "@inertiajs/react";
-import { disposalColumns } from "./config/disposalColumns";
 
 interface RequestsViewProps {
     form: FormProp;
@@ -30,9 +29,8 @@ interface RequestsViewProps {
 const RequestDetails = ({ form }: RequestsViewProps) => {
     const { selectedBoxes } = useSelectedBoxes();
     const { boxes, setBoxes } = useBoxForm();
-    const { withdrawn_boxes, disposable_boxes } = usePage<{
+    const { withdrawn_boxes } = usePage<{
         withdrawn_boxes: BoxFormState[];
-        disposable_boxes: BoxFormState[];
     }>().props;
 
     const displayedBoxes =
@@ -40,8 +38,6 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
             ? selectedBoxes
             : form.request_type === "return"
             ? withdrawn_boxes
-            : form.request_type === "disposal"
-            ? disposable_boxes
             : boxes;
 
     const getColumns = () => {
@@ -52,8 +48,6 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
                 return withdrawalColumns;
             case "return":
                 return returnColumns;
-            case "disposal":
-                return disposalColumns;
             default:
                 return storageColumns; // Fallback
         }
@@ -67,6 +61,8 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
                     form.request_type === "disposal"
                 }
                 onSelectedItemsChange={(selected) => {
+                    console.log(selected);
+
                     setBoxes(selected); // or update based on your state logic
                 }}
                 columns={getColumns()}

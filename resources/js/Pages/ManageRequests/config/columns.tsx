@@ -3,11 +3,8 @@ import UpdateStatusAction from "../component/UpdatedStatusAction";
 import CompleteStorageRequestAction from "../component/CompleteStorageRequestAction";
 import CompleteWithdrawalRequestAction from "../component/CompleteWithdrawalRequestAction";
 import CompleteReturnRequestAction from "../component/CompleteReturnRequestAction";
-import CompleteDisposalRequestAction from "../component/CompletDisposalRequestAction";
-import { FormProp } from "@/Utils/types";
-import DisposalStatusUpdateAction from "../component/DisposalStatusUpdateAction";
 
-export const columns: Column<FormProp>[] = [
+export const columns: Column<Request>[] = [
     { label: "FORM NO.", key: "form_number", sortable: true },
     { label: "CREATED BY", key: "creator", sortable: true },
     {
@@ -46,17 +43,6 @@ export const columns: Column<FormProp>[] = [
                             box_code: b.box_code,
                         }))}
                     />
-                ) : item.request_type === "disposal" ? (
-                    <div className="flex gap-1">
-                        <CompleteDisposalRequestAction
-                            requestId={item.id}
-                            boxes={item.boxes.map((b: any) => ({
-                                id: b.id,
-                                box_code: b.box_code,
-                            }))}
-                        />
-                        <DisposalStatusUpdateAction item={item} />
-                    </div>
                 ) : null
             ) : (
                 <UpdateStatusAction item={item} />

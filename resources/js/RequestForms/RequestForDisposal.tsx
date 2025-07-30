@@ -3,8 +3,27 @@ import { View, Text } from "@react-pdf/renderer";
 
 // Import shared styles
 import { styles } from "./styles"; // Adjust path as necessary
-import { BoxDetails, BoxFormState } from "@/Utils/types";
-import { formatName } from "@/Utils/helpers";
+
+// Types
+interface BoxDetail {
+    rds_number: string;
+    document_title: string;
+    description: string;
+    document_date: string;
+}
+
+interface Box {
+    box_code: string;
+    remarks?: string;
+    box_details: string; // Will be parsed as JSON
+    disposal_date: string;
+    location: string;
+}
+
+interface FormData {
+    form_no: string;
+    details: Box[];
+}
 
 interface RequestForDisposalProps {
     data: any;
@@ -32,11 +51,11 @@ const RequestForDisposal: React.FC<RequestForDisposalProps> = ({ data }) => {
                 </View>
             </View>
 
-            {/* RDF No. */}
+            {/* RSF No. */}
             <Text style={styles.rsfno}>
-                RDF No.:{" "}
+                RSF No.:{" "}
                 <Text style={{ textDecoration: "underline" }}>
-                    {data.request.form_number}
+                    {data.data.form_no}
                 </Text>
             </Text>
 
@@ -46,10 +65,9 @@ const RequestForDisposal: React.FC<RequestForDisposalProps> = ({ data }) => {
                     <Text>TO:</Text>
                 </View>
                 <View style={{ width: "90%" }}>
-                    <Text>{formatName(data.gsu_head)}</Text>
+                    <Text>GLADYS A. ELTANAL</Text>
                 </View>
             </View>
-
             <View style={styles.flex}>
                 <View style={{ width: "10%" }}>
                     <Text></Text>
@@ -70,193 +88,187 @@ const RequestForDisposal: React.FC<RequestForDisposalProps> = ({ data }) => {
             <View style={styles.flex}>
                 <View
                     style={[
-                        styles.topBorder,
-                        styles.rightBorder,
-                        styles.leftBorder,
-                        styles.bottomBorder,
+                        styles.border,
                         styles.tableHeader,
-                        { width: 90 },
+                        { width: "18%" },
                     ]}
                 >
                     <Text>Box Code</Text>
                 </View>
                 <View
                     style={[
-                        styles.topBorder,
-                        styles.rightBorder,
-                        styles.bottomBorder,
+                        styles.border,
                         styles.tableHeader,
-                        { width: 70 },
+                        { width: "10%" },
                     ]}
                 >
                     <Text>RDS No.</Text>
                 </View>
                 <View
                     style={[
-                        styles.topBorder,
-                        styles.rightBorder,
-                        styles.bottomBorder,
+                        styles.border,
                         styles.tableHeader,
-                        { width: 200 },
+                        { width: "45%" },
                     ]}
                 >
                     <Text>Title and Description</Text>
                 </View>
                 <View
                     style={[
-                        styles.topBorder,
-                        styles.rightBorder,
-                        styles.bottomBorder,
+                        styles.border,
                         styles.tableHeader,
-                        { width: 90 },
+                        { width: "15%" },
                     ]}
                 >
                     <Text>Record Date</Text>
                 </View>
                 <View
                     style={[
-                        styles.topBorder,
-                        styles.rightBorder,
-                        styles.bottomBorder,
+                        styles.border,
                         styles.tableHeader,
-                        { width: 60 },
+                        { width: "13%" },
                     ]}
                 >
                     <Text>Disposal Date</Text>
                 </View>
+                <View
+                    style={[
+                        styles.border,
+                        styles.tableHeader,
+                        { width: "13%" },
+                    ]}
+                >
+                    <Text>Location</Text>
+                </View>
             </View>
 
             {/* Table Body */}
-            {data.request.boxes.map((box: BoxFormState, i: number) => (
-                <View key={i} style={styles.flex}>
-                    <View
-                        style={[
-                            styles.rightBorder,
-                            styles.leftBorder,
-                            styles.bottomBorder,
-                            styles.tableCell,
-                            { width: 90 },
-                        ]}
-                    >
-                        <Text>{box.box_code}</Text>
-                    </View>
+            {data.data.details.map((box: any, boxIndex: number) => {
+                let parsedDetails: BoxDetail[] = [];
+                try {
+                    parsedDetails = JSON.parse(box.box_details);
+                } catch (err) {
+                    console.error("Invalid JSON in box_details:", err);
+                }
 
-                    <View
-                        style={{
-                            flexDirection: "column",
-                        }}
-                    >
-                        {box.box_details.map(
-                            (document: BoxDetails, j: number) => (
-                                <View key={j} style={styles.flex}>
+                return (
+                    <View style={styles.flex} key={`box-${boxIndex}`}>
+                        {/* Box Code */}
+                        <View
+                            style={[
+                                styles.border,
+                                styles.tableCell,
+                                { width: "18%" },
+                            ]}
+                        >
+                            <Text>{box.box_code}</Text>
+                        </View>
+
+                        {/* Box Details */}
+                        <View
+                            style={{ flexDirection: "column", width: "69.1%" }}
+                        >
+                            {parsedDetails.map((details, detailIndex) => (
+                                <View
+                                    style={styles.flex}
+                                    key={`detail-${detailIndex}`}
+                                >
                                     <View
                                         style={[
-                                            styles.rightBorder,
+                                            styles.noTopBottomBorder,
                                             styles.tableCell,
-                                            { width: 70 },
+                                            { width: "14.44%" },
                                         ]}
                                     >
-                                        <Text>{document.rds_number}</Text>
+                                        <Text>{details.rds_number}</Text>
                                     </View>
                                     <View
                                         style={[
-                                            styles.rightBorder,
+                                            styles.noTopBottomBorder,
                                             styles.tableCell,
-                                            { width: 200 },
+                                            { width: "64.96%" },
                                         ]}
                                     >
-                                        <Text>{document.document_title}</Text>
-                                        {/* <Text>{document.description}</Text> */}
+                                        <Text>{details.document_title}</Text>
+                                        <Text>{details.description}</Text>
                                     </View>
                                     <View
                                         style={[
-                                            styles.rightBorder,
+                                            styles.noTopBottomBorder,
                                             styles.tableCell,
-                                            { width: 90 },
+                                            { width: "21.6%" },
                                         ]}
                                     >
-                                        <Text>
-                                            {document.document_date?.readable}
-                                        </Text>
+                                        <Text>{details.document_date}</Text>
                                     </View>
                                 </View>
-                            )
-                        )}
+                            ))}
 
-                        <View style={[styles.flex, styles.bottomBorder]}>
-                            <View
-                                style={[
-                                    styles.rightBorder,
-                                    styles.tableCell,
-                                    { width: 70 },
-                                ]}
-                            ></View>
-                            <View
-                                style={[
-                                    styles.rightBorder,
-                                    styles.tableCell,
-                                    { width: 200 },
-                                ]}
-                            >
-                                {box.location && (
-                                    <>
-                                        <Text
-                                            style={[
-                                                styles.boldFont,
-                                                {
-                                                    fontSize: 9,
-                                                    paddingBottom: 2,
-                                                },
-                                            ]}
-                                        >
-                                            Location:{" "}
-                                        </Text>
-                                        <Text>{box.location}</Text>
-                                    </>
-                                )}
-                                {box.remarks && (
-                                    <>
-                                        <Text
-                                            style={[
-                                                styles.boldFont,
-                                                { fontSize: 9 },
-                                            ]}
-                                        >
-                                            Box remarks:{" "}
-                                        </Text>
-                                        <Text>{box.remarks}</Text>
-                                    </>
-                                )}
+                            {/* Remarks Row */}
+                            <View style={styles.flex}>
+                                <View
+                                    style={[
+                                        styles.bottomBorder,
+                                        styles.tableCell,
+                                        { width: "14.44%" },
+                                    ]}
+                                />
+                                <View
+                                    style={[
+                                        styles.bottomBorder,
+                                        styles.tableCell,
+                                        { width: "64.96%" },
+                                    ]}
+                                >
+                                    {box.remarks && (
+                                        <>
+                                            <Text
+                                                style={[
+                                                    styles.boldFont,
+                                                    { fontSize: 9 },
+                                                ]}
+                                            >
+                                                Box remarks:
+                                            </Text>
+                                            <Text>{box.remarks}</Text>
+                                        </>
+                                    )}
+                                </View>
+                                <View
+                                    style={[
+                                        styles.bottomBorder,
+                                        styles.tableCell,
+                                        { width: "21.6%" },
+                                    ]}
+                                />
                             </View>
-                            <View
-                                style={[
-                                    styles.rightBorder,
-                                    styles.tableCell,
-                                    { width: 90 },
-                                ]}
-                            ></View>
+                        </View>
+
+                        {/* Disposal Date & Location */}
+                        <View
+                            style={[
+                                styles.border,
+                                styles.tableCell,
+                                { width: "13%" },
+                            ]}
+                        >
+                            <Text>{box.disposal_date}</Text>
+                        </View>
+                        <View
+                            style={[
+                                styles.border,
+                                styles.tableCell,
+                                { width: "13%" },
+                            ]}
+                        >
+                            <Text>{box.location}</Text>
                         </View>
                     </View>
-
-                    <View
-                        style={[
-                            styles.rightBorder,
-                            styles.bottomBorder,
-                            styles.tableCell,
-                            { width: 60 },
-                        ]}
-                    >
-                        <Text>
-                            {box.disposal_date === "Permanent"
-                                ? "Permanent"
-                                : box.disposal_date?.formatted}
-                        </Text>
-                    </View>
-                </View>
-            ))}
+                );
+            })}
 
             {/* Footer Note */}
-            <Text style={[styles.italicFont, { fontSize: 10, paddingTop: 5 }]}>
+            <Text style={{ fontSize: 10, padding: 5 }}>
                 Note: This is to certify that the aforementioned records are
                 neither needed nor involved in any administrative, financial
                 and/or judicial cases.

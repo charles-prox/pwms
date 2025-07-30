@@ -123,8 +123,8 @@ const CompleteReturnRequestActionAction: React.FC<
 
     return (
         <>
-            <Button color="primary" size="sm" onPress={onOpen}>
-                Complete
+            <Button color="primary" onPress={onOpen}>
+                Complete Request
             </Button>
             <Modal
                 isOpen={isOpen}
