@@ -75,20 +75,11 @@ class RequestsController extends Controller
             ->where('status', 'withdrawn')
             ->get();
 
-        $disposableBoxes = Box::with([
-            'documents.rds',
-            'office',
-            'boxLocation.location',
-        ])
-            ->disposable()
-            ->get();
-
         return Inertia::render('RequestsPage', [
             'form' => (new RequestResource($request))
                 ->withReturnService($this->requestReturnService)
                 ->toArray(request()),
             'withdrawn_boxes' => BoxResource::collection($withdrawnBoxes)->toArray(request()),
-            'disposable_boxes' => BoxResource::collection($disposableBoxes)->toArray(request()),
         ]);
     }
 

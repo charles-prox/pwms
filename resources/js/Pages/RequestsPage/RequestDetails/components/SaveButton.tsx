@@ -120,7 +120,7 @@ const SaveButton = () => {
                 ) ? (
                     <DropdownItem key="draft">Save as Draft</DropdownItem>
                 ) : null}
-                <DropdownItem key="print">Submit</DropdownItem>
+                <DropdownItem key="print">Save and Print</DropdownItem>
             </DropdownMenu>
         </Dropdown>
     );

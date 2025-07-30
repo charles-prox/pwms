@@ -70,7 +70,7 @@ export default function UpdateStatusAction({ item }: { item: any }) {
     return (
         <>
             <Button size="sm" color="secondary" onPress={onOpen}>
-                Update
+                Update Status
             </Button>
 
             <Modal

@@ -8,6 +8,7 @@ import {
     RequestsListView,
     RequestsGridView,
 } from "@/Pages/RequestsPage/RequestViews/views";
+import Icon from "../../../Components/Icon";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import FormPreview from "../../../Components/FormPreview";
 import RequestDetails from "../RequestDetails";
