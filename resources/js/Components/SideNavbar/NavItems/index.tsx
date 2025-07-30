@@ -1,10 +1,11 @@
 import React from "react";
 import { Button, Divider, Tooltip } from "@heroui/react";
 import { usePage, router } from "@inertiajs/react";
-import { items } from "./items";
-import { AnimationOptions, NavItem, SideNavState } from "@/Utils/types";
+import { AnimationOptions, SideNavState } from "@/Utils/types";
+import clsx from "clsx";
+import { filterNavItems } from "@/Utils/helpers";
+import { navItems } from "./items";
 
-// Define the props for the NavItems component
 type NavItemsProps = {
     sideNavState: SideNavState;
     animationOptions: AnimationOptions;
@@ -14,12 +15,22 @@ const NavItems: React.FC<NavItemsProps> = ({
     sideNavState,
     animationOptions,
 }) => {
+    const { auth } = usePage<any>().props;
     const { url } = usePage<{ url: string }>();
+
+    const visibleItems = filterNavItems(navItems, auth.user);
+    console.log("visibleItems: ", visibleItems);
+    console.log(url);
 
     return (
         <div className="flex flex-col gap-2 items-start w-full py-3">
-            {items.map((item: NavItem) => {
+            {visibleItems.map((item) => {
                 if (item.type === "link") {
+                    const isActive =
+                        item.url === "/"
+                            ? url === "/"
+                            : url.includes(item.url || "");
+
                     return (
                         <Tooltip
                             key={item.key}
@@ -36,12 +47,7 @@ const NavItems: React.FC<NavItemsProps> = ({
                                 fullWidth
                                 size="md"
                                 radius="sm"
-                                variant={
-                                    item.url !== "/" &&
-                                    url.includes(item.url || "")
-                                        ? "flat"
-                                        : "light"
-                                }
+                                variant={isActive ? "flat" : "light"}
                                 color={"primary"}
                                 startContent={item.icon ? item.icon(20) : null}
                                 isIconOnly={sideNavState === "collapse"}
@@ -79,18 +85,18 @@ const NavItems: React.FC<NavItemsProps> = ({
                             </Button>
                         </Tooltip>
                     );
-                } else if (item.type === "title") {
+                }
+
+                if (item.type === "title") {
                     return (
                         <div
                             key={item.key}
-                            className="w-full flex flex-row align- content-center flex-nowrap flex-1 gap-2 px-2"
+                            className="w-full flex items-center gap-2 px-2"
                         >
                             {sideNavState !== "collapse" && (
-                                <div>
-                                    <p className="text-default-400 text-sm">
-                                        {item.label}
-                                    </p>
-                                </div>
+                                <p className="text-default-400 text-sm">
+                                    {item.label}
+                                </p>
                             )}
                             <div className="flex-grow">
                                 <Divider className="mt-2" />
@@ -98,6 +104,8 @@ const NavItems: React.FC<NavItemsProps> = ({
                         </div>
                     );
                 }
+
+                return null;
             })}
         </div>
     );
