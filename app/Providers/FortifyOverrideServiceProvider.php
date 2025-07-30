@@ -5,7 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TwoFactorController;
-use App\Http\Middleware\AdminCheck;
 
 class FortifyOverrideServiceProvider extends ServiceProvider
 {
@@ -30,15 +29,5 @@ class FortifyOverrideServiceProvider extends ServiceProvider
                 Route::get('/two-factor/recovery-codes', [TwoFactorController::class, 'showRecoveryCodes'])->name('two-factor.codes');
             });
         });
-
-        Route::middleware(['web', AdminCheck::class])->group(function () {
-            Route::post('/login', [\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class, 'store']);
-            Route::get('/register', [\Laravel\Fortify\Http\Controllers\RegisteredUserController::class, 'create']);
-            // Route::post('/register', [\Laravel\Fortify\Http\Controllers\RegisteredUserController::class, 'store']);
-        });
-        // Route::middleware(['web', AdminCheck::class])->group(function () {
-        //     Route::get('/login', fn() => null)->name('login');      // Don't define the view — just register the route for middleware
-        //     Route::get('/register', fn() => null)->name('register');
-        // });
     }
 }

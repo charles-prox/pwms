@@ -8,8 +8,6 @@ use BaconQrCode\Writer;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use Laravel\Fortify\RecoveryCode;
-use Illuminate\Support\Facades\Crypt;
 
 class TwoFactorController extends Controller
 {
@@ -69,11 +67,9 @@ class TwoFactorController extends Controller
         }
 
         $user->forceFill([
-            'two_factor_secret' => Crypt::encrypt(
-                $secret
-            ),
+            'two_factor_secret' => encrypt($secret),
             'two_factor_recovery_codes' => encrypt(json_encode(
-                collect(range(1, 8))->map(fn() => RecoveryCode::generate())->all()
+                collect(range(1, 8))->map(fn() => bin2hex(random_bytes(5)))->all()
             )),
             'two_factor_confirmed_at' => now(),
         ])->save();

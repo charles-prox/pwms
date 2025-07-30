@@ -18,24 +18,26 @@ export const TwoFactorAuthForm: React.FC = () => {
     const [processing, setProcessing] = useState<boolean>(false);
 
     const getRecoveryCodes = (): Promise<void> => {
-        return axiosInstance.get(route("two-factor.codes")).then((response) => {
-            setRecoveryCodes(response.data);
-            setProcessing(false);
-        });
+        return axiosInstance
+            .get(route("two-factor.recovery-codes"))
+            .then((response) => {
+                setRecoveryCodes(response.data);
+                setProcessing(false);
+            });
     };
 
-    // const disableTwoFactorAuthentication = (): void => {
-    //     router.delete(route("two-factor.disable"), {
-    //         onFinish: () => setProcessing(false),
-    //     });
-    //     setShowRecoveryCodes(false);
-    //     setRecoveryCodes([]);
-    //     setPasswordConfirmed(false);
-    //     setOpenConfirmPasswordForm(false);
-    //     setOpenConfirmTwoFactorAuthForm(false);
-    //     setAction("");
-    //     setProcessing(false);
-    // };
+    const disableTwoFactorAuthentication = (): void => {
+        router.delete(route("two-factor.disable"), {
+            onFinish: () => setProcessing(false),
+        });
+        setShowRecoveryCodes(false);
+        setRecoveryCodes([]);
+        setPasswordConfirmed(false);
+        setOpenConfirmPasswordForm(false);
+        setOpenConfirmTwoFactorAuthForm(false);
+        setAction("");
+        setProcessing(false);
+    };
 
     const regenerateRecoveryCodes = (): void => {
         axiosInstance.post(route("two-factor.recovery-codes")).then(() => {
@@ -45,12 +47,10 @@ export const TwoFactorAuthForm: React.FC = () => {
     };
 
     useEffect(() => {
-        if (showRecoveryCodes) {
-            console.log("Fetching recovery codes...");
-
+        if (confirmsTwoFactorAuthentication && showRecoveryCodes) {
             getRecoveryCodes();
         }
-    }, [showRecoveryCodes]);
+    }, [confirmsTwoFactorAuthentication, showRecoveryCodes]);
 
     useEffect(() => {
         if (passwordConfirmed) {
@@ -58,9 +58,9 @@ export const TwoFactorAuthForm: React.FC = () => {
                 case "enable_2fa":
                     setOpenConfirmTwoFactorAuthForm(true);
                     break;
-                // case "disable_2fa":
-                //     disableTwoFactorAuthentication();
-                //     break;
+                case "disable_2fa":
+                    disableTwoFactorAuthentication();
+                    break;
 
                 default:
                     break;
@@ -159,7 +159,7 @@ export const TwoFactorAuthForm: React.FC = () => {
                                                 Show Recovery Codes
                                             </Button>
                                         )}
-                                        {/* <Button
+                                        <Button
                                             color="danger"
                                             onPress={() => {
                                                 setProcessing(true);
@@ -171,7 +171,7 @@ export const TwoFactorAuthForm: React.FC = () => {
                                             isLoading={processing}
                                         >
                                             Disable
-                                        </Button> */}
+                                        </Button>
                                     </div>
                                 ) : (
                                     <Button
@@ -192,7 +192,7 @@ export const TwoFactorAuthForm: React.FC = () => {
             <ConfirmTwoFactorAuthForm
                 isOpen={openConfirmTwoFactorAuthForm}
                 onClose={() => {
-                    // disableTwoFactorAuthentication();
+                    disableTwoFactorAuthentication();
                 }}
                 onSuccess={() => {
                     setOpenConfirmTwoFactorAuthForm(false);
@@ -210,7 +210,6 @@ export const TwoFactorAuthForm: React.FC = () => {
                 onSuccess={(state: boolean) => {
                     setOpenConfirmPasswordForm(false);
                     setPasswordConfirmed(state);
-                    setShowRecoveryCodes(true);
                 }}
             />
         </React.Fragment>
