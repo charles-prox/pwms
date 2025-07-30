@@ -1,9 +1,9 @@
+import { TwoFactorAuthForm } from "@/Components/Forms/TwoFactorAuthForm";
+import { UpdatePasswordForm } from "@/Components/Forms/UpdatePasswordForm";
+import { LogoutOtherBrowserSessions } from "@/Components/LogoutOtherBrowserSessions";
 import { Head } from "@inertiajs/react";
 import { Spacer } from "@heroui/react";
 import React from "react";
-import { TwoFactorAuthForm } from "../Auth/TwoFactorPrompt/TwoFactorAuthForm";
-import { UpdatePasswordForm } from "./Security/forms/UpdatePasswordForm";
-import { LogoutOtherBrowserSessions } from "./Security/forms/LogoutOtherBrowserSessions";
 
 const Security: React.FC = () => {
     return (

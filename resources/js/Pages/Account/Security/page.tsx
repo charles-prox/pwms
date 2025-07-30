@@ -19,7 +19,7 @@ const Security: React.FC = () => {
                 </div>
                 <Spacer y={1} />
                 <UpdatePasswordForm />
-                <TwoFactorAuthForm />
+                {/* <TwoFactorAuthForm /> */}
                 <LogoutOtherBrowserSessions />
             </div>
         </React.Fragment>
