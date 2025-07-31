@@ -3,16 +3,14 @@
 // use Illuminate\Foundation\Application;
 
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UpdateUserProfileController;
-use App\Http\Controllers\RegisterAdminController;
 use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\RDSController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 
-require base_path('routes/sidenav.php');
 
 Route::middleware([
     'auth:sanctum',
@@ -20,6 +18,7 @@ Route::middleware([
     'verified',
     'twofactor',
 ])->group(function () {
+    require base_path('routes/sidenav.php');
 
     Route::prefix('account')->name('account.')->group(function () {
         Route::get('security', [UserProfileController::class, 'show'])->name('security');
@@ -54,15 +53,13 @@ Route::middleware([
     });
 });
 
-
-Route::get('/register', [RegisterAdminController::class, 'create'])
-    ->middleware(['guest'])
-    ->name('register');
-
-Route::get('/login', [LoginController::class, 'create'])
-    ->middleware(['guest'])
-    ->name('login');
-
 Route::get('/two-factor/prompt', function () {
     return Inertia::render('Auth/TwoFactorPrompt');
-})->name('two-factor.prompt');
+})->middleware(['auth', '2fa.prompt'])->name('two-factor.prompt');
+
+
+Route::middleware(['guest', 'restrict-register'])->group(function () {
+    Route::get('/register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'store']);
+});

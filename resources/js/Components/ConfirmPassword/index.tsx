@@ -96,7 +96,10 @@ export const ConfirmPassword: React.FC<ConfirmPasswordProps> = ({
                             placeholder="Enter your password"
                             errorMessage={error}
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => {
+                                setError("");
+                                setPassword(e.target.value);
+                            }}
                         />
                     </ModalBody>
                     <ModalFooter>

@@ -3,6 +3,7 @@ import UpdateStatusAction from "../component/UpdatedStatusAction";
 import CompleteStorageRequestAction from "../component/CompleteStorageRequestAction";
 import CompleteWithdrawalRequestAction from "../component/CompleteWithdrawalRequestAction";
 import CompleteReturnRequestAction from "../component/CompleteReturnRequestAction";
+import { toTitleCase } from "@/Utils/helpers";
 
 export const columns: Column<Request>[] = [
     { label: "FORM NO.", key: "form_number", sortable: true },

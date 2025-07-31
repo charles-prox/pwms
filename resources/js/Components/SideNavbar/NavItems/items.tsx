@@ -72,7 +72,7 @@ export const navItems: NavItem[] = [
         label: "RDS",
         icon: (size) => <RdsIcon width={size} height={size} />,
         url: "/rds",
-        permissions: ["access rds"],
+        roles: ["super-admin"],
     },
     {
         type: "link",

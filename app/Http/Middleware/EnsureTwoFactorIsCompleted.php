@@ -11,13 +11,15 @@ class EnsureTwoFactorIsCompleted
     {
         $user = $request->user();
 
-        // If not logged in, bail early
-        if (!$user) {
-            return redirect()->route('login');
-        }
 
-        // If user has NOT setup 2FA, force them to do it
-        if (!$user->two_factor_secret) {
+        // Adjust this check based on your 2FA implementation
+        if (
+            $user &&
+            !$user->two_factor_secret &&
+            !$user->two_factor_confirmed_at
+            // !in_array($request->route()->getName(), $excludedRoutes)
+        ) {
+            // If not verified in this session, redirect to prompt
             return redirect()->route('two-factor.prompt');
         }
 

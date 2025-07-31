@@ -39,20 +39,6 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
-        Fortify::authenticateThrough(function (Request $request) {
-            return [
-                // Step 1: Jetstream's built-in
-                AttemptToAuthenticate::class,
-
-                // Step 2: Add your custom check
-                EnsureAccountIsActive::class,
-                RedirectIf2FANotEnabled::class,
-
-                // Step 3: Continue Jetstream's normal flow
-                RedirectIfTwoFactorAuthenticatable::class,
-                PrepareAuthenticatedSession::class,
-            ];
-        });
 
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());

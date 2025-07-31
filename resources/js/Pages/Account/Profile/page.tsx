@@ -2,9 +2,13 @@ import { Head } from "@inertiajs/react";
 import { Button, Spacer } from "@heroui/react";
 import React, { useRef, useState } from "react";
 import { EditIcon, SaveIcon } from "./icons";
-import { FormMode, ProfileFormData, UserType } from "@/Utils/types";
+import {
+    FormMode,
+    // ProfileFormData,
+    UserType,
+} from "@/Utils/types";
 import { UserForm } from "@/Components/Forms/UserForm";
-import DeleteAccount from "@/Components/Forms/UserForm/DeleteAccount";
+// import DeleteAccount from "@/Components/Forms/UserForm/DeleteAccount";
 
 interface AuthProps {
     user: UserType;
@@ -82,7 +86,7 @@ const ProfilePage = ({ auth }: { auth: AuthProps }) => {
                     formRef={formRef}
                 />
 
-                {mode === "view" && <DeleteAccount />}
+                {/* {mode === "view" && <DeleteAccount />} */}
             </div>
         </>
     );

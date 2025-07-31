@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            \App\Http\Middleware\ForceRegisterIfNoUsers::class,
         ]);
 
         $middleware->alias([
@@ -23,8 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'twofactor' => \App\Http\Middleware\EnsureTwoFactorIsCompleted::class,
-            '2fa.not_enabled' => \App\Http\Middleware\EnsureTwoFactorNotEnabled::class,
-            '2fa.enabled' => \App\Http\Middleware\EnsureTwoFactorEnabled::class,
+            'restrict-register' => \App\Http\Middleware\RestrictRegisterIfSuperAdminExists::class,
+            '2fa.prompt' => \App\Http\Middleware\RedirectIfTwoFactorEnabled::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, CardBody, Divider } from "@heroui/react";
-import { router, usePage } from "@inertiajs/react";
+import { usePage } from "@inertiajs/react";
 import { axiosInstance } from "@/Utils/axios";
 import ConfirmPassword from "@/Components/ConfirmPassword";
-import { ConfirmTwoFactorAuthForm } from "./ConfirmTwoFactorAuthForm";
 
 export const TwoFactorAuthForm: React.FC = () => {
     const { confirmsTwoFactorAuthentication } = usePage<any>().props;
-    const [passwordConfirmed, setPasswordConfirmed] = useState<boolean>(false);
     const [recoveryCodes, setRecoveryCodes] = useState<any>([]);
     const [showRecoveryCodes, setShowRecoveryCodes] = useState<boolean>(false);
     const [openConfirmPasswordForm, setOpenConfirmPasswordForm] =
         useState<boolean>(false);
-    const [openConfirmTwoFactorAuthForm, setOpenConfirmTwoFactorAuthForm] =
-        useState<boolean>(false);
-    const [action, setAction] = useState<string>("");
+
     const [processing, setProcessing] = useState<boolean>(false);
 
     const getRecoveryCodes = (): Promise<void> => {
@@ -24,19 +20,6 @@ export const TwoFactorAuthForm: React.FC = () => {
                 setRecoveryCodes(response.data);
                 setProcessing(false);
             });
-    };
-
-    const disableTwoFactorAuthentication = (): void => {
-        router.delete(route("two-factor.disable"), {
-            onFinish: () => setProcessing(false),
-        });
-        setShowRecoveryCodes(false);
-        setRecoveryCodes([]);
-        setPasswordConfirmed(false);
-        setOpenConfirmPasswordForm(false);
-        setOpenConfirmTwoFactorAuthForm(false);
-        setAction("");
-        setProcessing(false);
     };
 
     const regenerateRecoveryCodes = (): void => {
@@ -51,22 +34,6 @@ export const TwoFactorAuthForm: React.FC = () => {
             getRecoveryCodes();
         }
     }, [confirmsTwoFactorAuthentication, showRecoveryCodes]);
-
-    useEffect(() => {
-        if (passwordConfirmed) {
-            switch (action) {
-                case "enable_2fa":
-                    setOpenConfirmTwoFactorAuthForm(true);
-                    break;
-                case "disable_2fa":
-                    disableTwoFactorAuthentication();
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }, [passwordConfirmed, action]);
 
     return (
         <React.Fragment>
@@ -130,77 +97,40 @@ export const TwoFactorAuthForm: React.FC = () => {
                                 )}
                             </div>
                             <div className="px-8 py-5 bg-slate-400/10 text-right">
-                                {confirmsTwoFactorAuthentication ? (
-                                    <div className="flex gap-3 justify-end">
-                                        {showRecoveryCodes ? (
-                                            <Button
-                                                variant="flat"
-                                                color="default"
-                                                onPress={() => {
-                                                    setProcessing(true);
-                                                    regenerateRecoveryCodes();
-                                                }}
-                                                isLoading={processing}
-                                            >
-                                                Regenerate Recovery Codes
-                                            </Button>
-                                        ) : (
-                                            <Button
-                                                variant="flat"
-                                                color="default"
-                                                onPress={() => {
-                                                    setProcessing(true);
-                                                    setOpenConfirmPasswordForm(
-                                                        true
-                                                    );
-                                                }}
-                                                isLoading={processing}
-                                            >
-                                                Show Recovery Codes
-                                            </Button>
-                                        )}
+                                <div className="flex gap-3 justify-end">
+                                    {showRecoveryCodes ? (
                                         <Button
-                                            color="danger"
+                                            variant="flat"
+                                            color="default"
                                             onPress={() => {
                                                 setProcessing(true);
-                                                setAction("disable_2fa");
+                                                regenerateRecoveryCodes();
+                                            }}
+                                            isLoading={processing}
+                                        >
+                                            Regenerate Recovery Codes
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="flat"
+                                            color="default"
+                                            onPress={() => {
+                                                setProcessing(true);
                                                 setOpenConfirmPasswordForm(
                                                     true
                                                 );
                                             }}
                                             isLoading={processing}
                                         >
-                                            Disable
+                                            Show Recovery Codes
                                         </Button>
-                                    </div>
-                                ) : (
-                                    <Button
-                                        color="primary"
-                                        onPress={() => {
-                                            setAction("enable_2fa");
-                                            setOpenConfirmPasswordForm(true);
-                                        }}
-                                    >
-                                        Confirm
-                                    </Button>
-                                )}
+                                    )}
+                                </div>
                             </div>
                         </CardBody>
                     </Card>
                 </div>
             </div>
-            <ConfirmTwoFactorAuthForm
-                isOpen={openConfirmTwoFactorAuthForm}
-                onClose={() => {
-                    disableTwoFactorAuthentication();
-                }}
-                onSuccess={() => {
-                    setOpenConfirmTwoFactorAuthForm(false);
-                    setPasswordConfirmed(false);
-                    setShowRecoveryCodes(true);
-                }}
-            />
-
             <ConfirmPassword
                 isOpen={openConfirmPasswordForm}
                 onClose={() => {
@@ -209,7 +139,7 @@ export const TwoFactorAuthForm: React.FC = () => {
                 }}
                 onSuccess={(state: boolean) => {
                     setOpenConfirmPasswordForm(false);
-                    setPasswordConfirmed(state);
+                    setShowRecoveryCodes(true);
                 }}
             />
         </React.Fragment>
