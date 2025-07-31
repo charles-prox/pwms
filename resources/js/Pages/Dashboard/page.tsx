@@ -64,6 +64,15 @@ const DashboardPage = () => {
                             positiveTrend={false}
                         />
                     </div>
+                    <div className="col-span-4 sm:col-span-4">
+                        <KpiCard
+                            title="Overdue Returns"
+                            data={8}
+                            delta={2}
+                            description="More than last period"
+                            positiveTrend={false}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
