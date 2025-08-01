@@ -142,16 +142,31 @@ class RequestsController extends Controller
 
     public function destroy(string $form_number)
     {
-        $request = RequestModel::where('form_number', $form_number)->first();
+        $request = RequestModel::where('form_number', $form_number)->with('boxes.documents')->first();
 
-        if (!$request) {
+        if (! $request) {
             return response()->json(['message' => 'Request not found.'], 404);
         }
 
+        // Delete documents for each box in this request
+        foreach ($request->boxes as $box) {
+            $box->documents()->delete();
+        }
+
+        // Detach pivot relationship (removes records from request_box table)
+        $request->boxes()->detach();
+
+        // Optionally: delete the boxes too, if you’re sure they are not shared with other requests
+        // foreach ($request->boxes as $box) {
+        //     $box->delete();
+        // }
+
+        // Delete the request itself
         $request->delete();
 
-        return response()->json(['message' => 'Request deleted successfully.']);
+        return response()->json(['message' => 'Request and related data deleted successfully.']);
     }
+
 
     public function uploadPdf(HttpRequest $request)
     {

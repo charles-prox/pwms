@@ -57,9 +57,7 @@ const KpiCard: React.FC<KpiCardProps> = ({
     return (
         <Card className={cardClasses}>
             <CardHeader className="flex justify-between items-center">
-                <h2 className={clsx("text-md font-semibold", titleTextColor)}>
-                    {title}
-                </h2>
+                <h2 className={clsx("text-md", titleTextColor)}>{title}</h2>
                 <Button
                     isIconOnly
                     radius="full"
@@ -96,21 +94,31 @@ const KpiCard: React.FC<KpiCardProps> = ({
                 <div className={clsx("text-5xl font-bold pb-2", dataTextColor)}>
                     {data}
                 </div>
-                <div
-                    className={clsx(
-                        "flex items-center space-x-1 text-xs",
-                        trendColor
-                    )}
-                >
-                    <div className="flex items-center space-x-1">
-                        <span className="font-semibold">
-                            {positiveTrend ? "+" : "-"}
-                            {Math.abs(delta)}
-                        </span>
-                        <TrendIcon className="h-3 w-3" />
+                {delta !== 0 ? (
+                    <div
+                        className={clsx(
+                            "flex items-center space-x-1 text-xs",
+                            trendColor
+                        )}
+                    >
+                        <div className="flex items-center space-x-1">
+                            <span className="font-semibold">
+                                {positiveTrend ? "+" : "-"}
+                                {Math.abs(delta)}
+                            </span>
+                            <TrendIcon className="h-3 w-3" />
+                        </div>
+                        <span className="lowercase">{description}</span>
                     </div>
-                    <span>{description}</span>
-                </div>
+                ) : (
+                    <div
+                        className={`text-xs ${
+                            highlight ? "text-gray-200" : "text-gray-500"
+                        }`}
+                    >
+                        Waiting for this month's first entry.
+                    </div>
+                )}
             </CardBody>
         </Card>
     );

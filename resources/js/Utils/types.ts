@@ -326,3 +326,43 @@ export interface Role {
     created_at: string; // ISO 8601 date string
     updated_at: string; // ISO 8601 date string
 }
+
+export interface KpiCardProps {
+    title: string;
+    data: number;
+    delta?: number;
+    description?: string;
+    positiveTrend?: boolean;
+    highlight?: boolean;
+}
+
+export interface DashboardPageProps {
+    kpiCards: {
+        total_boxes: { count: number; added_this_month: number };
+        total_documents: { count: number; added_this_month: number };
+        boxes_due_for_disposal: { count: number; added_this_month: number };
+        boxes_for_return: { count: number; added_this_month: number };
+        pending_requests: { count: number; added_this_month: number };
+        completed_requests: { count: number; added_this_month: number };
+    };
+    requestsSummary: RequestMetricsResponse;
+}
+
+export interface RequestMetric {
+    title: string;
+    type: "storage" | "withdrawal" | "return" | "disposal";
+    value: number;
+    change: number;
+    isIncrease: boolean;
+}
+
+export interface RequestMetricsMap {
+    storage: RequestMetric;
+    withdrawal: RequestMetric;
+    return: RequestMetric;
+    disposal: RequestMetric;
+}
+
+export interface RequestMetricsResponse {
+    request_metrics: RequestMetricsMap;
+}

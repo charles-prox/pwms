@@ -3,12 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
 use Inertia\Inertia;
 
 
-Route::get('/', function () {
-    return Inertia::render('Dashboard');
-})->name('home');
+Route::get('/', [DashboardController::class, 'index'])->name('home');
 
 Route::get('/request', [RequestsController::class, 'getAllRequests'])->name('requests');
 
