@@ -16,6 +16,9 @@ class ForceRegisterIfNoUsers
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->routeIs('register')) {
+            return $next($request);
+        }
         // Only redirect if not already on register route
         if (User::count() === 0) {
             return redirect()->route('register');
