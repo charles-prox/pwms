@@ -17,6 +17,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
     'twofactor',
+    'force-register', // Ensure users are forced to register if no users exist
 ])->group(function () {
     require base_path('routes/sidenav.php');
 
