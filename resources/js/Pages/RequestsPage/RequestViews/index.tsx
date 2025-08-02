@@ -2,13 +2,12 @@ import React from "react";
 import { Head, router, usePage } from "@inertiajs/react";
 import PageLayoutViewController from "@/Components/PageLayoutViewController";
 import { Breadcrumbs, BreadcrumbItem, Button } from "@heroui/react";
-import { BoxFormState, FormDetails, FormProp } from "@/Utils/types";
+import { FormDetails, FormProp } from "@/Utils/types";
 import { useLayoutViewContext } from "@/Contexts/LayoutViewContext";
 import {
     RequestsListView,
     RequestsGridView,
 } from "@/Pages/RequestsPage/RequestViews/views";
-import Icon from "../../../Components/Icon";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import FormPreview from "../../../Components/FormPreview";
 import RequestDetails from "../RequestDetails";
@@ -142,11 +141,11 @@ const RequestsPage = () => {
                             </>
                         )}
                     </div>
-                    {url === "/request" && (
+                    {/* {url === "/request" && (
                         <div className="flex gap-2 justify-end items-end flex-wrap">
                             <PageLayoutViewController pageId={PAGE_ID} />
                         </div>
-                    )}
+                    )} */}
                 </div>
 
                 {/* Main Content */}

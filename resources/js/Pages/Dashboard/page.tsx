@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@heroui/react";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import KpiCard from "@/Components/KpiCard";
 import { Download } from "lucide-react";
 import { RequestsDashboard } from "@/Components/RequestsDashboard";
@@ -10,8 +10,15 @@ import { DashboardPageProps } from "@/Utils/types";
 const DashboardPage: React.FC<DashboardPageProps> = ({
     kpiCards,
     requestsSummary,
+    warehouseUsageSummary,
 }) => {
-    console.log("DashboardPage props:", kpiCards, requestsSummary);
+    const { auth } = usePage<any>().props;
+    const userRoles = auth.user.roles;
+
+    const hasElevatedAccess =
+        userRoles.includes("super-admin") ||
+        userRoles.includes("regional-document-custodian");
+
     return (
         <div>
             <Head title="Dashboard" />
@@ -83,17 +90,16 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                         requestsSummary={requestsSummary.request_metrics}
                     />
                 </div>
-                <div>
-                    <WarehouseUsageCharts
-                        totalCapacity={1000}
-                        offices={[
-                            { office: "Office A", used: 200, capacity: 300 },
-                            { office: "Office B", used: 100, capacity: 150 },
-                            { office: "Office C", used: 300, capacity: 400 },
-                            { office: "Office D", used: 50, capacity: 150 },
-                        ]}
-                    />
-                </div>
+                {/* Conditional Content for Elevated Roles */}
+                {hasElevatedAccess && (
+                    <>
+                        <div>
+                            <WarehouseUsageCharts
+                                warehouseSummary={warehouseUsageSummary}
+                            />
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

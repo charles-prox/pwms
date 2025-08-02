@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 
 class Box extends Model
 {
@@ -82,5 +84,18 @@ class Box extends Model
             ->whereNotNull('completed_at')
             ->orderByDesc('completed_at') // or use orderBy('completed_at') if you want the earliest
             ->first();
+    }
+
+    public function scopeDisposable(Builder $query): Builder
+    {
+        return $query->where('status', 'stored')
+            ->whereDate('disposal_date', '<', Carbon::today()->subMonth());
+    }
+
+    public function isDisposable(): bool
+    {
+        return $this->status === 'stored'
+            && $this->disposal_date
+            && $this->disposal_date < \Carbon\Carbon::today()->subMonth();
     }
 }

@@ -4,8 +4,57 @@ import CompleteStorageRequestAction from "../component/CompleteStorageRequestAct
 import CompleteWithdrawalRequestAction from "../component/CompleteWithdrawalRequestAction";
 import CompleteReturnRequestAction from "../component/CompleteReturnRequestAction";
 import { toTitleCase } from "@/Utils/helpers";
+import CompleteDisposalRequestAction from "../component/CompleteDisposalRequestAction";
+import DisposalStatusUpdateAction from "../component/DisposalStatusUpdateAction";
+import { FormProp } from "@/Utils/types";
 
-export const columns: Column<Request>[] = [
+const renderAction = (item: any) => {
+    const status = item.status.toLowerCase();
+    const requestType = item.request_type;
+
+    if (status !== "completed" && status !== "pending") {
+        if (requestType === "storage") {
+            return <CompleteStorageRequestAction item={item} />;
+        } else if (requestType === "withdrawal") {
+            return (
+                <CompleteWithdrawalRequestAction
+                    requestId={item.id}
+                    boxes={item.boxes.map((b: any) => ({
+                        id: b.id,
+                        box_code: b.box_code,
+                    }))}
+                />
+            );
+        } else if (requestType === "return") {
+            return (
+                <CompleteReturnRequestAction
+                    requestId={item.id}
+                    boxes={item.boxes.map((b: any) => ({
+                        id: b.id,
+                        box_code: b.box_code,
+                    }))}
+                />
+            );
+        } else if (requestType === "disposal") {
+            return (
+                <div className="flex gap-1">
+                    <CompleteDisposalRequestAction
+                        requestId={item.id}
+                        boxes={item.boxes.map((b: any) => ({
+                            id: b.id,
+                            box_code: b.box_code,
+                        }))}
+                    />
+                    <DisposalStatusUpdateAction item={item} />
+                </div>
+            );
+        }
+    }
+
+    return <UpdateStatusAction item={item} />;
+};
+
+export const columns: Column<FormProp>[] = [
     { label: "FORM NO.", key: "form_number", sortable: true },
     { label: "CREATED BY", key: "creator", sortable: true },
     {
@@ -26,33 +75,6 @@ export const columns: Column<Request>[] = [
     {
         label: "ACTIONS",
         key: "actions",
-        render: (item: any) => {
-            console.log("Rendering actions for item:", item.status);
-            console.log("Item details:", item);
-
-            return item.status.toLowerCase() !== "completed" ? (
-                item.request_type === "storage" ? (
-                    <CompleteStorageRequestAction item={item} />
-                ) : item.request_type === "withdrawal" ? (
-                    <CompleteWithdrawalRequestAction
-                        requestId={item.id}
-                        boxes={item.boxes.map((b: any) => ({
-                            id: b.id,
-                            box_code: b.box_code,
-                        }))}
-                    />
-                ) : item.request_type === "return" ? (
-                    <CompleteReturnRequestAction
-                        requestId={item.id}
-                        boxes={item.boxes.map((b: any) => ({
-                            id: b.id,
-                            box_code: b.box_code,
-                        }))}
-                    />
-                ) : null
-            ) : (
-                <UpdateStatusAction item={item} />
-            );
-        },
+        render: (item: any) => renderAction(item),
     },
 ];

@@ -85,6 +85,7 @@ export default function BaseListView<T extends { id: number }>({
                 table: "relative",
                 loadingWrapper:
                     "absolute inset-0 bg-black/50 backdrop-blur-md z-50 rounded-lg",
+                // td: "align-top py-4",
             }}
             selectionMode={isSelectable ? "multiple" : "none"}
             selectedKeys={selectedKeys}

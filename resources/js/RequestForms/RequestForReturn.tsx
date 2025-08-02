@@ -203,7 +203,7 @@ const RequestForReturn: React.FC<RequestForReturnProps> = ({ data }) => {
             )}
 
             {/* Footer Note */}
-            <Text style={{ fontSize: 10, padding: 5 }}>
+            <Text style={[styles.italicFont, { fontSize: 10, paddingTop: 5 }]}>
                 Note: The Records Section shall not be responsible for any loss
                 of the box's contents.
             </Text>

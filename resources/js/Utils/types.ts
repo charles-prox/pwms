@@ -346,6 +346,7 @@ export interface DashboardPageProps {
         completed_requests: { count: number; added_this_month: number };
     };
     requestsSummary: RequestMetricsResponse;
+    warehouseUsageSummary: WarehouseSummary;
 }
 
 export interface RequestMetric {
@@ -354,6 +355,7 @@ export interface RequestMetric {
     value: number;
     change: number;
     isIncrease: boolean;
+    averageTatDays: number | null;
 }
 
 export interface RequestMetricsMap {
@@ -365,4 +367,26 @@ export interface RequestMetricsMap {
 
 export interface RequestMetricsResponse {
     request_metrics: RequestMetricsMap;
+}
+
+export interface OfficeUsage {
+    office_id: number;
+    occupied_locations: number;
+    office: {
+        id: number;
+        name: string;
+        acronym: string | null;
+    };
+}
+
+export interface WarehouseSummary {
+    stored_boxes: number;
+    total_capacity: number;
+    remaining_space: number;
+    occupying_offices_count: number;
+    ground_used: number;
+    ground_capacity: number;
+    mezzanine_used: number;
+    mezzanine_capacity: number;
+    office_usage: OfficeUsage[];
 }

@@ -3,7 +3,7 @@ import { columns } from "./config/columns";
 import BaseListView from "@/Layouts/BaseListView";
 import EmptyState from "@/Components/EmptyState";
 import TableToolbar from "@/Components/TableToolbar";
-import { RequestProps } from "@/Utils/types";
+import { FormProp } from "@/Utils/types";
 import { url } from "@/Utils/helpers";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
 import { Head, router, usePage } from "@inertiajs/react";
@@ -11,7 +11,7 @@ import { Head, router, usePage } from "@inertiajs/react";
 const ManageRequestsPage = ({
     pendingRequests,
 }: {
-    pendingRequests: RequestProps[];
+    pendingRequests: FormProp[];
 }) => {
     const url = usePage().url;
 
@@ -37,7 +37,7 @@ const ManageRequestsPage = ({
                 </div>
 
                 {/* Main Content */}
-                <BaseListView<Request>
+                <BaseListView<FormProp>
                     columns={columns}
                     data={pendingRequests}
                     loading={!pendingRequests}

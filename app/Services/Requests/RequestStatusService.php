@@ -8,6 +8,9 @@ use App\Models\Location;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request as HttpRequest;
+use App\Enums\RequestStatus;
+use App\Enums\DisposalStatus;
+use Illuminate\Validation\Rule;
 
 class RequestStatusService
 {
@@ -22,18 +25,29 @@ class RequestStatusService
 
     public function validateRequest(HttpRequest $request)
     {
+        $allStatuses = array_merge(
+            array_column(RequestStatus::cases(), 'value'),
+            array_column(DisposalStatus::cases(), 'value')
+        );
+
         return $request->validate([
             'id' => 'required|exists:requests,id',
-            'status' => 'required|string|in:approved,rejected,completed',
+
+            // Accept status from either enum
+            'status' => ['required', 'string', Rule::in($allStatuses)],
+
             'remarks' => 'required_if:status,rejected|string|max:1000',
             'approved_form' => 'required_if:status,approved|file|mimes:pdf|max:5120',
             'boxes' => 'required_if:status,completed|array',
             'boxes.*.id' => 'required|exists:boxes,id',
+
+            // Only for storage
             'boxes.*.location.floor' => 'required_if:request_type,storage|string|in:mezzanine,ground',
             'boxes.*.location.rack' => 'required_if:request_type,storage|integer',
             'boxes.*.location.bay' => 'required_if:request_type,storage|integer',
             'boxes.*.location.level' => 'required_if:request_type,storage|integer',
             'boxes.*.location.position' => 'required_if:request_type,storage|integer',
+
             'boxes.*.status' => 'nullable|string',
             'boxes.*.remarks' => 'nullable|string',
         ]);
@@ -173,6 +187,44 @@ class RequestStatusService
             $finalStatus = match (true) {
                 $withdrawnCount === $total => 'completed',
                 $withdrawnCount > 0 => 'partially_completed',
+                default => 'failed',
+            };
+
+            $request->update(['status' => $finalStatus]);
+
+            return $finalStatus;
+        });
+    }
+
+    public function confirmBoxDisposal(array $boxes, RequestModel $request): string
+    {
+        return DB::transaction(function () use ($boxes, $request) {
+            $disposedCount = 0;
+            $total = count($boxes);
+
+            foreach ($boxes as $boxData) {
+                $boxId = $boxData['id'];
+                $status = $boxData['status'];
+                $remarks = $boxData['remarks'] ?? null;
+
+                if (!empty($remarks)) {
+                    $request->boxes()->updateExistingPivot($boxId, [
+                        'disposal_completion_remarks' => $remarks,
+                    ]);
+                }
+
+                if ($status === 'disposed') {
+                    Box::where('id', $boxId)->update(['status' => 'disposed']);
+                    $disposedCount++;
+                } else {
+                    Box::where('id', $boxId)->update(['status' => 'disposal_failed']);
+                }
+            }
+
+            // Determine final request status
+            $finalStatus = match (true) {
+                $disposedCount === $total => 'completed',
+                $disposedCount > 0 => 'partially_completed',
                 default => 'failed',
             };
 

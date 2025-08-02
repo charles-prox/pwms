@@ -61,18 +61,49 @@ class RequestsController extends Controller
             return $this->getAllRequests();
         }
 
-        // Filter withdrawn boxes
         $withdrawnBoxes = Box::with([
             'documents.rds',
             'office',
             'boxLocation.location',
             'requests' => function ($query) {
-                $query->with(['statusLogs' => function ($logQuery) {
-                    $logQuery->where('status', 'completed');
-                }]);
+                $query->whereHas('statusLogs', function ($logQuery) {
+                    $logQuery->where('status', 'like', '%completed');
+                })->with([
+                    'statusLogs', // Load all status logs now
+                ])->withPivot([
+                    'storage_remarks',
+                    'withdrawal_remarks',
+                    'return_remarks',
+                    'disposal_remarks',
+                    'storage_completion_remarks',
+                    'withdrawal_completion_remarks',
+                    'return_completion_remarks',
+                    'disposal_completion_remarks',
+                ])->where('request_type', 'withdrawal');
             }
         ])
             ->where('status', 'withdrawn')
+            ->get();
+        // dd($withdrawnBoxes);
+
+        $disposableBoxes = Box::with([
+            'documents.rds',
+            'office',
+            'boxLocation.location',
+            'requests' => function ($query) {
+                $query->withPivot([
+                    'storage_remarks',
+                    'withdrawal_remarks',
+                    'return_remarks',
+                    'disposal_remarks',
+                    'storage_completion_remarks',
+                    'withdrawal_completion_remarks',
+                    'return_completion_remarks',
+                    'disposal_completion_remarks',
+                ]);
+            }
+        ])
+            ->disposable()
             ->get();
 
         return Inertia::render('RequestsPage', [
@@ -80,6 +111,7 @@ class RequestsController extends Controller
                 ->withReturnService($this->requestReturnService)
                 ->toArray(request()),
             'withdrawn_boxes' => BoxResource::collection($withdrawnBoxes)->toArray(request()),
+            'disposable_boxes' => BoxResource::collection($disposableBoxes)->toArray(request()),
         ]);
     }
 
@@ -166,7 +198,6 @@ class RequestsController extends Controller
 
         return response()->json(['message' => 'Request and related data deleted successfully.']);
     }
-
 
     public function uploadPdf(HttpRequest $request)
     {
@@ -260,6 +291,11 @@ class RequestsController extends Controller
                 if ($requestModel->request_type === 'return') {
                     // Get actual completion status from the service
                     $statusToLog = $service->confirmBoxReturn($validated['boxes'], $requestModel);
+                }
+
+                if ($requestModel->request_type === 'disposal') {
+                    // Get actual completion status from the service
+                    $statusToLog = $service->confirmBoxDisposal($validated['boxes'], $requestModel);
                 }
             }
 
