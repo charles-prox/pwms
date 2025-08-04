@@ -4,13 +4,12 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
 
 class PositionSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        DB::table('positions')->insert([
+        $positions = [
             ['code' => 'aa_vi', 'name' => 'Administrative Aide VI', 'abbreviation' => 'AA-VI'],
             ['code' => 'ao_i', 'name' => 'Administrative Officer I', 'abbreviation' => 'AO-I'],
             ['code' => 'ao_ii', 'name' => 'Administrative Officer II', 'abbreviation' => 'AO-II'],
@@ -31,7 +30,7 @@ class PositionSeeder extends Seeder
             ['code' => 'fc_ii', 'name' => 'Fiscal Controller II', 'abbreviation' => 'FC-II'],
             ['code' => 'fc_iii', 'name' => 'Fiscal Controller III', 'abbreviation' => 'FC-III'],
             ['code' => 'fc_iv', 'name' => 'Fiscal Controller IV', 'abbreviation' => 'FC-IV'],
-            ['code' => 'fc_iii', 'name' => 'Fiscal Clerk III', 'abbreviation' => 'FC-III'],
+            ['code' => 'fcl_iii', 'name' => 'Fiscal Clerk III', 'abbreviation' => 'FCL-III'],
             ['code' => 'fe_a', 'name' => 'Fiscal Examiner A', 'abbreviation' => 'FE-A'],
             ['code' => 'hrma', 'name' => 'Human Resource Management Assistant', 'abbreviation' => 'HRMA'],
             ['code' => 'hrmo_i', 'name' => 'Human Resource Management Officer I', 'abbreviation' => 'HRMO-I'],
@@ -57,6 +56,13 @@ class PositionSeeder extends Seeder
             ['code' => 'si_ii', 'name' => 'Special Investigator II', 'abbreviation' => 'SI-II'],
             ['code' => 'si_iii', 'name' => 'Special Investigator III', 'abbreviation' => 'SI-III'],
             ['code' => 'si_iv', 'name' => 'Special Investigator IV', 'abbreviation' => 'SI-IV'],
-        ]);
+        ];
+
+        foreach ($positions as $position) {
+            DB::table('positions')->updateOrInsert(
+                ['code' => $position['code']], // condition (check existing by code)
+                $position                       // values to insert or update
+            );
+        }
     }
 }
