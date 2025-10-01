@@ -37,7 +37,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         id: 1,
         box_code: "",
         priority_level: null,
-        remarks: null,
+        remarks: "",
         disposal_date: {
             raw: null,
             formatted: null,

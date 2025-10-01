@@ -74,7 +74,7 @@ export interface PriorityLevel {
 export interface BoxFormState {
     id: number;
     box_code: string;
-    remarks?: string | null;
+    remarks: string;
     priority_level: PriorityLevel | null;
     disposal_date: BoxDate | "Permanent" | null;
     office: { id: number; name: string } | null;

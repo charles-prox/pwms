@@ -226,6 +226,7 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
                                 onChange={(e) =>
                                     onRemarksChange(e.target.value)
                                 }
+                                isRequired
                             />
                             <div className="flex gap-2">
                                 <Input

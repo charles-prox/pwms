@@ -105,7 +105,7 @@ class RequestsController extends Controller
         ])
             ->disposable()
             ->get();
-
+        // dd($request);
         return Inertia::render('RequestsPage', [
             'form' => (new RequestResource($request))
                 ->withReturnService($this->requestReturnService)

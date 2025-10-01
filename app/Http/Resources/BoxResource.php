@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class BoxResource extends JsonResource
 {
@@ -16,9 +17,14 @@ class BoxResource extends JsonResource
 
         // Get pivot from the request relationship
         $pivot = $requestModel?->pivot;
-
+        // dd($requestModel);
         $completedLog = $requestModel?->statusLogs
             ->first(fn($log) => str_contains($log->status, 'completed'));
+
+        $storageRemarks = DB::table('request_box')
+            ->where('box_id', $this->id)
+            ->orderByDesc('id') // latest request relation if multiple
+            ->value('storage_remarks');
 
         // dd($requestModel?->statusLogs);
         return [
@@ -28,7 +34,7 @@ class BoxResource extends JsonResource
                 'value' => $this->priority_level,
                 'label' => ucfirst($this->priority_level),
             ] : null,
-            'remarks' => $pivot?->storage_remarks ?? null,
+            'remarks' => $storageRemarks ?? null,
             'disposal_date' => $this->is_permanent
                 ? 'Permanent'
                 : [
