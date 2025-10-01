@@ -55,6 +55,7 @@ class RequestsController extends Controller
             'office',
         ])
             ->where('form_number', $form_no)
+            ->orderBy('id', 'asc')
             ->first();
 
         if (!$request) {

@@ -66,7 +66,7 @@ class RequestResource extends JsonResource
             'boxes' => $this->whenLoaded('boxes', function () {
                 if (!$this->returnService) return [];
 
-                $boxesWithWithdrawal = $this->returnService->attachWithdrawalRequest($this->boxes);
+                $boxesWithWithdrawal = $this->returnService->attachWithdrawalRequest($this->boxes->sortBy('id'));
                 return $boxesWithWithdrawal->values()->all();
             }, []),
         ];
