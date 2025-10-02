@@ -215,7 +215,7 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
                             <Spacer y={2} />
                             <Textarea
                                 fullWidth
-                                label="Remarks (Optional)"
+                                label="Report/Document Title"
                                 placeholder="Enter your description"
                                 classNames={{
                                     label: "text-black dark:text-white/90 font-bold text-sm",

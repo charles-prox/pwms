@@ -46,6 +46,8 @@ const Select = <T extends object>({
           }, {} as Record<string, T[]>)
         : {};
 
+    console.log({ groupedItems });
+
     return (
         <>
             {autocomplete ? (

@@ -43,6 +43,8 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
             </div>
             <Spacer y={4} />
             {docs.map((details, index) => {
+                console.log("details: ", details);
+
                 return (
                     <div
                         className="flex flex-col gap-2"
@@ -54,20 +56,20 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                                 autocomplete
                                 variant="flat"
                                 name="document_title"
-                                label="Document Title"
+                                label="RDS Classification"
                                 placeholder={
                                     rdsLoading
                                         ? "Loading..."
-                                        : "Select document title"
+                                        : "Select appropriate document classification"
                                 }
                                 items={rdsData || []}
                                 keyField="id"
                                 labelField="document_title"
                                 menuTrigger="input"
                                 selectedKeys={details.id?.toString()}
-                                onSelectionChange={(key: string) =>
-                                    onDocumentChange(index, "id", key)
-                                }
+                                onSelectionChange={(key: string) => {
+                                    onDocumentChange(index, "id", key);
+                                }}
                                 isClearable={false}
                                 errorMessage={
                                     errors.box_details[index]?.document_title ||
@@ -100,6 +102,7 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                         </div>
 
                         <div className="flex gap-2 items-center">
+                            {}
                             <Input
                                 label="RDS number"
                                 name="rds_number"
@@ -110,7 +113,7 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                                     <Tooltip
                                         className="text-tiny w-60"
                                         placement="bottom-end"
-                                        content="RDS number is based on the document. A corresponding RDS number is assigned to each document."
+                                        content="RDS number is based on the document classification. A corresponding RDS number is assigned to each classification."
                                     >
                                         <div className="z-50 cursor-help">
                                             <Icon
@@ -124,7 +127,7 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                                 isReadOnly
                             />
                             <Input
-                                label="Retention Period"
+                                label="Max. Aging (years)"
                                 name="retention_period"
                                 placeholder="This is automatically filled"
                                 value={details.retention_period}
@@ -133,7 +136,7 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                                     <Tooltip
                                         className="text-tiny w-60 "
                                         placement="bottom-end"
-                                        content="Retention period is based on the RDS number or document."
+                                        content="A document aging is based on the RDS number or document. It indicates the number of years a document should be retained before it can be disposed of."
                                     >
                                         <div className="z-50 cursor-help">
                                             <Icon

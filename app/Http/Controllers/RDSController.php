@@ -151,4 +151,40 @@ class RDSController extends Controller
             'filterable_columns' => $filterable_columns,
         ], 200);
     }
+
+    public function allRds(): JsonResponse
+    {
+        $rdsItems = RDS::all();
+
+        $formattedData = $rdsItems->map(function ($rds) {
+            $active = trim($rds->active);
+            $storage = trim($rds->storage);
+
+            $retention_period = (strcasecmp($active, "Permanent") === 0 || strcasecmp($storage, "Permanent") === 0)
+                ? "Permanent"
+                : ((int) $active + (int) $storage);
+
+            return [
+                'id' => $rds->id,
+                'rds_number' => "RDS-" . $rds->module . " #" . $rds->item_no,
+                'document_title' => $rds->title_description,
+                'retention_period' => $retention_period,
+                'department' => $rds->department,
+            ];
+        });
+
+        // Append the "Not in the RDS" option
+        $formattedData->push([
+            'id' => 0,
+            'rds_number' => null,
+            'document_title' => 'Not in the RDS',
+            'retention_period' => 10,
+            'department' => "Unknown",
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $formattedData,
+        ], 200);
+    }
 }

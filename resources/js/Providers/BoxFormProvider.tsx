@@ -27,7 +27,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         loading: rdsLoading,
         error: rdsError,
         getRdsDetailsById,
-    } = useRdsData({ fetchAll: true });
+    } = useRdsData();
     const [boxes, setBoxes] = useState<BoxFormState[]>(() => {
         const storedBoxes = localStorage.getItem("boxes");
         return storedBoxes ? JSON.parse(storedBoxes) : [];
@@ -375,6 +375,8 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             if (field === "id" && typeof value === "string") {
                 // Fetch retention period & rds number based on id string
                 const rdsData = getRdsDetailsById(parseInt(value));
+                console.log("rdsData: ", rdsData);
+
                 if (rdsData) {
                     updatedDocuments[index] = {
                         ...updatedDocuments[index],

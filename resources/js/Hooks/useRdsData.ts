@@ -1,4 +1,3 @@
-import { useState, useMemo } from "react";
 import useFetch from "./useFetch";
 
 interface RdsData {
@@ -9,45 +8,13 @@ interface RdsData {
     department?: string | null;
 }
 
-interface Filter {
-    column: string;
-    value: string;
-}
-
-interface UseRdsDataOptions {
-    fetchAll?: boolean;
-}
-
-const useRdsData = ({
-    fetchAll: initialFetchAll = false,
-}: UseRdsDataOptions = {}) => {
-    const [pagination, setPagination] = useState({ perPage: 10, page: 1 });
-    const [searchKey, setSearchKey] = useState<string>("");
-    const [filters, setFilters] = useState<Filter[]>([]);
-    const [fetchAll, setFetchAll] = useState<boolean>(initialFetchAll); // ✅ Set initial value from options
-
-    // Memoize params to prevent unnecessary re-fetches
-    const params = useMemo(
-        () => ({
-            per_page: pagination.perPage,
-            page: pagination.page,
-            search_key: searchKey,
-            filters,
-            all: fetchAll,
-        }),
-        [pagination, searchKey, filters, fetchAll]
-    );
-
+const useRdsData = () => {
     // Fetch data from API
     const { data, loading, error, refetch } = useFetch<{
         success: boolean;
         data: any;
         filterable_columns: string[];
-    }>(
-        "/rds/get",
-        { success: false, data: [], filterable_columns: [] },
-        { params }
-    );
+    }>("/rds/all", { success: false, data: [], filterable_columns: [] });
 
     const rdsData: RdsData[] = data.success
         ? data.data.map((rds: any) => ({
@@ -82,12 +49,7 @@ const useRdsData = ({
         rdsData,
         loading,
         error,
-        filterableColumns: data.filterable_columns || [],
         refetch,
-        setPagination,
-        setSearchKey,
-        setFilters,
-        setFetchAll,
         getRdsDetailsById,
     };
 };
