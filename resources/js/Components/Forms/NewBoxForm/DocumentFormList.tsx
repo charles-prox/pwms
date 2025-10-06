@@ -12,6 +12,7 @@ import { getLocalTimeZone, today } from "@internationalized/date";
 import Icon from "@/Components/Icon";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import { BoxDetails } from "@/Utils/types";
+import RdsSelector from "./RdsSelector";
 
 interface DocumentFormListProps {
     docs: BoxDetails[];
@@ -20,9 +21,6 @@ interface DocumentFormListProps {
 export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
     const {
         errors,
-        rdsData,
-        rdsLoading,
-        rdsError,
         deleteDocument,
         onDocumentChange,
         parseDateRange,
@@ -51,7 +49,24 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                         key={"document-" + index + "-" + details.id}
                     >
                         <div className="flex gap-2">
-                            <Select
+                            <Input
+                                label="Document Title"
+                                name="description"
+                                placeholder="Document title"
+                                value={details.description}
+                                onChange={(e) => {
+                                    onDocumentChange(
+                                        index,
+                                        "description",
+                                        e.target.value
+                                    );
+                                }}
+                                errorMessage={
+                                    errors.box_details[index]?.description
+                                }
+                                isRequired
+                            />
+                            {/* <Select
                                 allowsCustomValue
                                 autocomplete
                                 variant="flat"
@@ -78,8 +93,21 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                                 isRequired
                                 isDisabled={rdsLoading}
                                 section="department"
+                            /> */}
+                            <RdsSelector
+                                onChange={(e) => {
+                                    onDocumentChange(
+                                        index,
+                                        "description",
+                                        e.target.value
+                                    );
+                                }}
+                                errors={errors.box_details[index]?.description}
+                                rds_details={details.description}
                             />
+                        </div>
 
+                        <div className="flex gap-2 items-center">
                             <DateRangePicker
                                 label="Document Date"
                                 value={parseDateRange(details.document_date)}
@@ -99,10 +127,6 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                                 isRequired
                                 showMonthAndYearPickers
                             />
-                        </div>
-
-                        <div className="flex gap-2 items-center">
-                            {}
                             <Input
                                 label="RDS number"
                                 name="rds_number"
@@ -156,7 +180,7 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                                 size="lg"
                                 onPress={() => deleteDocument(index)}
                                 endContent={<TrashIcon />}
-                                className="w-1/4"
+                                className="w-1/4 text-sm"
                                 isDisabled={docs.length <= 1}
                             >
                                 Remove

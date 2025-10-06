@@ -85,6 +85,7 @@ export interface BoxFormState {
 export interface BoxDetails {
     id: number | null;
     document_code: string;
+    description: string;
     document_title: string | null;
     rds_number: string;
     retention_period: string;

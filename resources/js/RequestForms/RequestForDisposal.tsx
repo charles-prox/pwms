@@ -165,7 +165,7 @@ const RequestForDisposal: React.FC<RequestForDisposalProps> = ({ data }) => {
                                             { width: 200 },
                                         ]}
                                     >
-                                        <Text>{document.document_title}</Text>
+                                        <Text>{document.description}</Text>
                                         {/* <Text>{document.description}</Text> */}
                                     </View>
                                     <View

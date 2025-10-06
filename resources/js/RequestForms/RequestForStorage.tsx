@@ -164,7 +164,7 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                                             { width: 200 },
                                         ]}
                                     >
-                                        <Text>{document.document_title}</Text>
+                                        <Text>{document.description}</Text>
                                         {/* <Text>{document.description}</Text> */}
                                     </View>
                                     <View

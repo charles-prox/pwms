@@ -47,6 +47,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             {
                 id: null,
                 document_code: generateDocumentCode(),
+                description: "",
                 document_title: null,
                 rds_number: "",
                 retention_period: "",
@@ -145,6 +146,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 {
                     id: null,
                     document_code: generateDocumentCode(),
+                    description: "",
                     document_title: null,
                     rds_number: "",
                     retention_period: "",
@@ -172,6 +174,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 {
                     id: null,
                     document_title: "",
+                    description: "",
                     rds_number: "",
                     retention_period: "",
                     document_date: "",
@@ -381,6 +384,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                     updatedDocuments[index] = {
                         ...updatedDocuments[index],
                         id: rdsData.id,
+                        description: updatedDocuments[index].description,
                         document_title: rdsData.document_title,
                         rds_number: rdsData.rds_number || "",
                         retention_period: String(rdsData.retention_period),
@@ -490,6 +494,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         const newDocument: BoxDetails = {
             id: null,
             document_code: generateDocumentCode(),
+            description: "",
             document_title: null,
             rds_number: "",
             retention_period: "",
@@ -602,6 +607,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         newErrors.box_details = box.box_details.map((doc) => {
             const docErrors: any = {
                 id: doc.id,
+                description: "",
                 document_title: "",
                 rds_number: doc.rds_number,
                 retention_period: doc.retention_period,
@@ -615,8 +621,13 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 },
             };
 
+            if (!doc.description?.trim()) {
+                docErrors.description = "Document title is required.";
+                hasError = true;
+            }
+
             if (!doc.document_title?.trim()) {
-                docErrors.document_title = "Document title is required.";
+                docErrors.document_title = "RDS classification is required.";
                 hasError = true;
             }
 

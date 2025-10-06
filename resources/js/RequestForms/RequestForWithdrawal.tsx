@@ -160,7 +160,7 @@ const RequestForWithdrawal: React.FC<RequestForWithdrawalProps> = ({
                                             key={details.id}
                                             style={{ paddingBottom: 2 }}
                                         >
-                                            {details.document_title || "N/A"}
+                                            {details.description || "N/A"}
                                         </Text>
                                     );
                                 })}

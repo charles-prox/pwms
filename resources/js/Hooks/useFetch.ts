@@ -27,6 +27,7 @@ const useFetch = <T>(
 
     const fetchData = async (): Promise<void> => {
         setLoading(true);
+        setError(null);
 
         try {
             const queryString = qs.stringify(params, { skipNull: true });
@@ -39,7 +40,10 @@ const useFetch = <T>(
                 response = await axiosInstance.get(requestUrl);
             }
 
-            setData(response.data ?? defaultValue);
+            await new Promise<void>((resolve) => {
+                setData(response.data ?? defaultValue);
+                resolve(); // resolves immediately after state update call
+            });
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "An unknown error occurred"

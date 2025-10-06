@@ -83,6 +83,7 @@ class RequestStorageService
                         ],
                         [
                             'rds_id' => $doc['id'],
+                            'description' => $doc['description'],
                             'document_date_from' => $docDateStart,
                             'document_date_to' => $docDateEnd,
                             'disposal_date' => $isPermanentDoc ? null : $rawDocDisposalDate,

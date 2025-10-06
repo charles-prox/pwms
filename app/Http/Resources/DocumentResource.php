@@ -20,6 +20,7 @@ class DocumentResource extends JsonResource
         return [
             'id' => $this->rds_id,
             'document_code' => $this->document_code,
+            'description' => $this->description,
             'document_title' => $this->rds->title_description ?? null,
             'rds_number' => "RDS-" . $this->rds->module . " #" . $this->rds->item_no,
             'retention_period' => $retention_period,

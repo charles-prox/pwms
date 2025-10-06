@@ -13,7 +13,6 @@ import {
     Button,
     Tooltip,
 } from "@heroui/react";
-import { toTitleCase } from "@/Utils/helpers";
 import Icon from "@/Components/Icon";
 import { usePage } from "@inertiajs/react";
 import useFetch from "@/Hooks/useFetch";
@@ -33,8 +32,7 @@ const Row: React.FC<{ items: BoxDetails[] }> = ({ items }) => (
                 key={item.id ?? index}
             >
                 <Text style={styles.title}>
-                    ({index + 1}){" "}
-                    {toTitleCase(item.document_title || "Untitled Document")}
+                    ({index + 1}) {item.description || "Untitled Document"}
                 </Text>
             </View>
         ))}

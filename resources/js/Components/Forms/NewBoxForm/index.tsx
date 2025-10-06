@@ -215,7 +215,7 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
                             <Spacer y={2} />
                             <Textarea
                                 fullWidth
-                                label="Report/Document Title"
+                                label="Remarks"
                                 placeholder="Enter your description"
                                 classNames={{
                                     label: "text-black dark:text-white/90 font-bold text-sm",
@@ -226,7 +226,6 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
                                 onChange={(e) =>
                                     onRemarksChange(e.target.value)
                                 }
-                                isRequired
                             />
                             <div className="flex gap-2">
                                 <Input

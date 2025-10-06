@@ -41,7 +41,7 @@ const BoxDetailsPopover: React.FC<DocumentPopoverProps> = ({ documents }) => {
                         {documents.map((doc) => (
                             <TableRow key={doc.id ?? Math.random()}>
                                 <TableCell>
-                                    {doc.document_title ?? "N/A"}
+                                    {doc.description ?? "N/A"}
                                 </TableCell>
                                 <TableCell>{doc.rds_number ?? "N/A"}</TableCell>
                                 <TableCell>

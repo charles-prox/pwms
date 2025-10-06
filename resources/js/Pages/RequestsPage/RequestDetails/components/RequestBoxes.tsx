@@ -73,7 +73,9 @@ const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes, requestType }) => {
                             requestType === "storage" && (
                                 <div className="mt-4">
                                     <p className="text-sm font-semibold text-gray-500 mb-2">
-                                        Documents:
+                                        {box.box_details.length > 1
+                                            ? "Documents:"
+                                            : "Document:"}
                                     </p>
                                     <ul className="space-y-3 pl-4">
                                         {box.box_details.map((doc, idx) => (
@@ -82,7 +84,7 @@ const RequestBoxes: React.FC<RequestBoxesProps> = ({ boxes, requestType }) => {
                                                 className={`border-l-4 border-gray-300 pl-3`}
                                             >
                                                 <p className="font-medium text-sm">
-                                                    {doc.document_title ??
+                                                    {doc.description ??
                                                         "Untitled Document"}
                                                 </p>
                                                 <p className="text-xs text-gray-500">
