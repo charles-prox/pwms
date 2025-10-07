@@ -13,6 +13,7 @@ import Icon from "@/Components/Icon";
 import { useBoxForm } from "@/Contexts/BoxFormContext";
 import { BoxDetails } from "@/Utils/types";
 import RdsSelector from "./RdsSelector";
+import OverflowTooltip from "./OverflowTooltip";
 
 interface DocumentFormListProps {
     docs: BoxDetails[];
@@ -41,8 +42,6 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
             </div>
             <Spacer y={4} />
             {docs.map((details, index) => {
-                console.log("details: ", details);
-
                 return (
                     <div
                         className="flex flex-col gap-2"
@@ -52,7 +51,7 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                             <Input
                                 label="Document Title"
                                 name="description"
-                                placeholder="Document title"
+                                placeholder="Enter official document title…"
                                 value={details.description}
                                 onChange={(e) => {
                                     onDocumentChange(
@@ -66,45 +65,62 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                                 }
                                 isRequired
                             />
-                            {/* <Select
-                                allowsCustomValue
-                                autocomplete
-                                variant="flat"
-                                name="document_title"
-                                label="RDS Classification"
-                                placeholder={
-                                    rdsLoading
-                                        ? "Loading..."
-                                        : "Select appropriate document classification"
-                                }
-                                items={rdsData || []}
-                                keyField="id"
-                                labelField="document_title"
-                                menuTrigger="input"
-                                selectedKeys={details.id?.toString()}
-                                onSelectionChange={(key: string) => {
-                                    onDocumentChange(index, "id", key);
-                                }}
-                                isClearable={false}
-                                errorMessage={
-                                    errors.box_details[index]?.document_title ||
-                                    rdsError
-                                }
-                                isRequired
-                                isDisabled={rdsLoading}
-                                section="department"
-                            /> */}
-                            <RdsSelector
-                                onChange={(e) => {
-                                    onDocumentChange(
-                                        index,
-                                        "description",
-                                        e.target.value
-                                    );
-                                }}
-                                errors={errors.box_details[index]?.description}
-                                rds_details={details.description}
-                            />
+                            <OverflowTooltip
+                                value={details.document_title || ""}
+                                placement="bottom-end"
+                            >
+                                <div>
+                                    <RdsSelector
+                                        onReset={() => {
+                                            onDocumentChange(index, "id", null);
+                                            onDocumentChange(
+                                                index,
+                                                "document_title",
+                                                ""
+                                            );
+                                            onDocumentChange(
+                                                index,
+                                                "rds_number",
+                                                ""
+                                            );
+                                            onDocumentChange(
+                                                index,
+                                                "retention_period",
+                                                ""
+                                            );
+                                        }}
+                                        onChange={(selected) => {
+                                            onDocumentChange(
+                                                index,
+                                                "id",
+                                                selected.id
+                                            );
+                                            onDocumentChange(
+                                                index,
+                                                "document_title",
+                                                selected.label
+                                            ); // or selected.title_description if you store separately
+                                            onDocumentChange(
+                                                index,
+                                                "rds_number",
+                                                selected.rds_number ?? ""
+                                            );
+                                            onDocumentChange(
+                                                index,
+                                                "retention_period",
+                                                String(
+                                                    selected.retention_period
+                                                )
+                                            );
+                                        }}
+                                        errors={
+                                            errors.box_details[index]
+                                                ?.description
+                                        }
+                                        document_title={details.document_title}
+                                    />
+                                </div>
+                            </OverflowTooltip>
                         </div>
 
                         <div className="flex gap-2 items-center">

@@ -1,6 +1,6 @@
 import { axiosInstance } from "@/Utils/axios";
-import { useState, useEffect } from "react";
-import qs from "query-string"; // Helps with query parameter serialization
+import { useState, useEffect, useCallback } from "react";
+import qs from "query-string";
 
 type UseFetchResponse<T> = {
     data: T;
@@ -12,7 +12,8 @@ type UseFetchResponse<T> = {
 type FetchOptions = {
     method?: "GET" | "POST";
     body?: Record<string, unknown> | null;
-    params?: Record<string, unknown>; // Allows dynamic query params
+    params?: Record<string, unknown>;
+    autoFetch?: boolean; // 👈 new flag
 };
 
 const useFetch = <T>(
@@ -20,30 +21,29 @@ const useFetch = <T>(
     defaultValue: T = [] as T,
     options: FetchOptions = {}
 ): UseFetchResponse<T> => {
-    const { method = "GET", body = null, params = {} } = options;
+    const {
+        method = "GET",
+        body = null,
+        params = {},
+        autoFetch = true, // 👈 default behavior unchanged
+    } = options;
+
     const [data, setData] = useState<T>(defaultValue);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(autoFetch);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchData = async (): Promise<void> => {
+    const fetchData = useCallback(async (): Promise<void> => {
         setLoading(true);
-        setError(null);
-
         try {
             const queryString = qs.stringify(params, { skipNull: true });
             const requestUrl = queryString ? `${url}?${queryString}` : url;
 
-            let response;
-            if (method === "POST" && body) {
-                response = await axiosInstance.post(requestUrl, body);
-            } else {
-                response = await axiosInstance.get(requestUrl);
-            }
+            const response =
+                method === "POST" && body
+                    ? await axiosInstance.post(requestUrl, body)
+                    : await axiosInstance.get(requestUrl);
 
-            await new Promise<void>((resolve) => {
-                setData(response.data ?? defaultValue);
-                resolve(); // resolves immediately after state update call
-            });
+            setData(response.data ?? defaultValue);
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "An unknown error occurred"
@@ -52,11 +52,12 @@ const useFetch = <T>(
         } finally {
             setLoading(false);
         }
-    };
+    }, [url, method, body, JSON.stringify(params)]);
 
+    // 👇 Only auto-fetch when explicitly allowed
     useEffect(() => {
-        fetchData();
-    }, [url, JSON.stringify(params)]); // Re-fetch when params change
+        if (autoFetch) fetchData();
+    }, [fetchData, autoFetch]);
 
     return { data, loading, error, refetch: fetchData };
 };

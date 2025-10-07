@@ -12,6 +12,8 @@ import {
     PopoverContent,
     Button,
     Chip,
+    Skeleton,
+    Tooltip,
 } from "@heroui/react";
 
 type RdsResponse = Record<
@@ -40,11 +42,12 @@ type RdsResponse = Record<
 
 interface SelectorProps {
     onChange: (e: any) => void;
-    rds_details?: any;
+    onReset: () => void;
+    document_title: string | null;
     errors: string | undefined;
 }
 
-// Memoized highlight component
+// 🔹 Highlight keyword
 const HighlightedText = memo(
     ({ text, keyword }: { text: string; keyword: string }) => {
         if (!keyword) return <>{text}</>;
@@ -65,7 +68,7 @@ const HighlightedText = memo(
     }
 );
 
-// Memoized chip component
+// 🔹 Retention Chip
 const RetentionChip = memo(({ period }: { period: string | number }) => {
     if (
         !period ||
@@ -91,10 +94,39 @@ const RetentionChip = memo(({ period }: { period: string | number }) => {
     );
 });
 
-const RdsSelector = ({ onChange, rds_details, errors }: SelectorProps) => {
+// 🔹 Skeleton Loader for RDS list
+const RdsSkeleton = () => (
+    <div className="max-h-[450px] overflow-y-auto rounded-md bg-white px-2">
+        {[...Array(3)].map((_, i) => (
+            <Card key={i} shadow="none" className="mb-3 border min-w-[460px]">
+                <CardBody>
+                    <Skeleton className="h-4 w-24 mb-3 rounded" />
+                    {[...Array(2)].map((_, j) => (
+                        <div key={j} className="mb-2 ml-3">
+                            <Skeleton className="h-3 w-20 mb-2 rounded" />
+                            {[...Array(3)].map((_, k) => (
+                                <Skeleton
+                                    key={k}
+                                    className="h-4 w-full mb-1 rounded"
+                                />
+                            ))}
+                        </div>
+                    ))}
+                </CardBody>
+            </Card>
+        ))}
+    </div>
+);
+
+const RdsSelector = ({
+    onChange,
+    document_title,
+    errors,
+    onReset,
+}: SelectorProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState("");
-    const [highlightKeyword, setHighlightKeyword] = useState(""); // only update on search
+    const [highlightKeyword, setHighlightKeyword] = useState("");
     const [selected, setSelected] = useState<any>(null);
     const [hasSearched, setHasSearched] = useState(false);
     const [isResetting, setIsResetting] = useState(false);
@@ -102,27 +134,45 @@ const RdsSelector = ({ onChange, rds_details, errors }: SelectorProps) => {
         {}
     );
 
-    // Fetch RDS
     const { data, loading, error, refetch } = useFetch<{
         success: boolean;
         data: RdsResponse;
     }>(
         "/rds/search",
         { success: true, data: {} as RdsResponse },
-        { method: "GET", params: searchParams }
+        { method: "GET", params: searchParams, autoFetch: false }
     );
 
     useEffect(() => {
-        // When resetting, wait until loading finishes
-        if (isResetting && !loading) {
+        // Only fetch when popover is open
+        if (!isOpen) return;
+
+        // If resetting, refetch
+        if (isResetting) {
+            onReset();
+            refetch();
             setIsResetting(false);
+            return;
         }
-    }, [isResetting, loading]);
+
+        // If search params changed, refetch
+        refetch();
+    }, [isOpen, isResetting, searchParams]);
 
     const handleSearch = () => {
-        setSearchParams(query ? { q: query } : {});
-        setHighlightKeyword(query); // highlight only on search
+        const params = query ? { q: query } : {};
+        setSearchParams(params);
+        setHighlightKeyword(query);
         setHasSearched(true);
+    };
+
+    const handleReset = () => {
+        setSelected(null);
+        setQuery("");
+        setHighlightKeyword("");
+        setSearchParams({});
+        setHasSearched(false);
+        setIsResetting(true);
     };
 
     const handleSelect = (item: any, parent?: any) => {
@@ -133,6 +183,7 @@ const RdsSelector = ({ onChange, rds_details, errors }: SelectorProps) => {
         const value = {
             ...item,
             retention_period: item.retention_period ?? 0,
+            id: item.id,
             label,
         };
         setSelected(value);
@@ -144,31 +195,39 @@ const RdsSelector = ({ onChange, rds_details, errors }: SelectorProps) => {
         <div className="space-y-3">
             <Popover
                 isOpen={isOpen}
-                onOpenChange={setIsOpen}
+                onOpenChange={(open) => {
+                    setIsOpen(open);
+                    if (open) {
+                        refetch(); // 👈 fetch only when opening
+                    }
+                }}
                 placement="bottom-start"
-                classNames={{ content: "px-0" }}
+                classNames={{ content: "px-0  max-h-[60vh] overflow-y-auto" }}
             >
                 <PopoverTrigger>
-                    <Input
-                        label="RDS Title/Description"
-                        name="title_description"
-                        placeholder="Search and select RDS..."
-                        value={
-                            rds_details?.description ||
-                            (selected ? selected.label : "")
-                        }
-                        errorMessage={errors}
-                        isRequired
-                        isReadOnly
-                        classNames={{
-                            inputWrapper: "w-[400px]",
-                            input: "text-left",
-                            label: "font-bold",
-                        }}
-                    />
+                    <div>
+                        <Input
+                            label="RDS Title/Description"
+                            name="document_title"
+                            placeholder="Search and select RDS..."
+                            value={
+                                document_title ||
+                                (selected ? selected.label : "")
+                            }
+                            errorMessage={errors}
+                            isRequired
+                            isReadOnly
+                            classNames={{
+                                inputWrapper: "w-[400px]",
+                                input: "text-left",
+                                label: "font-bold",
+                            }}
+                        />
+                    </div>
                 </PopoverTrigger>
 
-                <PopoverContent className="py-4 w-[500px]">
+                <PopoverContent className="py-4 w-[500px] overflow-y-auto">
+                    {/* Search Controls */}
                     <div className="flex gap-1 px-2 mb-3 w-full">
                         <Input
                             placeholder="Search RDS..."
@@ -188,32 +247,18 @@ const RdsSelector = ({ onChange, rds_details, errors }: SelectorProps) => {
                         >
                             {loading ? "Searching..." : "Search"}
                         </Button>
-                        <Button
-                            size="sm"
-                            color="warning"
-                            onPress={() => {
-                                setSelected(null);
-                                setQuery("");
-                                setHighlightKeyword("");
-                                setSearchParams({});
-                                setHasSearched(false); // no search active
-                                setIsResetting(true); // start resetting
-                                refetch(); // async fetch
-                            }}
-                        >
+                        <Button size="sm" color="warning" onPress={handleReset}>
                             Reset
                         </Button>
                     </div>
 
-                    {loading ? (
-                        <div className="flex justify-center py-4">
-                            <Spinner size="sm" label="Loading..." />
-                        </div>
+                    {/* Skeleton or Data */}
+                    {loading || isResetting ? (
+                        <RdsSkeleton />
                     ) : (
-                        <div className="max-h-[450px] overflow-y-auto rounded-md bg-white px-2">
+                        <div className="max-h-[400px] overflow-y-auto rounded-md bg-white px-2">
                             {Object.entries(data?.data ?? {}).length === 0 &&
-                                hasSearched &&
-                                !isResetting && (
+                                hasSearched && (
                                     <p className="text-sm text-gray-500 text-center py-4">
                                         We couldn’t find any items related to
                                         your search. Try using different
@@ -256,7 +301,6 @@ const RdsSelector = ({ onChange, rds_details, errors }: SelectorProps) => {
                                                                 [];
                                                             if (!parent)
                                                                 return null;
-
                                                             return (
                                                                 <div
                                                                     key={
@@ -264,7 +308,7 @@ const RdsSelector = ({ onChange, rds_details, errors }: SelectorProps) => {
                                                                     }
                                                                     className="ml-3 mb-2"
                                                                 >
-                                                                    {/* Parent item */}
+                                                                    {/* Parent */}
                                                                     <div className="flex items-center justify-between relative">
                                                                         <div className="border-l-2 border-green-500 h-full absolute left-0 top-0" />
                                                                         <div

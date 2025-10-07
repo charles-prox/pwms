@@ -22,12 +22,12 @@ const generateDocumentCode = () => {
 export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const {
-        rdsData,
-        loading: rdsLoading,
-        error: rdsError,
-        getRdsDetailsById,
-    } = useRdsData();
+    // const {
+    //     rdsData,
+    //     loading: rdsLoading,
+    //     error: rdsError,
+    //     getRdsDetailsById,
+    // } = useRdsData();
     const [boxes, setBoxes] = useState<BoxFormState[]>(() => {
         const storedBoxes = localStorage.getItem("boxes");
         return storedBoxes ? JSON.parse(storedBoxes) : [];
@@ -375,28 +375,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 value as RangeValue<DateValue>
             );
 
-            if (field === "id" && typeof value === "string") {
-                // Fetch retention period & rds number based on id string
-                const rdsData = getRdsDetailsById(parseInt(value));
-                console.log("rdsData: ", rdsData);
-
-                if (rdsData) {
-                    updatedDocuments[index] = {
-                        ...updatedDocuments[index],
-                        id: rdsData.id,
-                        description: updatedDocuments[index].description,
-                        document_title: rdsData.document_title,
-                        rds_number: rdsData.rds_number || "",
-                        retention_period: String(rdsData.retention_period),
-                        document_date: {
-                            start: null,
-                            end: null,
-                            readable: null,
-                        },
-                        disposal_date: null,
-                    };
-                }
-            } else if (field === "document_date" && typeof value !== "string") {
+            if (field === "document_date" && typeof value !== "string") {
                 // Ensure document date range is within the same year
                 if (value?.start && value?.end) {
                     const startYear = value.start.toDate("UTC").getFullYear();
@@ -675,9 +654,6 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 boxes,
                 boxData,
                 errors,
-                rdsData,
-                rdsLoading,
-                rdsError,
                 getBoxById,
                 deleteBox,
                 saveBoxDataToBoxes,

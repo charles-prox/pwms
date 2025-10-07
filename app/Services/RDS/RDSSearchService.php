@@ -30,6 +30,7 @@ class RDSSearchService
         }
 
         $formatted = $allItems->map(fn($rds) => [
+            'id' => $rds->id,
             'module' => "Module " . $rds->module,
             'department' => $rds->department,
             'item_no' => $rds->item_no,
@@ -109,6 +110,7 @@ class RDSSearchService
     private function formatItem(array $item): array
     {
         return [
+            'id' => $item['id'] ?? null,
             'title_description' => $item['title_description'],
             'retention_period' => $item['retention_period'],
             'item_no' => $item['item_no'],

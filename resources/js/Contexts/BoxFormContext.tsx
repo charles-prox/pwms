@@ -7,9 +7,6 @@ interface BoxFormContextType {
     boxes: BoxFormState[];
     boxData: BoxFormState;
     errors: any;
-    rdsData: any;
-    rdsLoading: boolean;
-    rdsError: any;
     getBoxById: (id: number) => BoxFormState;
     deleteBox: (id: number) => void;
     saveBoxDataToBoxes: () => void | boolean;
