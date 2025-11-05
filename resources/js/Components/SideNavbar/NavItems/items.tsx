@@ -24,7 +24,7 @@ export const navItems: NavItem[] = [
     {
         type: "link",
         key: "requests",
-        label: "Make Request",
+        label: "My Requests",
         icon: (size) => <BoxStore width={size} height={size} />,
         url: "/request",
     },

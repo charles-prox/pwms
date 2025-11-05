@@ -11,10 +11,10 @@ class BoxResource extends JsonResource
     public function toArray(Request $request): array
     {
         // Get the relevant associated request (adjust if you need first(), specific type, etc.)
-        $requestModel = $this->requests
-            ->where('request_type', 'withdrawal')
-            ->first();
-
+        $requestModel = $this->requests->first();
+        // ->where('request_type', 'withdrawal')
+        // ->first();
+        // dd($requestModel);
         // Get pivot from the request relationship
         $pivot = $requestModel?->pivot;
         // dd($requestModel);

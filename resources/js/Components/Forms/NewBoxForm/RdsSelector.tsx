@@ -215,6 +215,7 @@ const RdsSelector = ({
                                 (selected ? selected.label : "")
                             }
                             errorMessage={errors}
+                            isInvalid={!!errors}
                             isRequired
                             isReadOnly
                             classNames={{

@@ -141,18 +141,25 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                     </View>
 
                     <View
-                        style={{
-                            flexDirection: "column",
-                        }}
+                        style={[
+                            styles.bottomBorder,
+                            {
+                                flexDirection: "column",
+                                flexGrow: 1, // allow row to grow vertically
+                                alignItems: "stretch",
+                            },
+                        ]}
                     >
                         {box.box_details.map(
                             (document: BoxDetails, j: number) => (
-                                <View key={j} style={styles.flex}>
+                                <View key={j} style={[styles.flex]}>
                                     <View
                                         style={[
                                             styles.rightBorder,
                                             styles.tableCell,
-                                            { width: 70 },
+                                            {
+                                                width: 70,
+                                            },
                                         ]}
                                     >
                                         <Text>{document.rds_number}</Text>
@@ -161,17 +168,20 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                                         style={[
                                             styles.rightBorder,
                                             styles.tableCell,
-                                            { width: 200 },
+                                            {
+                                                width: 200,
+                                            },
                                         ]}
                                     >
                                         <Text>{document.description}</Text>
-                                        {/* <Text>{document.description}</Text> */}
                                     </View>
                                     <View
                                         style={[
                                             styles.rightBorder,
                                             styles.tableCell,
-                                            { width: 90 },
+                                            {
+                                                width: 90,
+                                            },
                                         ]}
                                     >
                                         <Text>
@@ -181,44 +191,51 @@ const RequestForStorage: React.FC<Props> = ({ data, gsuHead }) => {
                                 </View>
                             )
                         )}
-
-                        <View style={[styles.flex, styles.bottomBorder]}>
-                            <View
-                                style={[
-                                    styles.rightBorder,
-                                    styles.tableCell,
-                                    { width: 70 },
-                                ]}
-                            ></View>
-                            <View
-                                style={[
-                                    styles.rightBorder,
-                                    styles.tableCell,
-                                    { width: 200 },
-                                ]}
-                            >
-                                {box.remarks && (
-                                    <>
-                                        <Text
-                                            style={[
-                                                styles.boldFont,
-                                                { fontSize: 9 },
-                                            ]}
-                                        >
-                                            Box remarks:{" "}
-                                        </Text>
-                                        <Text>{box.remarks}</Text>
-                                    </>
-                                )}
+                        {box.remarks && (
+                            <View style={[styles.flex]}>
+                                <View
+                                    style={[
+                                        styles.rightBorder,
+                                        styles.tableCell,
+                                        {
+                                            width: 70,
+                                        },
+                                    ]}
+                                ></View>
+                                <View
+                                    style={[
+                                        styles.rightBorder,
+                                        styles.tableCell,
+                                        {
+                                            width: 200,
+                                        },
+                                    ]}
+                                >
+                                    {box.remarks && (
+                                        <>
+                                            <Text
+                                                style={[
+                                                    styles.boldFont,
+                                                    { fontSize: 9 },
+                                                ]}
+                                            >
+                                                Box remarks:{" "}
+                                            </Text>
+                                            <Text>{box.remarks}</Text>
+                                        </>
+                                    )}
+                                </View>
+                                <View
+                                    style={[
+                                        styles.rightBorder,
+                                        styles.tableCell,
+                                        {
+                                            width: 90,
+                                        },
+                                    ]}
+                                ></View>
                             </View>
-                            <View
-                                style={[
-                                    styles.rightBorder,
-                                    styles.tableCell,
-                                    { width: 90 },
-                                ]}
-                            ></View>
-                        </View>
+                        )}
                     </View>
 
                     <View

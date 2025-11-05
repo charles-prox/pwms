@@ -27,6 +27,7 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
         parseDateRange,
         addDocument,
     } = useBoxForm();
+
     return (
         <div className="p-3 border border-dashed border-default-500/50 rounded-md">
             <div className="flex justify-between items-center">
@@ -42,12 +43,13 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
             </div>
             <Spacer y={4} />
             {docs.map((details, index) => {
+                console.log("Errors: ", errors.box_details[index]);
                 return (
                     <div
                         className="flex flex-col gap-2"
                         key={"document-" + index + "-" + details.id}
                     >
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-start">
                             <Input
                                 label="Document Title"
                                 name="description"
@@ -115,7 +117,7 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                                         }}
                                         errors={
                                             errors.box_details[index]
-                                                ?.description
+                                                ?.document_title
                                         }
                                         document_title={details.document_title}
                                     />
@@ -123,7 +125,7 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                             </OverflowTooltip>
                         </div>
 
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-start">
                             <DateRangePicker
                                 label="Document Date"
                                 value={parseDateRange(details.document_date)}
@@ -139,6 +141,9 @@ export const DocumentFormList = ({ docs }: DocumentFormListProps) => {
                                 maxValue={today(getLocalTimeZone())}
                                 errorMessage={
                                     errors.box_details[index]?.document_date
+                                }
+                                isInvalid={
+                                    !!errors.box_details[index]?.document_date
                                 }
                                 isRequired
                                 showMonthAndYearPickers

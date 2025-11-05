@@ -22,7 +22,7 @@ class DocumentResource extends JsonResource
             'document_code' => $this->document_code,
             'description' => $this->description,
             'document_title' => $this->rds->title_description ?? null,
-            'rds_number' => "RDS-" . $this->rds->module . " #" . $this->rds->item_no,
+            'rds_number' => $this->rds->item_no ? "RDS-" . $this->rds->module . " #" . $this->rds->item_no : "Not in the RDS",
             'retention_period' => $retention_period,
             'document_date' => $this->document_date_from || $this->document_date_to ? [
                 'start' => $this->document_date_from ? [

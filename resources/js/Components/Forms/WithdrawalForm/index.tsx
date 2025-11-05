@@ -194,7 +194,7 @@ export default function WithdrawalForm({
                                                                                     {idx +
                                                                                         1 +
                                                                                         ". " +
-                                                                                        detail.document_title}
+                                                                                        detail.description}
                                                                                 </span>
                                                                             </div>
                                                                         )

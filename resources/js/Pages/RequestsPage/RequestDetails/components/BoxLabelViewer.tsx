@@ -32,7 +32,9 @@ const Row: React.FC<{ items: BoxDetails[] }> = ({ items }) => (
                 key={item.id ?? index}
             >
                 <Text style={styles.title}>
-                    ({index + 1}) {item.description || "Untitled Document"}
+                    ({index + 1}) {item.description || "Untitled Document"}{" "}
+                    {" — "}
+                    {item.rds_number}
                 </Text>
             </View>
         ))}

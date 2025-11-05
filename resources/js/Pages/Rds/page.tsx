@@ -50,7 +50,7 @@ const RdsPage: React.FC = () => {
                     filters: filters,
                 },
             });
-            // console.log("response: ", response.data.data);
+            console.log("response: ", response.data.data);
 
             setRdsItems(response.data.data.data);
             setTotalPages(
@@ -68,6 +68,8 @@ const RdsPage: React.FC = () => {
     }, [current_page, per_page, search_key, filters]);
 
     useEffect(() => {
+        console.log("rdsItems: ", rdsItems);
+
         setIsDataLoading(false);
     }, [rdsItems]);
 

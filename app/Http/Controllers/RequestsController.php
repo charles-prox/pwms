@@ -92,7 +92,11 @@ class RequestsController extends Controller
             'office',
             'boxLocation.location',
             'requests' => function ($query) {
-                $query->withPivot([
+                $query->whereHas('statusLogs', function ($logQuery) {
+                    $logQuery->where('status', 'like', '%completed');
+                })->with([
+                    'statusLogs', // Load all status logs now
+                ])->withPivot([
                     'storage_remarks',
                     'withdrawal_remarks',
                     'return_remarks',

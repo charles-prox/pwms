@@ -1,5 +1,5 @@
 import { Column } from "@/Layouts/BaseListView";
-import { BoxFormState } from "@/Utils/types";
+import { BoxDate, BoxFormState } from "@/Utils/types";
 import { toTitleCase } from "@/Utils/helpers";
 import BoxDetailsPopover from "../components/BoxDetailsPopover";
 import { Chip } from "@heroui/react";
@@ -41,7 +41,7 @@ export const disposalColumns: Column<BoxFormState>[] = [
         render: (item: BoxFormState) => {
             const disp = item.disposal_date;
             if (typeof disp === "string") return disp; // e.g. "Permanent"
-            return disp?.formatted ?? "N/A";
+            return disp?.formatted;
         },
     },
     {

@@ -42,6 +42,9 @@ const NewBoxForm = ({ editBoxId, triggerButton }: ManageBoxDialogProps) => {
     const handleAddBox = () => {
         const hasErrors = saveBoxDataToBoxes();
 
+        console.log("hasErrors: ", hasErrors);
+        console.log("boxData.box_details: ", boxData.box_details);
+
         !hasErrors && handleClose();
     };
 

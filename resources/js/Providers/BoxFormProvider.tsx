@@ -499,14 +499,8 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 {
                     ...newDocument,
                     // Optional: replace fields with empty strings or error-friendly formats
-                    document_date: {
-                        start: null,
-                        end: null,
-                    },
-                    disposal_date: {
-                        raw: null,
-                        formatted: null,
-                    },
+                    document_date: "",
+                    disposal_date: "",
                 },
             ];
             return { ...prev, box_details: updatedErrors };
@@ -590,14 +584,8 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 document_title: "",
                 rds_number: doc.rds_number,
                 retention_period: doc.retention_period,
-                document_date: {
-                    start: null,
-                    end: null,
-                },
-                disposal_date: {
-                    raw: null,
-                    formatted: null,
-                },
+                document_date: "",
+                disposal_date: "",
             };
 
             if (!doc.description?.trim()) {
@@ -612,7 +600,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
 
             // Check if document_date.start exists and has raw value
             if (!doc.document_date?.start?.raw?.trim()) {
-                docErrors.document_date.start = "Start date is required.";
+                docErrors.document_date = "Document date is required.";
                 hasError = true;
             }
 
@@ -621,7 +609,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                 doc.disposal_date !== "Permanent" &&
                 !doc.disposal_date?.raw?.trim()
             ) {
-                docErrors.disposal_date.raw = "Disposal date is required.";
+                docErrors.disposal_date = "Disposal date is required.";
                 hasError = true;
             }
 

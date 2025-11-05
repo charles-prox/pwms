@@ -184,6 +184,8 @@ export const styles = StyleSheet.create({
         justifyContent: "flex-start",
         fontSize: 10,
         padding: 2,
+        textOverflow: "wrap",
+        whiteSpace: "normal",
     },
     tableHeader: {
         display: "flex",

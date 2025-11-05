@@ -58,7 +58,7 @@ interface LayoutProps {
 export default function ListViewLayout({
     itemName = "items",
     columns,
-    rows,
+    rows = [],
     onOpenUploadForm,
     onOpenAddNewForm,
     pages = 0,

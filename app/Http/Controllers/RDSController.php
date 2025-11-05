@@ -32,19 +32,57 @@ class RDSController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $result = $this->queryService->getRDSItems($request);
+        $hasPagination = $request->filled('page') && $request->filled('per_page');
 
+        if ($hasPagination) {
+            $result = $this->queryService->getRDSItems($request);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'current_page' => $result['data']->currentPage(),
+                    'data' => RDSResource::collection($result['data']),
+                    'total' => $result['data']->total(),
+                    'per_page' => $result['data']->perPage(),
+                ],
+                'filterable_columns' => $result['filterable_columns'] ?? [],
+            ]);
+        }
+
+        // 🔍 Non-paginated search
+        $searchKey = $request->input('search_key') ?? $request->input('q');
+        $data = $this->searchService->search($searchKey);
+
+        // 🚫 Don't wrap in RDSResource — it’s already formatted
         return response()->json([
             'success' => true,
-            'data' => RDSResource::collection($result['data']),
-            'filterable_columns' => $result['filterable_columns'],
+            'data' => $data,
         ]);
     }
 
     public function search(Request $request): JsonResponse
     {
-        $data = $this->searchService->search($request->input('q'));
+        $hasPagination = $request->filled('page') && $request->filled('per_page');
 
+        if ($hasPagination) {
+            $result = $this->queryService->getRDSItems($request);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'current_page' => $result['data']->currentPage(),
+                    'data' => RDSResource::collection($result['data']),
+                    'total' => $result['data']->total(),
+                    'per_page' => $result['data']->perPage(),
+                ],
+                'filterable_columns' => $result['filterable_columns'] ?? [],
+            ]);
+        }
+
+        $searchKey = $request->input('search_key') ?? $request->input('q');
+        $data = $this->searchService->search($searchKey);
+
+        // 🚫 Again, return directly
         return response()->json([
             'success' => true,
             'data' => $data,
