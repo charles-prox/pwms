@@ -53,6 +53,7 @@ class HandleInertiaRequests extends Middleware
                     'office_id' => $request->user()->office_id,
                     'position' => $request->user()->position?->only(['id', 'name', 'abbreviation']),
                     'roles' => $request->user()->getRoleNames(),
+                    'permissions' => $request->user()->getAllPermissions()->pluck('name'),
                     'profile_photo_url' => $request->user()->profile_photo_url,
                     'photo' => null,
                 ] : null,

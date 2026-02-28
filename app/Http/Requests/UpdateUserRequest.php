@@ -16,7 +16,7 @@ class UpdateUserRequest extends FormRequest
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        return Auth::check() && $user->hasRole('super-admin');
+        return Auth::check() && $user->hasRole('utility-administrator');
     }
 
     /**
@@ -29,19 +29,19 @@ class UpdateUserRequest extends FormRequest
         $userId = $this->route('user')->id;
 
         return [
-            'hris_id'           => ['required', 'string', 'max:8', Rule::unique('users')->ignore($userId)],
-            'user_id'           => ['required', 'string', 'max:255', Rule::unique('users')->ignore($userId)],
-            'first_name'        => ['required', 'string', 'max:255'],
-            'middle_name'       => ['nullable', 'string', 'max:255'],
-            'last_name'         => ['required', 'string', 'max:255'],
-            'email'             => ['required', 'email', 'max:255', Rule::unique('users')->ignore($userId)],
-            'position'          => ['required', 'string'],
-            'contact_no'        => ['nullable', 'string', 'max:255'],
+            'hris_id' => ['required', 'string', 'max:8', Rule::unique('users')->ignore($userId)],
+            'user_id' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($userId)],
+            'first_name' => ['required', 'string', 'max:255'],
+            'middle_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($userId)],
+            'position' => ['required', 'string'],
+            'contact_no' => ['nullable', 'string', 'max:255'],
             'employment_status' => ['required', 'string'],
-            'office_id'         => ['required', 'integer', 'exists:offices,id'],
-            'account_status'    => ['required', 'string'],
-            'role'              => ['required', 'string', 'exists:roles,name'],
-            'photo'             => ['nullable', 'image', 'max:5120'],
+            'office_id' => ['required', 'integer', 'exists:offices,id'],
+            'account_status' => ['required', 'string'],
+            'role' => ['required', 'string', 'exists:roles,name'],
+            'photo' => ['nullable', 'image', 'max:5120'],
         ];
     }
 }

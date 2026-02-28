@@ -125,7 +125,7 @@ const RequestsPage = () => {
                                 <Button
                                     size="md"
                                     color="primary"
-                                    onPress={() => router.visit("/request")}
+                                    onPress={() => window.location.href = "/request"}
                                 >
                                     Done
                                 </Button>

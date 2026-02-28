@@ -17,7 +17,7 @@ class RestrictRegisterIfSuperAdminExists
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $superAdminExists = User::role('super-admin')->exists();
+        $superAdminExists = User::role('utility-administrator')->exists();
 
         if ($superAdminExists) {
             abort(403, 'Registration is closed.');

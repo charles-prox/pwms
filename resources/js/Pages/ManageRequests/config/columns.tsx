@@ -12,6 +12,10 @@ const renderAction = (item: any) => {
     const status = item.status.toLowerCase();
     const requestType = item.request_type;
 
+    if (status === "rejected") {
+        return null;
+    }
+
     if (status !== "completed" && status !== "pending") {
         if (requestType === "storage") {
             return <CompleteStorageRequestAction item={item} />;

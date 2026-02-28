@@ -16,7 +16,7 @@ class StoreUserRequest extends FormRequest
         /** @var \App\Models\User|\Spatie\Permission\Traits\HasRoles $user */
         $user = Auth::user();
 
-        return  Auth::check() && $user->hasRole('super-admin');
+        return Auth::check() && $user->hasRole('utility-administrator');
     }
 
     /**

@@ -98,13 +98,16 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const editBox = (updatedBox: BoxFormState): boolean => {
-        // console.log("UpdatedBox: ", updatedBox);
+        // Check for any live document_date errors that may have been set during typing
+        const hasLiveDateErrors = errors.box_details?.some(
+            (docError: any) => !!docError?.document_date
+        );
+        if (hasLiveDateErrors) return true;
 
-        const { hasError, errors } = validateBoxData(updatedBox);
+        const { hasError, errors: newErrors } = validateBoxData(updatedBox);
 
         if (hasError) {
-            setErrors(errors);
-            // console.error("Validation errors:", errors);
+            setErrors(newErrors);
             return true;
         }
 
@@ -376,15 +379,44 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             );
 
             if (field === "document_date" && typeof value !== "string") {
+                let hasYearError = false;
+
                 // Ensure document date range is within the same year
                 if (value?.start && value?.end) {
-                    const startYear = value.start.toDate("UTC").getFullYear();
-                    const endYear = value.end.toDate("UTC").getFullYear();
+                    const startDate = value.start.toDate("UTC");
+                    const endDate = value.end.toDate("UTC");
+
+                    const startYear = startDate.getFullYear();
+                    const endYear = endDate.getFullYear();
+
                     if (startYear !== endYear) {
-                        console.error(
-                            "Document date must be within the same year."
-                        );
-                        return prev; // Prevent state update
+                        hasYearError = true;
+                        setErrors((prevErrors: any) => ({
+                            ...prevErrors,
+                            box_details: prevErrors.box_details.map(
+                                (error: any, idx: number) =>
+                                    idx === index
+                                        ? {
+                                            ...error,
+                                            document_date: "Document date must be within the same year.",
+                                        }
+                                        : error
+                            ),
+                        }));
+                    } else if (endDate.getTime() < startDate.getTime()) {
+                        hasYearError = true;
+                        setErrors((prevErrors: any) => ({
+                            ...prevErrors,
+                            box_details: prevErrors.box_details.map(
+                                (error: any, idx: number) =>
+                                    idx === index
+                                        ? {
+                                            ...error,
+                                            document_date: "The 'To' date cannot be earlier than the 'From' date.",
+                                        }
+                                        : error
+                            ),
+                        }));
                     }
                 }
 
@@ -393,8 +425,8 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                     const firstDocYear = prev.box_details[0]?.document_date
                         ?.start
                         ? dayjs(
-                              prev.box_details[0].document_date.start.raw
-                          ).year()
+                            prev.box_details[0].document_date.start.raw
+                        ).year()
                         : null;
                     const selectedYear = value?.start
                         ? dayjs(value.start.toDate("UTC")).year()
@@ -403,20 +435,35 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
                         firstDocYear !== null &&
                         selectedYear !== firstDocYear
                     ) {
+                        hasYearError = true;
                         setErrors((prevErrors: any) => ({
                             ...prevErrors,
                             box_details: prevErrors.box_details.map(
                                 (error: any, idx: number) =>
                                     idx === index
                                         ? {
-                                              ...error,
-                                              document_date: `All documents must have the same year: ${firstDocYear}`,
-                                          }
+                                            ...error,
+                                            document_date: `All documents must have the same year: ${firstDocYear}`,
+                                        }
                                         : error
                             ),
                         }));
-                        return prev; // Keep state unchanged
                     }
+                }
+
+                if (!hasYearError) {
+                    setErrors((prevErrors: any) => ({
+                        ...prevErrors,
+                        box_details: prevErrors.box_details.map(
+                            (error: any, idx: number) =>
+                                idx === index
+                                    ? {
+                                        ...error,
+                                        document_date: "",
+                                    }
+                                    : error
+                        ),
+                    }));
                 }
 
                 updatedDocuments[index] = {
@@ -527,11 +574,16 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const saveBoxDataToBoxes = () => {
-        const { hasError, errors } = validateBoxData(boxData);
+        // Check for any live document_date errors that may have been set during typing
+        const hasLiveDateErrors = errors.box_details?.some(
+            (docError: any) => !!docError?.document_date
+        );
+        if (hasLiveDateErrors) return true;
+
+        const { hasError, errors: newErrors } = validateBoxData(boxData);
 
         if (hasError) {
-            setErrors(errors);
-            // console.error("Validation errors:", errors);
+            setErrors(newErrors);
             return hasError;
         }
 
@@ -623,9 +675,9 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
         !dateRange?.start?.formatted
             ? "N/A"
             : dateRange.end?.formatted &&
-              dateRange.end.formatted !== dateRange.start.formatted
-            ? `${dateRange.start.formatted} - ${dateRange.end.formatted}`
-            : dateRange.start.formatted;
+                dateRange.end.formatted !== dateRange.start.formatted
+                ? `${dateRange.start.formatted} - ${dateRange.end.formatted}`
+                : dateRange.start.formatted;
 
     const formatDisposalDate = (
         disposalDate: BoxDate | "Permanent" | null

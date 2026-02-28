@@ -111,23 +111,36 @@ class RequestStorageService
     public function generateBoxCode(Office $office, array $boxCodes): string
     {
         $year = now()->year;
-        // Count boxes already saved in DB for this office & year
-        $existingOfficeBoxCount = Box::where('office_id', $office->id)
+        $prefix = strtoupper($office->acronym);
+
+        $existingBoxCodes = Box::where('office_id', $office->id)
             ->whereYear('created_at', $year)
-            ->count();
+            ->where('status', '!=', 'rejected')
+            ->pluck('box_code')
+            ->toArray();
 
-        // Count how many of the draft box IDs already exist in DB (cross-request duplicates)
-        $existingDraftBoxCount = Box::whereIn('box_code', $boxCodes)->count();
+        $allCodes = array_merge($existingBoxCodes, $boxCodes);
 
-        // Total boxes in draft
-        $totalDraftCount = count($boxCodes);
+        $usedSequences = [];
+        foreach ($allCodes as $code) {
+            // Match formats like PREFIX-001-YYYY or PREFIX-001-YYYY-REJECTED-...
+            if (preg_match("/^{$prefix}-(\d+)-{$year}/", strtoupper($code), $matches)) {
+                $usedSequences[] = (int) $matches[1];
+            }
+        }
 
-        // New boxes in draft (those not yet saved)
-        $newDraftBoxCount = $totalDraftCount - $existingDraftBoxCount;
-        // dd($existingOfficeBoxCount, $newDraftBoxCount, $existingDraftBoxCount);
-        // Series number: boxes already saved in office + new boxes in draft + 1 (for this new box)
-        $series = $existingOfficeBoxCount + $newDraftBoxCount + 1;
+        $usedSequences = array_unique($usedSequences);
+        sort($usedSequences);
 
-        return sprintf('%s-%03d-%d', strtoupper($office->acronym), $series, $year);
+        $series = 1;
+        foreach ($usedSequences as $seq) {
+            if ($seq == $series) {
+                $series++;
+            } else {
+                break; // Found the gap
+            }
+        }
+
+        return sprintf('%s-%03d-%d', $prefix, $series, $year);
     }
 }

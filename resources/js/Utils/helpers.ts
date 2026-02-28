@@ -63,7 +63,7 @@ export function filterNavItems(items: NavItem[], user: UserType): NavItem[] {
 
         // Permission check
         if (item.permissions) {
-            const hasPermission = userPermissions.some((perm) =>
+            const hasPermission = userPermissions.some((perm) => 
                 item.permissions!.includes(perm)
             );
             if (hasPermission) return true;

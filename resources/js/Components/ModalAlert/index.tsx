@@ -54,7 +54,7 @@ const ModalAlert: React.FC<ModalAlertProps> = ({
             await onConfirm?.();
         } finally {
             setLoading(false);
-            // onClose();
+            onClose();
         }
     };
 

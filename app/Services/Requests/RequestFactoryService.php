@@ -12,10 +12,10 @@ use App\Models\Office;
 class RequestFactoryService
 {
     protected array $validTypes = [
-        'storage'    => 'S',
+        'storage' => 'S',
         'withdrawal' => 'W',
-        'return'     => 'R',
-        'disposal'   => 'D',
+        'return' => 'R',
+        'disposal' => 'D',
     ];
 
     protected RequestStorageService $storageService;
@@ -69,23 +69,33 @@ class RequestFactoryService
         $prefix = $this->validTypes[$type];
         $year = now()->year;
 
-        // Get the latest sequence for this year and type
-        $lastSequence = RequestModel::where('request_type', $type)
+        // Get all used sequences for this year and type
+        $usedSequences = RequestModel::where('request_type', $type)
             ->where('form_year', $year)
-            ->orderByDesc('form_sequence')
-            ->value('form_sequence') ?? 0;
+            ->whereNotNull('form_sequence')
+            ->orderBy('form_sequence')
+            ->pluck('form_sequence')
+            ->toArray();
 
-        $newSequence = $lastSequence + 1;
+        // Find the first available gap starting from 1
+        $newSequence = 1;
+        foreach ($usedSequences as $seq) {
+            if ($seq == $newSequence) {
+                $newSequence++;
+            } else {
+                break; // Found a gap
+            }
+        }
         $formNumber = "{$prefix}-{$year}-" . str_pad($newSequence, 3, '0', STR_PAD_LEFT);
         $request = RequestModel::create([
-            'form_number'   => $formNumber,
-            'request_type'  => $type,
-            'status'        => 'draft',
-            'is_draft'      => true,
-            'created_by'    => $user->id,
-            'updated_by'    => $user->id,
-            'office_id'     => $user->office_id ?? null,
-            'form_year'     => $year,
+            'form_number' => $formNumber,
+            'request_type' => $type,
+            'status' => 'draft',
+            'is_draft' => true,
+            'created_by' => $user->id,
+            'updated_by' => $user->id,
+            'office_id' => $user->office_id ?? null,
+            'form_year' => $year,
             'form_sequence' => $newSequence,
         ]);
 
@@ -145,7 +155,7 @@ class RequestFactoryService
             ->with(['documents.rds', 'office', 'boxLocation.location'])
             ->get();
 
-        $boxes = $this->returnService->attachWithdrawalRequest($boxes, $request);
+        $boxes = $this->returnService->attachWithdrawalRequest($boxes);
 
         return [
             'request' => [

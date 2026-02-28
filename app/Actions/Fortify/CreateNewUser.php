@@ -19,12 +19,12 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        $hasSuperAdmin = User::role('super-admin')->exists();
+        $hasSuperAdmin = User::role('utility-administrator')->exists();
 
         if ($hasSuperAdmin) {
-            $role = 'user'; // There is at least one user with the super-admin role
+            $role = 'user'; // There is at least one user with the utility-administrator role
         } else {
-            $role = 'super-admin';
+            $role = 'utility-administrator';
         }
 
         Validator::make($input, [

@@ -32,7 +32,7 @@ export const navItems: NavItem[] = [
         type: "title",
         key: "admin-tools",
         label: "Admin Tools",
-        roles: ["super-admin"], // Only show title if user is super-admin
+        roles: ["utility-administrator"], // Only show title if user is super-admin
     },
     {
         type: "link",
@@ -40,7 +40,7 @@ export const navItems: NavItem[] = [
         label: "Manage Requests",
         icon: (size) => <Icon name="manage-files" size={size} />,
         url: "/manage-requests",
-        roles: ["super-admin", "regional-document-custodian"],
+        roles: ["utility-administrator", "regional-document-custodian"],
     },
     {
         type: "link",
@@ -48,7 +48,7 @@ export const navItems: NavItem[] = [
         label: "Reports",
         icon: (size) => <ReportsIcon width={size} height={size} />,
         url: "/reports",
-        roles: ["super-admin"],
+        roles: ["utility-administrator"],
     },
     {
         type: "link",
@@ -56,7 +56,7 @@ export const navItems: NavItem[] = [
         label: "Users",
         icon: (size) => <UsersIcon width={size} height={size} />,
         url: "/users",
-        roles: ["super-admin"],
+        roles: ["utility-administrator"],
     },
     {
         type: "link",
@@ -64,7 +64,7 @@ export const navItems: NavItem[] = [
         label: "Offices",
         icon: (size) => <OfficesIcon width={size} height={size} />,
         url: "/offices",
-        roles: ["super-admin"],
+        roles: ["utility-administrator"],
     },
     {
         type: "link",
@@ -72,7 +72,7 @@ export const navItems: NavItem[] = [
         label: "RDS",
         icon: (size) => <RdsIcon width={size} height={size} />,
         url: "/rds",
-        roles: ["super-admin"],
+        roles: ["utility-administrator"],
     },
     {
         type: "link",
@@ -80,6 +80,6 @@ export const navItems: NavItem[] = [
         label: "Storage Record Entry",
         icon: (size) => <StorageEntryIcon width={size} height={size} />,
         url: "/storage-record-entry",
-        roles: ["super-admin"],
+        roles: ["utility-administrator"],
     },
 ];

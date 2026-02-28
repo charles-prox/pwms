@@ -11,7 +11,11 @@ class RDSSearchService
     {
         // Base query
         $rdsQuery = RDS::query()
-            ->when($query, fn($q) => $q->where('title_description', 'ILIKE', "%{$query}%"));
+            ->when($query, function ($q) use ($query) {
+                $q->where('title_description', 'ILIKE', "%{$query}%")
+                    ->orWhere('item_no', 'ILIKE', "%{$query}%")
+                    ->orWhereRaw("('RDS-' || REPLACE(module, 'Module ', '') || ' #' || item_no) ILIKE ?", ["%{$query}%"]);
+            });
 
         // Determine pagination mode
         $usePagination = !is_null($page) && !is_null($perPage);
@@ -55,7 +59,7 @@ class RDSSearchService
                 'department' => $rds['department'] ?? null,
                 'item_no' => $rds['item_no'] ?? null,
                 'title_description' => $rds['title_description'] ?? null,
-                'retention_period' => $this->getRetentionPeriod((object)[
+                'retention_period' => $this->getRetentionPeriod((object) [
                     'active' => $rds['active'] ?? null,
                     'storage' => $rds['storage'] ?? null,
                 ]),

@@ -318,17 +318,21 @@ const RdsSelector = ({
                                                                                     parent
                                                                                 )
                                                                             }
-                                                                            className={`flex-1 cursor-pointer px-2 py-1 rounded text-sm ml-1 flex items-center gap-2 ${
-                                                                                parent.retention_period ===
-                                                                                0
+                                                                            className={`flex-1 cursor-pointer px-2 py-1 rounded text-sm ml-1 flex items-center gap-2 ${parent.retention_period ===
+                                                                                    0
                                                                                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                                                                                     : selected?.item_no ===
-                                                                                      parent.item_no
-                                                                                    ? "bg-blue-100 text-blue-700"
-                                                                                    : "hover:bg-gray-100"
-                                                                            }`}
+                                                                                        parent.item_no
+                                                                                        ? "bg-blue-100 text-blue-700"
+                                                                                        : "hover:bg-gray-100"
+                                                                                }`}
                                                                         >
                                                                             <span className="flex-1">
+                                                                                {parent.rds_number && parent.rds_number !== 'Not in the RDS' && (
+                                                                                    <span className="mr-2 font-semibold text-gray-600">
+                                                                                        [{parent.rds_number}]
+                                                                                    </span>
+                                                                                )}
                                                                                 <HighlightedText
                                                                                     text={
                                                                                         parent.title_description ??
@@ -350,59 +354,63 @@ const RdsSelector = ({
                                                                     {/* Sub-items */}
                                                                     {subItems.length >
                                                                         0 && (
-                                                                        <div className="ml-6 mt-1 relative">
-                                                                            {subItems.map(
-                                                                                (
-                                                                                    sub,
-                                                                                    idx
-                                                                                ) => (
-                                                                                    <div
-                                                                                        key={
-                                                                                            idx
-                                                                                        }
-                                                                                        className="flex items-center justify-between relative"
-                                                                                    >
-                                                                                        <div className="border-l-2 border-gray-300 h-full absolute left-0 top-0" />
-                                                                                        <div className="border-t-2 border-gray-300 w-3 ml-0.5 mr-1" />
+                                                                            <div className="ml-6 mt-1 relative">
+                                                                                {subItems.map(
+                                                                                    (
+                                                                                        sub,
+                                                                                        idx
+                                                                                    ) => (
                                                                                         <div
-                                                                                            onClick={() =>
-                                                                                                handleSelect(
-                                                                                                    sub,
-                                                                                                    parent
-                                                                                                )
+                                                                                            key={
+                                                                                                idx
                                                                                             }
-                                                                                            className={`flex-1 cursor-pointer px-2 py-1 rounded text-sm flex items-center gap-2 ${
-                                                                                                sub.retention_period ===
-                                                                                                0
-                                                                                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                                                                                    : selected?.item_no ===
-                                                                                                      sub.item_no
-                                                                                                    ? "bg-blue-100 text-blue-700"
-                                                                                                    : "hover:bg-gray-100"
-                                                                                            }`}
+                                                                                            className="flex items-center justify-between relative"
                                                                                         >
-                                                                                            <span className="flex-1">
-                                                                                                <HighlightedText
-                                                                                                    text={
-                                                                                                        sub.title_description ??
-                                                                                                        ""
-                                                                                                    }
-                                                                                                    keyword={
-                                                                                                        highlightKeyword
+                                                                                            <div className="border-l-2 border-gray-300 h-full absolute left-0 top-0" />
+                                                                                            <div className="border-t-2 border-gray-300 w-3 ml-0.5 mr-1" />
+                                                                                            <div
+                                                                                                onClick={() =>
+                                                                                                    handleSelect(
+                                                                                                        sub,
+                                                                                                        parent
+                                                                                                    )
+                                                                                                }
+                                                                                                className={`flex-1 cursor-pointer px-2 py-1 rounded text-sm flex items-center gap-2 ${sub.retention_period ===
+                                                                                                        0
+                                                                                                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                                                                                        : selected?.item_no ===
+                                                                                                            sub.item_no
+                                                                                                            ? "bg-blue-100 text-blue-700"
+                                                                                                            : "hover:bg-gray-100"
+                                                                                                    }`}
+                                                                                            >
+                                                                                                <span className="flex-1">
+                                                                                                    {sub.rds_number && sub.rds_number !== 'Not in the RDS' && (
+                                                                                                        <span className="mr-2 font-semibold text-gray-600">
+                                                                                                            [{sub.rds_number}]
+                                                                                                        </span>
+                                                                                                    )}
+                                                                                                    <HighlightedText
+                                                                                                        text={
+                                                                                                            sub.title_description ??
+                                                                                                            ""
+                                                                                                        }
+                                                                                                        keyword={
+                                                                                                            highlightKeyword
+                                                                                                        }
+                                                                                                    />
+                                                                                                </span>
+                                                                                                <RetentionChip
+                                                                                                    period={
+                                                                                                        sub.retention_period
                                                                                                     }
                                                                                                 />
-                                                                                            </span>
-                                                                                            <RetentionChip
-                                                                                                period={
-                                                                                                    sub.retention_period
-                                                                                                }
-                                                                                            />
+                                                                                            </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                                )
-                                                                            )}
-                                                                        </div>
-                                                                    )}
+                                                                                    )
+                                                                                )}
+                                                                            </div>
+                                                                        )}
                                                                 </div>
                                                             );
                                                         }

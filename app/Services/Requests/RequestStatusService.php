@@ -18,7 +18,7 @@ class RequestStatusService
     {
         /** @var \App\Models\User|\Spatie\Permission\Traits\HasRoles $user */
         $user = Auth::user();
-        if (!$user || !$user->hasAnyRole(['super-admin', 'regional-document-custodian'])) {
+        if (!$user || !$user->hasAnyRole(['utility-administrator', 'regional-document-custodian'])) {
             abort(403, 'Forbidden');
         }
     }
@@ -37,7 +37,7 @@ class RequestStatusService
             'status' => ['required', 'string', Rule::in($allStatuses)],
 
             'remarks' => 'required_if:status,rejected|string|max:1000',
-            'approved_form' => 'required_if:status,approved|file|mimes:pdf|max:5120',
+            'approved_form' => 'nullable|required_if:status,approved|file|mimes:pdf|max:5120',
             'boxes' => 'required_if:status,completed|array',
             'boxes.*.id' => 'required|exists:boxes,id',
 
@@ -57,14 +57,33 @@ class RequestStatusService
     {
         if ($request->hasFile('approved_form')) {
             $pdfPath = $requestModel->pdf_path;
-            $request->file('approved_form')->move(
-                dirname($pdfPath),
-                basename($pdfPath)
-            );
+
+            if ($pdfPath) {
+                // Move file to the directory of the existing pdf_path
+                $request->file('approved_form')->move(
+                    dirname($pdfPath),
+                    basename($pdfPath)
+                );
+            } else {
+                // No existing pdf path — store to a default public directory
+                $filename = 'approved-' . $requestModel->form_number . '.pdf';
+                $directory = storage_path('app/public/requests/pdfs');
+
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0775, true);
+                }
+
+                $request->file('approved_form')->move($directory, $filename);
+
+                // Save the path back on the model
+                $requestModel->update([
+                    'pdf_path' => 'storage/requests/pdfs/' . $filename,
+                ]);
+            }
         }
     }
 
-    public function assignBoxLocations(array $boxes,  RequestModel $request)
+    public function assignBoxLocations(array $boxes, RequestModel $request)
     {
         try {
             DB::transaction(function () use ($boxes, $request) {

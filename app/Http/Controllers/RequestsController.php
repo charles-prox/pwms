@@ -25,7 +25,8 @@ class RequestsController extends Controller
         protected RequestFactoryService $requestFactoryService,
         protected RequestReturnService $requestReturnService,
         protected RequestBoxService $requestBoxService
-    ) {}
+    ) {
+    }
 
     public function createBlankRequest(string $type)
     {
@@ -70,17 +71,17 @@ class RequestsController extends Controller
                 $query->whereHas('statusLogs', function ($logQuery) {
                     $logQuery->where('status', 'like', '%completed');
                 })->with([
-                    'statusLogs', // Load all status logs now
-                ])->withPivot([
-                    'storage_remarks',
-                    'withdrawal_remarks',
-                    'return_remarks',
-                    'disposal_remarks',
-                    'storage_completion_remarks',
-                    'withdrawal_completion_remarks',
-                    'return_completion_remarks',
-                    'disposal_completion_remarks',
-                ])->where('request_type', 'withdrawal');
+                            'statusLogs', // Load all status logs now
+                        ])->withPivot([
+                            'storage_remarks',
+                            'withdrawal_remarks',
+                            'return_remarks',
+                            'disposal_remarks',
+                            'storage_completion_remarks',
+                            'withdrawal_completion_remarks',
+                            'return_completion_remarks',
+                            'disposal_completion_remarks',
+                        ])->where('request_type', 'withdrawal');
             }
         ])
             ->where('status', 'withdrawn')
@@ -95,17 +96,17 @@ class RequestsController extends Controller
                 $query->whereHas('statusLogs', function ($logQuery) {
                     $logQuery->where('status', 'like', '%completed');
                 })->with([
-                    'statusLogs', // Load all status logs now
-                ])->withPivot([
-                    'storage_remarks',
-                    'withdrawal_remarks',
-                    'return_remarks',
-                    'disposal_remarks',
-                    'storage_completion_remarks',
-                    'withdrawal_completion_remarks',
-                    'return_completion_remarks',
-                    'disposal_completion_remarks',
-                ]);
+                            'statusLogs', // Load all status logs now
+                        ])->withPivot([
+                            'storage_remarks',
+                            'withdrawal_remarks',
+                            'return_remarks',
+                            'disposal_remarks',
+                            'storage_completion_remarks',
+                            'withdrawal_completion_remarks',
+                            'return_completion_remarks',
+                            'disposal_completion_remarks',
+                        ]);
             }
         ])
             ->disposable()
@@ -181,7 +182,7 @@ class RequestsController extends Controller
     {
         $request = RequestModel::where('form_number', $form_number)->with('boxes.documents')->first();
 
-        if (! $request) {
+        if (!$request) {
             return response()->json(['message' => 'Request not found.'], 404);
         }
 
@@ -239,8 +240,8 @@ class RequestsController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        // Allow only super-admin and regional-document-custodian
-        if (!$user->hasAnyRole(['super-admin', 'regional-document-custodian'])) {
+        // Allow only utility-administrator and regional-document-custodian
+        if (!$user->hasAnyRole(['utility-administrator', 'regional-document-custodian'])) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
@@ -248,6 +249,7 @@ class RequestsController extends Controller
         $query = RequestModel::with(['creator', 'office', 'boxes', 'statusLogs']) // preload all used relations
             ->where('is_draft', '!=', true)
             ->where('status', 'not like', '%completed')
+            ->where('status', '!=', 'rejected')
             ->orderBy('updated_at', 'desc');
 
         if ($user->hasRole('regional-document-custodian')) {
@@ -301,6 +303,24 @@ class RequestsController extends Controller
                 if ($requestModel->request_type === 'disposal') {
                     // Get actual completion status from the service
                     $statusToLog = $service->confirmBoxDisposal($validated['boxes'], $requestModel);
+                }
+            } else if ($validated['status'] === 'rejected') {
+                $timestamp = time();
+
+                // Keep the record, but modify the IDs to free up sequence gaps
+                $requestModel->update([
+                    'form_number' => "{$requestModel->form_number}-REJECTED-{$timestamp}",
+                    'form_sequence' => null,
+                ]);
+
+                if ($requestModel->request_type === 'storage') {
+                    // For storage request, preserve boxes and adapt their box codes
+                    foreach ($requestModel->boxes as $box) {
+                        $box->update([
+                            'box_code' => "{$box->box_code}-REJECTED-{$timestamp}",
+                            'status' => 'rejected'
+                        ]);
+                    }
                 }
             }
 

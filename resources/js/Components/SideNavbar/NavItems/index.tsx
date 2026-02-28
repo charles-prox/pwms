@@ -66,16 +66,19 @@ const NavItems: React.FC<NavItemsProps> = ({
                                 onPress={() => {
                                     console.log(`Navigating to ${item.url}`);
 
-                                    router.visit(item.url ? item.url : "");
+                                    if (window.location.href.includes('/print')) {
+                                        window.location.href = item.url ? item.url : "/";
+                                    } else {
+                                        router.visit(item.url ? item.url : "");
+                                    }
                                 }}
                             >
                                 <p
                                     className={`
-                                ${
-                                    sideNavState !== "collapse"
-                                        ? "block"
-                                        : "hidden"
-                                } 
+                                ${sideNavState !== "collapse"
+                                            ? "block"
+                                            : "hidden"
+                                        } 
                                 text-md 
                                 w-0 
                             `}

@@ -46,18 +46,18 @@ const KpiCard: React.FC<KpiCardProps> = ({
     });
 
     const cardClasses = clsx(
-        "p-2 rounded-xl min-w-[250px]",
+        "p-2 rounded-xl w-full flex flex-col justify-between",
         highlight
             ? "bg-gradient-to-b from-green-950 via-green-850 to-green-700 shadow-md"
             : isDark
-            ? "bg-gray-900 border border-gray-700"
-            : "bg-white border border-gray-200"
+                ? "bg-gray-900 border border-gray-700"
+                : "bg-white border border-gray-200"
     );
 
     return (
         <Card className={cardClasses}>
-            <CardHeader className="flex justify-between items-center">
-                <h2 className={clsx("text-md", titleTextColor)}>{title}</h2>
+            <CardHeader className="flex justify-between items-start gap-2">
+                <h2 className={clsx("text-sm sm:text-md font-semibold md:font-medium break-words", titleTextColor)}>{title}</h2>
                 <Button
                     isIconOnly
                     radius="full"
@@ -68,8 +68,8 @@ const KpiCard: React.FC<KpiCardProps> = ({
                                 ? "bg-gray-300"
                                 : "bg-gray-100"
                             : isDark
-                            ? "border border-gray-500"
-                            : "border border-black"
+                                ? "border border-gray-500"
+                                : "border border-black"
                     )}
                     size="sm"
                     variant={highlight ? "flat" : "bordered"}
@@ -83,8 +83,8 @@ const KpiCard: React.FC<KpiCardProps> = ({
                                     ? "text-green-900"
                                     : "text-green-950"
                                 : isDark
-                                ? "text-white"
-                                : "text-black"
+                                    ? "text-white"
+                                    : "text-black"
                         )}
                     />
                 </Button>
@@ -112,9 +112,8 @@ const KpiCard: React.FC<KpiCardProps> = ({
                     </div>
                 ) : (
                     <div
-                        className={`text-xs ${
-                            highlight ? "text-gray-200" : "text-gray-500"
-                        }`}
+                        className={`text-xs ${highlight ? "text-gray-200" : "text-gray-500"
+                            }`}
                     >
                         Waiting for this month's first entry.
                     </div>

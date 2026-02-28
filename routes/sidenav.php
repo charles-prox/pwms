@@ -15,7 +15,7 @@ Route::get('/profile', function () {
     return Inertia::render('Profile');
 })->name('profile');
 
-Route::middleware(['role:super-admin'])->group(function () {
+Route::middleware(['role:utility-administrator'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
     Route::get('/reports', function () {

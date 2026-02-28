@@ -15,7 +15,7 @@
  * ---------------------------------------------------------------------------------------
  */
 
-export const appName = "PWMS";
+export const appName = "PWMU";
 
 /**
  * An array of objects representing different employment statuses.
