@@ -18,7 +18,7 @@ class RequestStatusService
     {
         /** @var \App\Models\User|\Spatie\Permission\Traits\HasRoles $user */
         $user = Auth::user();
-        if (!$user || !$user->hasAnyRole(['utility-administrator', 'regional-document-custodian'])) {
+        if (!$user || !$user->hasAnyRole(['utility-administrator', 'supervisor'])) {
             abort(403, 'Forbidden');
         }
     }

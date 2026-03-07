@@ -40,7 +40,7 @@ export const navItems: NavItem[] = [
         label: "Manage Requests",
         icon: (size) => <Icon name="manage-files" size={size} />,
         url: "/manage-requests",
-        roles: ["utility-administrator", "regional-document-custodian"],
+        roles: ["utility-administrator", "supervisor"],
     },
     {
         type: "link",

@@ -240,8 +240,8 @@ class RequestsController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        // Allow only utility-administrator and regional-document-custodian
-        if (!$user->hasAnyRole(['utility-administrator', 'regional-document-custodian'])) {
+        // Allow only utility-administrator and supervisor
+        if (!$user->hasAnyRole(['utility-administrator', 'supervisor'])) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
@@ -252,7 +252,7 @@ class RequestsController extends Controller
             ->where('status', '!=', 'rejected')
             ->orderBy('updated_at', 'desc');
 
-        if ($user->hasRole('regional-document-custodian')) {
+        if ($user->hasRole('supervisor')) {
             $query->where('status', 'pending');
         }
 

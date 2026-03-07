@@ -52,11 +52,26 @@ class RolePermissionSeeder extends Seeder
         }
 
         // Fetch updated roles
-        $utilityAdmin = Role::firstOrCreate(['name' => 'utility-administrator']);
-        $itms = Role::firstOrCreate(['name' => 'itms']);
-        $supervisor = Role::firstOrCreate(['name' => 'supervisor']);
-        $user = Role::firstOrCreate(['name' => 'user']);
-        $viewer = Role::firstOrCreate(['name' => 'viewer']);
+        $utilityAdmin = Role::firstOrCreate(
+            ['name' => 'utility-administrator'],
+            ['description' => 'Oversees the entire PWMU environment. Manages utility configurations, user accounts, and permissions. Ensures utility integrity, compliance, and overall security.']
+        );
+        $itms = Role::firstOrCreate(
+            ['name' => 'itms'],
+            ['description' => 'Manages administrative functions such as user account creation, data backup, server maintenance, and monitoring utility storage. Supports users and ensures policy compliance.']
+        );
+        $supervisor = Role::firstOrCreate(
+            ['name' => 'supervisor'],
+            ['description' => 'Primary officer responsible for warehouse operations in regional offices. Supervises document custody, transfers, and compliance with storage protocols. Approves and processes storage, withdrawals, returns, and disposals.']
+        );
+        $user = Role::firstOrCreate(
+            ['name' => 'user'],
+            ['description' => 'Handles day-to-day document management activities. Submits requests for document storage, withdrawal, return, or disposal. Views assigned boxes and document statuses.']
+        );
+        $viewer = Role::firstOrCreate(
+            ['name' => 'viewer'],
+            ['description' => 'Primarily monitors utility activity without making changes. Provides oversight for data visibility and reporting.']
+        );
 
         // Assign permissions per role
 

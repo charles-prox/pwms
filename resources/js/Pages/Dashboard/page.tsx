@@ -17,7 +17,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
 
     const hasElevatedAccess =
         userRoles.includes("utility-administrator") ||
-        userRoles.includes("regional-document-custodian");
+        userRoles.includes("supervisor");
 
     return (
         <div>

@@ -52,8 +52,15 @@ class HandleInertiaRequests extends Middleware
                     'account_status' => $request->user()->account_status,
                     'office_id' => $request->user()->office_id,
                     'position' => $request->user()->position?->only(['id', 'name', 'abbreviation']),
-                    'roles' => $request->user()->getRoleNames(),
-                    'permissions' => $request->user()->getAllPermissions()->pluck('name'),
+                    'roles' => $request->user()->getRoleNames()->map(function($role) {
+                        return match($role) {
+                            'utility-administrator' => ['utility-administrator', 'super-admin'],
+                            'itms' => ['itms', 'admin'],
+                            'supervisor' => ['supervisor', 'regional-document-custodian'],
+                            default => [$role]
+                        };
+                    })->flatten()->unique()->values()->toArray(),
+                    'permissions' => $request->user()->getAllPermissions()->pluck('name')->values()->toArray(),
                     'profile_photo_url' => $request->user()->profile_photo_url,
                     'photo' => null,
                 ] : null,

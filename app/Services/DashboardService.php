@@ -16,7 +16,7 @@ class DashboardService
     public function getSummaryData(): array
     {
         $user = auth()->user();
-        $isGlobalAccess = $user->hasRole('super-user') || $user->hasRole('regional-document-custodian');
+        $isGlobalAccess = $user->hasRole('utility-administrator') || $user->hasRole('supervisor');
 
         $now = Carbon::now();
         $startOfMonth = $now->copy()->startOfMonth();
@@ -76,7 +76,7 @@ class DashboardService
     public function getRequestsSummaryData(): array
     {
         $user = auth()->user();
-        $isGlobalAccess = $user->hasRole('super-user') || $user->hasRole('regional-document-custodian');
+        $isGlobalAccess = $user->hasRole('utility-administrator') || $user->hasRole('supervisor');
 
         $now = Carbon::now();
         $startOfMonth = $now->copy()->startOfMonth();
