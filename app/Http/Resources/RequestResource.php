@@ -55,7 +55,7 @@ class RequestResource extends JsonResource
                     'name' => optional($creator->position)->name,
                 ],
             ],
-            'pdf_path' => url($this->pdf_path),
+            'pdf_path' => $this->pdf_path ? asset($this->pdf_path) : '',
             'status_logs' => $this->whenLoaded('statusLogs', function () {
                 return $this->statusLogs
                     ->sortBy('created_at')

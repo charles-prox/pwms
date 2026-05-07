@@ -30,9 +30,18 @@ const RequestTitle: React.FC<RequestStatusProps> = ({
                 </div>
             </div>
             <div>
-                <Button as={Link} href={pdfPath} target="_blank">
-                    View Form
-                </Button>
+                {pdfPath && typeof pdfPath === "string" && pdfPath !== "" && (
+                    <Button
+                        as="a"
+                        href={pdfPath}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        color="primary"
+                        variant="flat"
+                    >
+                        View Form
+                    </Button>
+                )}
             </div>
         </div>
     );
