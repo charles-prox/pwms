@@ -163,6 +163,7 @@ class RequestFactoryService
                 'form_number' => $request->form_number,
                 'boxes' => $boxes,
                 'creator' => $request->creator,
+                'pdf_path' => $request->pdf_path,
             ],
             'creator_office_head' => $creatorOfficeHead,
             'gsu_head' => $gsuHead,

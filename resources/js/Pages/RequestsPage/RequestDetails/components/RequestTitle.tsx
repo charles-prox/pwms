@@ -30,18 +30,22 @@ const RequestTitle: React.FC<RequestStatusProps> = ({
                 </div>
             </div>
             <div>
-                {pdfPath && typeof pdfPath === "string" && pdfPath !== "" && (
-                    <Button
-                        as="a"
-                        href={pdfPath}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        color="primary"
-                        variant="flat"
-                    >
-                        View Form
-                    </Button>
-                )}
+                <Button
+                    as="a"
+                    href={
+                        pdfPath && typeof pdfPath === "string" && pdfPath !== ""
+                            ? pdfPath
+                            : `/request/${title}/print`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    color="primary"
+                    variant="flat"
+                >
+                    {pdfPath && typeof pdfPath === "string" && pdfPath !== ""
+                        ? "View Signed PDF"
+                        : "Generate Form"}
+                </Button>
             </div>
         </div>
     );

@@ -123,6 +123,16 @@ class RequestsController extends Controller
     }
 
 
+    public function printRequest(string $form_no)
+    {
+        $form = RequestModel::where('form_number', $form_no)->firstOrFail();
+
+        return Inertia::render('RequestsPage', [
+            'show_form' => true,
+            'form_details' => $this->requestFactoryService->getRequestDetailsWithBoxesAndOfficers($form->id),
+        ]);
+    }
+
     public function getAllRequests()
     {
         $user = Auth::user();

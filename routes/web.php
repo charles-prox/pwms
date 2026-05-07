@@ -40,6 +40,9 @@ Route::middleware([
     Route::get('/request/{form_no}', [RequestsController::class, 'getFormDetails'])
         ->middleware('permission:request.view')
         ->name('request.details');
+    Route::get('/request/{form_no}/print', [RequestsController::class, 'printRequest'])
+        ->middleware('permission:request.view')
+        ->name('requests.print');
 
     Route::post('/request/{form_number}/save-draft', [RequestsController::class, 'saveDraft'])
         ->middleware('permission:request.create');
