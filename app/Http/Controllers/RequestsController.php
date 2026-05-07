@@ -52,7 +52,8 @@ class RequestsController extends Controller
             'boxes.documents.rds',
             'boxes.office',
             'boxes.boxLocation.location',
-            'creator',
+            'creator.office',
+            'creator.position',
             'office',
         ])
             ->where('form_number', $form_no)
@@ -130,7 +131,7 @@ class RequestsController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $requests = RequestModel::with(['creator', 'boxes', 'office', 'statusLogs']) // preload relations to prevent N+1
+        $requests = RequestModel::with(['creator.office', 'creator.position', 'boxes', 'office', 'statusLogs']) // preload relations to prevent N+1
             ->where('office_id', $user->office_id)
             ->orderBy('updated_at', 'desc')
             ->get();

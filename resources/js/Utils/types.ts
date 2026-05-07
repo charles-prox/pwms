@@ -138,7 +138,7 @@ export interface FormProp {
     updated_at: string;
     completed_at: string | null;
     approved_at: string | null;
-    creator: string;
+    creator: UserType;
     pdf_path: string | null; // nullable string for the PDF path
     status_logs: StatusLog[];
     boxes: BoxFormState[]; // Array of BoxFormState

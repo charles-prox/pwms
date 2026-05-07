@@ -10,11 +10,7 @@ interface RequestSummaryProps {
 }
 
 const RequestSummary: React.FC<RequestSummaryProps> = ({ form, items }) => {
-    const {
-        data: office,
-        loading: loadingOffice,
-        error: officeError,
-    } = useFetch<any>(route("offices.show", { id: form.office_id }));
+    const officeName = form.office?.name || "N/A";
 
     return (
         <Card className="p-3">
@@ -26,7 +22,7 @@ const RequestSummary: React.FC<RequestSummaryProps> = ({ form, items }) => {
             <CardBody className="space-y-3 text-sm">
                 <div className="flex gap-5">
                     <span className="w-28 text-default-600">Office:</span>
-                    <span className="font-medium">{office.name}</span>
+                    <span className="font-medium">{officeName}</span>
                 </div>
                 <div className="flex gap-5">
                     <span className="w-28 text-default-600">Request Type:</span>

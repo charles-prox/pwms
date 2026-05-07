@@ -126,7 +126,7 @@ const RequestDetails = ({ form }: RequestsViewProps) => {
             </div>
 
             <div className="flex flex-col gap-4 col-span-1 xl:col-span-1">
-                <RequestCreator userId={form.created_by} />
+                <RequestCreator user={form.creator} />
                 <RequestStatus statusLogs={form.status_logs} />
             </div>
         </div>

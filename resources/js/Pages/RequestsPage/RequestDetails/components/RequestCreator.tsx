@@ -5,15 +5,11 @@ import { toTitleCase, url } from "@/Utils/helpers";
 import { UserType } from "@/Utils/types";
 
 interface RequestUserProps {
-    userId: number;
+    user: UserType;
 }
 
-const RequestUser: React.FC<RequestUserProps> = ({ userId }) => {
-    const {
-        data: user,
-        loading: loadingUser,
-        error,
-    } = useFetch<UserType>(route("users.show", { id: userId }));
+const RequestUser: React.FC<RequestUserProps> = ({ user }) => {
+    if (!user) return null;
 
     return (
         <Card className="p-3">

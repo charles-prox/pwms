@@ -42,7 +42,19 @@ class RequestResource extends JsonResource
             'updated_at' => optional($this->updated_at)->format('m/d/Y'),
             'completed_at' => optional($this->completed_at)->format('m/d/Y'),
             'approved_at' => optional($this->approved_at)->format('m/d/Y'),
-            'creator' => $fullName,
+            'creator' => [
+                'id' => $creator->id,
+                'full_name' => $fullName,
+                'email' => $creator->email,
+                'contact_no' => $creator->contact_no,
+                'hris_id' => $creator->hris_id,
+                'employment_status' => $creator->employment_status,
+                'account_status' => $creator->account_status,
+                'profile_photo_url' => $creator->profile_photo_url,
+                'position' => [
+                    'name' => optional($creator->position)->name,
+                ],
+            ],
             'pdf_path' => url($this->pdf_path),
             'status_logs' => $this->whenLoaded('statusLogs', function () {
                 return $this->statusLogs
