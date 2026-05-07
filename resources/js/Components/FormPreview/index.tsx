@@ -61,25 +61,37 @@ function FormPreview({ form_details, previewMode }: FormPreviewProps) {
     };
 
     const handleSaveToServer = async () => {
-        if (saving) return;
+        if (saving || form_details.request.pdf_path) return;
         setSaving(true);
+        console.log("Generating PDF for upload...");
         try {
             const blob = await pdf(
                 <PDFDocument {...docProps}>{renderContent()}</PDFDocument>
             ).toBlob();
 
-            const formData = new FormData();
-            formData.append("pdf", blob, `request-${form_details.request.form_number}.pdf`);
-            formData.append("request_id", form_details.request.form_number);
-
-            await axiosInstance.post("/request/upload-pdf", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
-
-            router.reload();
+            console.log("Uploading PDF to server...");
+            router.post(
+                "/request/upload-pdf",
+                {
+                    pdf: blob,
+                    request_id: form_details.request.form_number,
+                },
+                {
+                    forceFormData: true,
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        console.log("PDF saved successfully.");
+                    },
+                    onError: (err) => {
+                        console.error("Upload failed:", err);
+                    },
+                    onFinish: () => {
+                        setSaving(false);
+                    },
+                }
+            );
         } catch (error) {
-            console.error("Failed to save PDF:", error);
-        } finally {
+            console.error("Failed to generate/save PDF:", error);
             setSaving(false);
         }
     };
