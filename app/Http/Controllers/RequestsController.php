@@ -60,6 +60,13 @@ class RequestsController extends Controller
             ->orderBy('id', 'asc')
             ->first();
 
+        if ($request && $request->pdf_path) {
+            $relativeDataPath = str_replace('storage/', '', $request->pdf_path);
+            if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($relativeDataPath)) {
+                $request->update(['pdf_path' => null]);
+            }
+        }
+
         if (!$request) {
             return $this->getAllRequests();
         }
@@ -126,6 +133,13 @@ class RequestsController extends Controller
     public function printRequest(string $form_no)
     {
         $form = RequestModel::where('form_number', $form_no)->firstOrFail();
+
+        if ($form->pdf_path) {
+            $relativeDataPath = str_replace('storage/', '', $form->pdf_path);
+            if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($relativeDataPath)) {
+                $form->update(['pdf_path' => null]);
+            }
+        }
 
         return Inertia::render('RequestsPage', [
             'show_form' => true,
