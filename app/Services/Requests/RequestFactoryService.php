@@ -163,7 +163,7 @@ class RequestFactoryService
                 'form_number' => $request->form_number,
                 'boxes' => $boxes,
                 'creator' => $request->creator,
-                'pdf_path' => $request->pdf_path,
+                'pdf_path' => $request->pdf_path ? asset($request->pdf_path) : null,
                 'status' => $request->status,
             ],
             'creator_office_head' => $creatorOfficeHead,

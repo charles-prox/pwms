@@ -197,9 +197,10 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
             return { start: null, end: null, readable: null };
         }
 
-        const startDate = dayjs(dateRange.start.toDate("UTC"));
+        // Use .toString() to get YYYY-MM-DD from CalendarDate, avoiding timezone shifts from .toDate()
+        const startDate = dayjs(dateRange.start.toString());
         const endDate = dateRange.end
-            ? dayjs(dateRange.end.toDate("UTC"))
+            ? dayjs(dateRange.end.toString())
             : startDate;
 
         const startRaw = startDate.format("YYYY-MM-DD");
@@ -210,20 +211,12 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
 
         let readable: string;
 
-        if (startDate.isSame(endDate, "year")) {
-            if (startDate.isSame(endDate, "month")) {
-                if (startDate.isSame(endDate, "day")) {
-                    readable = startFormatted;
-                } else {
-                    readable = `${startDate.format("MMMM D")}-${endDate.format(
-                        "D, YYYY"
-                    )}`;
-                }
-            } else {
-                readable = `${startDate.format("MMMM D")} - ${endDate.format(
-                    "MMMM D, YYYY"
-                )}`;
-            }
+        if (startDate.isSame(endDate, "day")) {
+            readable = startFormatted;
+        } else if (startDate.isSame(endDate, "month") && startDate.isSame(endDate, "year")) {
+            readable = `${startDate.format("MMMM D")} - ${endDate.format("D, YYYY")}`;
+        } else if (startDate.isSame(endDate, "year")) {
+            readable = `${startDate.format("MMMM D")} - ${endDate.format("MMMM D, YYYY")}`;
         } else {
             readable = `${startFormatted} - ${endFormatted}`;
         }
@@ -339,7 +332,7 @@ export const BoxFormProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // Add one year and format
         const disposalDate: BoxDate = {
-            raw: latestDate.add(1, "year").toISOString(), // ISO string for raw value
+            raw: latestDate.add(1, "year").format("YYYY-MM-DD"), // raw value in YYYY-MM-DD
             formatted: latestDate.add(1, "year").format("MMMM YYYY"), // formatted string
         };
 

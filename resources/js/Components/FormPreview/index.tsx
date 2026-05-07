@@ -63,35 +63,23 @@ function FormPreview({ form_details, previewMode }: FormPreviewProps) {
     const handleSaveToServer = async () => {
         if (saving || form_details.request.pdf_path) return;
         setSaving(true);
-        console.log("Generating PDF for upload...");
         try {
             const blob = await pdf(
                 <PDFDocument {...docProps}>{renderContent()}</PDFDocument>
             ).toBlob();
 
-            console.log("Uploading PDF to server...");
-            router.post(
-                "/request/upload-pdf",
-                {
-                    pdf: blob,
-                    request_id: form_details.request.form_number,
-                },
-                {
-                    forceFormData: true,
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        console.log("PDF saved successfully.");
-                    },
-                    onError: (err) => {
-                        console.error("Upload failed:", err);
-                    },
-                    onFinish: () => {
-                        setSaving(false);
-                    },
-                }
-            );
+            const formData = new FormData();
+            formData.append("pdf", blob, `request-${form_details.request.form_number}.pdf`);
+            formData.append("request_id", form_details.request.form_number);
+
+            await axiosInstance.post("/request/upload-pdf", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            router.reload({ only: ["form_details"] });
         } catch (error) {
             console.error("Failed to generate/save PDF:", error);
+        } finally {
             setSaving(false);
         }
     };
@@ -106,24 +94,28 @@ function FormPreview({ form_details, previewMode }: FormPreviewProps) {
     }, [form_details.request.pdf_path, form_details.request.status]);
 
     return (
-        <div className="flex flex-col gap-4">
-            {!form_details.request.pdf_path && (
-                <div className="flex justify-end">
-                    <Button
-                        color="primary"
-                        onPress={handleSaveToServer}
-                        isLoading={saving}
-                    >
-                        Save PDF to Server
-                    </Button>
+        <div className="flex flex-col gap-4 h-full">
+            {form_details.request.pdf_path ? (
+                <div className="w-full h-[80vh] border border-default-200 rounded-lg overflow-hidden">
+                    <iframe
+                        src={form_details.request.pdf_path}
+                        className="w-full h-full"
+                        title="Request PDF"
+                    />
                 </div>
+            ) : (
+                <>
+                    {saving && (
+                        <div className="flex justify-end items-center gap-2 text-primary text-sm font-medium animate-pulse">
+                            <span className="w-2 h-2 bg-primary rounded-full" />
+                            Saving PDF to server...
+                        </div>
+                    )}
+                    <PDFLayout previewMode={previewMode} {...docProps}>
+                        {renderContent()}
+                    </PDFLayout>
+                </>
             )}
-            <PDFLayout
-                previewMode={previewMode}
-                {...docProps}
-            >
-                {renderContent()}
-            </PDFLayout>
         </div>
     );
 }

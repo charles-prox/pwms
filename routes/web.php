@@ -54,7 +54,7 @@ Route::middleware([
         ->middleware('permission:request.cancel');
 
     Route::post('/request/upload-pdf', [RequestsController::class, 'uploadPdf'])
-        ->middleware('permission:request.upload-pdf');
+        ->middleware('permission:request.view');
 
     Route::get('/requests/generate-box-code/{office}', [RequestsController::class, 'generateBoxCode'])
         ->middleware('permission:request.generate-box-code');

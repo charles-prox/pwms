@@ -19,7 +19,6 @@ export async function savePdfToBackend(
                 headers: { "Content-Type": "multipart/form-data" },
             }
         );
-        console.log("Upload success:", response.data);
     } catch (error) {
         console.error("Upload failed:", error);
         throw new Error("Failed to upload PDF to backend");

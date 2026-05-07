@@ -63,7 +63,7 @@ const SaveButton = () => {
                                 showAlert({
                                     type: "success",
                                     title: "Success",
-                                    message: "Request submitted successfully.",
+                                    message: "Request submitted successfully. The PDF form is being generated...",
                                     autoClose: true,
                                     autoCloseDuration: 3000,
                                 });
