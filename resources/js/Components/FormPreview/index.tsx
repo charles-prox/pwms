@@ -61,6 +61,7 @@ function FormPreview({ form_details, previewMode }: FormPreviewProps) {
     };
 
     const handleSaveToServer = async () => {
+        if (saving) return;
         setSaving(true);
         try {
             const blob = await pdf(
@@ -82,6 +83,15 @@ function FormPreview({ form_details, previewMode }: FormPreviewProps) {
             setSaving(false);
         }
     };
+
+    React.useEffect(() => {
+        if (
+            !form_details.request.pdf_path &&
+            form_details.request.status?.toLowerCase() !== "draft"
+        ) {
+            handleSaveToServer();
+        }
+    }, [form_details.request.pdf_path, form_details.request.status]);
 
     return (
         <div className="flex flex-col gap-4">

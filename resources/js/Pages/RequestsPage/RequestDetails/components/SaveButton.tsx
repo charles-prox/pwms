@@ -13,8 +13,6 @@ import { useModalAlert } from "@/Contexts/ModalAlertContext";
 import { router } from "@inertiajs/react";
 import { axiosInstance } from "@/Utils/axios";
 import Icon from "@/Components/Icon";
-import FormPreview from "@/Components/FormPreview";
-import { savePdfToBackend } from "@/Services/pdfService";
 import { useSelectedBoxes } from "@/Contexts/SelectedBoxesContext";
 
 const SaveButton = () => {
@@ -61,25 +59,11 @@ const SaveButton = () => {
                             preserveState: true,
                             preserveScroll: true,
                             only: ["form_details", "show_form"],
-                            onSuccess: async (response) => {
-                                const form_details = response.props
-                                    .form_details as FormDetails;
-
-                                const pdfElement = (
-                                    <FormPreview
-                                        previewMode={false}
-                                        form_details={form_details}
-                                    />
-                                );
-                                await savePdfToBackend(
-                                    pdfElement,
-                                    form_details.request.form_number
-                                );
-
+                            onSuccess: () => {
                                 showAlert({
                                     type: "success",
                                     title: "Success",
-                                    message: "You can now print your request.",
+                                    message: "Request submitted successfully.",
                                     autoClose: true,
                                     autoCloseDuration: 3000,
                                 });
