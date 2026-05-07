@@ -43,7 +43,9 @@ const RequestTitle: React.FC<RequestStatusProps> = ({
                     variant="flat"
                 >
                     {pdfPath && typeof pdfPath === "string" && pdfPath !== ""
-                        ? "View Signed PDF"
+                        ? (status === "Completed" || status === "Approved"
+                            ? "View Signed PDF"
+                            : "View Form")
                         : "Generate Form"}
                 </Button>
             </div>
